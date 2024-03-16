@@ -1,0 +1,37 @@
+# docker-compose.node.yml
+version: "3.5"
+
+services:
+  cardano-node:
+    container_name: cardano-node-container  # Custom container name
+    image: ghcr.io/intersectmbo/cardano-node:${CARDANO_NODE_VERSION:-"8.9.0"}
+    environment:
+      - CARDANO_NETWORK=${CARDANO_NETWORK:-mainnet}
+      - CARDANO_NODE_PORT=${CARDANO_NODE_PORT:-3001}
+    networks:
+      - cardano-network
+    volumes:
+      - ${CARDANO_NODE_DB_PATH}:/data
+      - node-ipc:/ipc
+      - ${CONFIG_DIR_ABSOLUTE}:/configs  
+      - ${WORKSPACE_ROOT_DIR_ABSOLUTE}/scripts/init-cardano-node.sh:/init-cardano-node.sh  # Mount the script into the container
+    restart: on-failure
+    logging:
+      driver: "json-file"
+      options:
+        compress: "true"
+        max-file: "10"
+        max-size: "50m"
+    entrypoint: []
+    command: tail -f /dev/null  # Keep the container running indefinitely
+    # command: >
+    #   /bin/bash -c "chmod +x /init-cardano-node.sh && /init-cardano-node.sh"
+    # Ensure /init-cardano-node.sh includes the necessary logic to start the Cardano node correctly
+
+networks:
+  cardano-network:
+    driver: bridge
+
+volumes:
+  node-ipc:
+    
