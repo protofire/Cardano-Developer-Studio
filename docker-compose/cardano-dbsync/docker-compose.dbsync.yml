@@ -1,0 +1,52 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:14.10-alpine
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PASSWORD= ${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    restart: on-failure
+    healthcheck:
+      # Use pg_isready to check postgres is running. Substitute different
+      # user `postgres` if you've setup differently to config/pgpass-mainnet
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    command: ${POSTGRES_ARGS:--c maintenance_work_mem=1GB -c max_parallel_maintenance_workers=4}
+
+  cardano-db-sync:
+    image: ghcr.io/intersectmbo/cardano-db-sync:13.2.0.1
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - NETWORK=${CARDANO_NETWORK:-mainnet}
+      - DISABLE_LEDGER=${DISABLE_LEDGER:-Y}
+      # - EXTRA_DB_SYNC_ARGS=${EXTRA_DB_SYNC_ARGS:- --disable-cache --disable-epoch}
+      - RESTORE_SNAPSHOT=${RESTORE_SNAPSHOT:-}
+      - RESTORE_RECREATE_D=N
+      # Add more environment variables as required
+    depends_on:
+      - postgres
+    volumes:
+      - db-sync-data:/var/lib/cexplorer
+      - node-ipc:/node-ipc  # Assuming this volume is shared with the running node
+    restart: on-failure
+
+volumes:
+  db-sync-data:
+  postgres:
+  node-ipc:
+    name: cardano-node_node-ipc
+    external: true
+

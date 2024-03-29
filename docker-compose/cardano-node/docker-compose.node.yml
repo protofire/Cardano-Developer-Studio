@@ -8,6 +8,7 @@ services:
     environment:
       - CARDANO_NETWORK=${CARDANO_NETWORK:-mainnet}
       - CARDANO_NODE_PORT=${CARDANO_NODE_PORT:-3001}
+      - CARDANO_NETWORK_WITH_MAGIC=${CARDANO_NETWORK_WITH_MAGIC:-"mainnet"}
     networks:
       - cardano-network
     volumes:
@@ -23,10 +24,19 @@ services:
         max-file: "10"
         max-size: "50m"
     entrypoint: []
-    command: tail -f /dev/null  # Keep the container running indefinitely
-    # command: >
-    #   /bin/bash -c "chmod +x /init-cardano-node.sh && /init-cardano-node.sh"
+    # command: tail -f /dev/null  # Keep the container running indefinitely
+    command: >
+      /bin/bash -c "chmod +x /init-cardano-node.sh && /init-cardano-node.sh"
     # Ensure /init-cardano-node.sh includes the necessary logic to start the Cardano node correctly
+    healthcheck:
+      # Ping the EKG port to see if it responds.
+      # Assuming if EKG isn't up then the rest of cardano-node isn't either.
+      test: ["CMD-SHELL", "curl -f 127.0.0.1:12788 || exit 1"]
+      interval: 60s
+      timeout: 10s
+      retries: 5
+    ports:
+      - "12788:12788"
 
 networks:
   cardano-network:

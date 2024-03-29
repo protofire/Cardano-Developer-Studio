@@ -33,6 +33,8 @@ files/config/blockfrost/blockfrost-mainnet.key
 
 /_OLD
 
-/src/**/_OUT
+/src/**/_OLD
 
 .priv
+
+/configs/cardano-node-snapshot/**

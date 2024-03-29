@@ -12,6 +12,8 @@ echo "--database-path: /data"
 echo "--socket-path: /ipc/node.socket"  # As set in the Docker Compose file
 echo "--port: ${CARDANO_NODE_PORT}"  # Adjust as needed
 echo "--config: /configs/cardano-node/${CARDANO_NETWORK}/config.json"
+
+
 sleep 5
 
 cardano-node run \

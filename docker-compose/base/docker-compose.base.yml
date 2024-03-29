@@ -1,9 +1,0 @@
-# docker-compose-base.yml
-version: "3.5"
-
-networks:
-  cardano-network:
-    driver: bridge
-
-volumes:
-  node-ipc: {}

@@ -119,4 +119,4 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 
 ## Acknowledgements
 
-We would like to thank the Cardano community for their support and contributions to this project.
+We express our deepest gratitude to the Cardano community for their unwavering support and valuable contributions to this project. This work is part of a funded project through Cardano Catalyst, a community-driven innovation platform. For more details on the proposal and its progress, please visit our proposal page on [IdeaScale](https://cardano.ideascale.com/c/idea/110047).
