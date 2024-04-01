@@ -3,7 +3,7 @@ version: "3.5"
 
 services:
   cardano-node:
-    container_name: cardano-node-container  # Custom container name
+    container_name: cardano-node-container-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
     image: ghcr.io/intersectmbo/cardano-node:${CARDANO_NODE_VERSION:-"8.9.0"}
     environment:
       - CARDANO_NETWORK=${CARDANO_NETWORK:-mainnet}
@@ -40,8 +40,10 @@ services:
 
 networks:
   cardano-network:
+    name: cardano-node_cardano-network
     driver: bridge
 
 volumes:
   node-ipc:
+    name: cardano-node_node-ipc
     

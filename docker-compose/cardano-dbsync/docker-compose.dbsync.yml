@@ -23,6 +23,7 @@ services:
     command: ${POSTGRES_ARGS:--c maintenance_work_mem=1GB -c max_parallel_maintenance_workers=4}
 
   cardano-db-sync:
+    container_name: cardano-db-sync-container-13.2.0.1-${CARDANO_NETWORK:-mainnet}
     image: ghcr.io/intersectmbo/cardano-db-sync:13.2.0.1
     environment:
       - POSTGRES_HOST=postgres

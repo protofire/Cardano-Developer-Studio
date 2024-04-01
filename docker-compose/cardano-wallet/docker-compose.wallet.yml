@@ -2,8 +2,8 @@ version: "3.5"
 
 services:
   cardano-wallet:
-    container_name: cardano-wallet-container # Custom container name
-    image: cardanofoundation/cardano-wallet:${CARDANO_WALLET_TAG:-latest}
+    container_name: cardano-wallet-container-${CARDANO_WALLET_TAG:-2023.04.14}-${CARDANO_NETWORK:-mainnet}
+    image: cardanofoundation/cardano-wallet:${CARDANO_WALLET_TAG:-2023.04.14}
     environment:
       - CARDANO_NETWORK=${CARDANO_NETWORK:-mainnet}
       - CARDANO_WALLET_PORT=${CARDANO_WALLET_PORT:-8090}

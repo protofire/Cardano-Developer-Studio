@@ -180,8 +180,8 @@ set_node_env_variables() {
 set_wallet_env_variables() {
     echo "Setting up Cardano Wallet environment..."
     
-    read -p "Enter CARDANO_WALLET_TAG [default: latest]: " CARDANO_WALLET_TAG
-    CARDANO_WALLET_TAG=${CARDANO_WALLET_TAG:-latest}
+    read -p "Enter CARDANO_WALLET_TAG [default: 2023.4.14]: " CARDANO_WALLET_TAG
+    CARDANO_WALLET_TAG=${CARDANO_WALLET_TAG:-2023.4.14}
     export CARDANO_WALLET_TAG
     
     # Ensure CARDANO_NETWORK is set; if not, load from saved environment variables
