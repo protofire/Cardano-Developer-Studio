@@ -76,9 +76,17 @@ set_node_env_variables() {
     CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION:-"8.9.0"}
     export CARDANO_NODE_VERSION
     
-    read -p "Enter CARDANO_NETWORK [default: preprod, options: sanchonet-preview-preprod-mainnet]: " CARDANO_NETWORK
-    CARDANO_NETWORK=${CARDANO_NETWORK:-preprod}
-    export CARDANO_NETWORK
+    while :; do
+        read -p "Enter CARDANO_NETWORK [options: preprod, mainnet] (default: preprod): " CARDANO_NETWORK
+        CARDANO_NETWORK=${CARDANO_NETWORK:-preprod}
+        
+        if [[ "$CARDANO_NETWORK" == "preprod" || "$CARDANO_NETWORK" == "mainnet" ]]; then
+            export CARDANO_NETWORK
+            break
+        else
+            echo "Invalid network. Please enter 'preprod' or 'mainnet'."
+        fi
+    done
     
     read -p "Enter CARDANO_NODE_PORT [default: 3001]: " CARDANO_NODE_PORT
     CARDANO_NODE_PORT=${CARDANO_NODE_PORT:-3001}
@@ -97,100 +105,107 @@ set_node_env_variables() {
         echo "Directory for CARDANO_NODE_DB_PATH already exists."
     fi
     
-    read -p "Download snapshot for faster setup? (yes/no) [default: yes]: " download_snapshot
-    download_snapshot=${download_snapshot:-yes}
-    
-    if [[ "$download_snapshot" =~ ^[Yy][Ee][Ss]$ ]]; then
-        read -p "Enter path for saving snapshot [default: $CONFIG_DIR_ABSOLUTE/cardano-node-snapshot/$CARDANO_NETWORK]: " SNAPSHOT_SAVE_PATH
-        SNAPSHOT_SAVE_PATH=${SNAPSHOT_SAVE_PATH:-"$CONFIG_DIR_ABSOLUTE/cardano-node-snapshot/$CARDANO_NETWORK"}
-        echo "Snapshots will be saved to: $SNAPSHOT_SAVE_PATH"
-        export SNAPSHOT_SAVE_PATH
-        # ensuring directory permissions are set appropriately.
-        if [ ! -d "$SNAPSHOT_SAVE_PATH" ]; then
-            echo "Creating directory for snapshots at $SNAPSHOT_SAVE_PATH with appropriate permissions..."
-            sudo mkdir -p "$SNAPSHOT_SAVE_PATH"
-            sudo chmod 755 "$SNAPSHOT_SAVE_PATH"
-            sudo chown $(whoami):$(whoami) "$SNAPSHOT_SAVE_PATH"
-        fi
-        echo "Checking for available snapshots for node version $CARDANO_NODE_VERSION..."
-        url_network_segment="$CARDANO_NETWORK"
-        if [[ "$CARDANO_NETWORK" == "preprod" ]]; then
-            url_network_segment="testnet"
-        fi
-        snapshots_json=$(curl -s "https://downloads.csnapshots.io/$url_network_segment/${url_network_segment}-db-snapshot.json")
-        snapshot_info=$(echo "$snapshots_json" | jq --arg NODE_VERSION "$CARDANO_NODE_VERSION" '.[] | select(.node_version == $NODE_VERSION)')
-        if [[ -n "$snapshot_info" ]]; then
-            snapshot_url=$(echo "$snapshot_info" | jq -r '.file_name')
-            final_snapshot_path="$SNAPSHOT_SAVE_PATH/$(basename "$snapshot_url")"
-            if [ -f "$final_snapshot_path" ] && verify_snapshot_integrity "$final_snapshot_path"; then
-                echo "Snapshot file already exists. Skipping download."
-                USE_SNAPSHOT_PATH="$final_snapshot_path"
-            else
-                echo "The latest snapshot for node version $CARDANO_NODE_VERSION not found at $final_snapshot_path or is corrupted."
-                while : ; do
-                    available_snapshots=($(find "$SNAPSHOT_SAVE_PATH" -maxdepth 1 -name "*.lz4" 2>/dev/null))
-                    if [ ${#available_snapshots[@]} -gt 0 ]; then
-                        echo "Available snapshots:"
-                        for i in "${!available_snapshots[@]}"; do
-                            echo "$((i+1))) ${available_snapshots[$i]}"
-                        done
-                        echo "Select a snapshot to use (or press Enter to download the latest):"
-                        read -p "Choice [1-${#available_snapshots[@]}]: " snapshot_choice
-                        
-                        if [[ -n "$snapshot_choice" && "$snapshot_choice" =~ ^[0-9]+$ && "$snapshot_choice" -ge 1 && "$snapshot_choice" -le ${#available_snapshots[@]} ]]; then
-                            selected_snapshot_path="${available_snapshots[$((snapshot_choice-1))]}"
-                            if verify_snapshot_integrity "$selected_snapshot_path"; then
-                                echo "Using selected snapshot: $selected_snapshot_path"
-                                USE_SNAPSHOT_PATH="$selected_snapshot_path"
-                                break
+    if  [[ "$CARDANO_NETWORK" == "mainnet" || "$CARDANO_NETWORK" == "preprod" ]]; then
+        read -p "Download snapshot for faster setup? (yes/no) [default: yes]: " download_snapshot
+        download_snapshot=${download_snapshot:-yes}
+        
+        if [[ "$download_snapshot" =~ ^[Yy][Ee][Ss]$ ]]; then
+            read -p "Enter path for saving snapshot [default: $CONFIG_DIR_ABSOLUTE/cardano-node-snapshot/$CARDANO_NETWORK]: " SNAPSHOT_SAVE_PATH
+            SNAPSHOT_SAVE_PATH=${SNAPSHOT_SAVE_PATH:-"$CONFIG_DIR_ABSOLUTE/cardano-node-snapshot/$CARDANO_NETWORK"}
+            echo "Snapshots will be saved to: $SNAPSHOT_SAVE_PATH"
+            export SNAPSHOT_SAVE_PATH
+            # ensuring directory permissions are set appropriately.
+            if [ ! -d "$SNAPSHOT_SAVE_PATH" ]; then
+                echo "Creating directory for snapshots at $SNAPSHOT_SAVE_PATH with appropriate permissions..."
+                sudo mkdir -p "$SNAPSHOT_SAVE_PATH"
+                sudo chmod 755 "$SNAPSHOT_SAVE_PATH"
+                sudo chown $(whoami):$(whoami) "$SNAPSHOT_SAVE_PATH"
+            fi
+            echo "Checking for available snapshots for node version $CARDANO_NODE_VERSION..."
+            url_network_segment="$CARDANO_NETWORK"
+            if [[ "$CARDANO_NETWORK" == "preprod" ]]; then
+                url_network_segment="testnet"
+            fi
+            snapshots_json=$(curl -s "https://downloads.csnapshots.io/$url_network_segment/${url_network_segment}-db-snapshot.json")
+            snapshot_info=$(echo "$snapshots_json" | jq --arg NODE_VERSION "$CARDANO_NODE_VERSION" '.[] | select(.node_version == $NODE_VERSION)')
+            if [[ -n "$snapshot_info" ]]; then
+                snapshot_url=$(echo "$snapshot_info" | jq -r '.file_name')
+                final_snapshot_path="$SNAPSHOT_SAVE_PATH/$(basename "$snapshot_url")"
+                if [ -f "$final_snapshot_path" ] && verify_snapshot_integrity "$final_snapshot_path"; then
+                    echo "Snapshot file already exists. Skipping download."
+                    USE_SNAPSHOT_PATH="$final_snapshot_path"
+                else
+                    echo "The latest snapshot for node version $CARDANO_NODE_VERSION not found at $final_snapshot_path or is corrupted."
+                    while : ; do
+                        available_snapshots=($(find "$SNAPSHOT_SAVE_PATH" -maxdepth 1 -name "*.lz4" 2>/dev/null))
+                        if [ ${#available_snapshots[@]} -gt 0 ]; then
+                            echo "Available snapshots:"
+                            for i in "${!available_snapshots[@]}"; do
+                                echo "$((i+1))) ${available_snapshots[$i]}"
+                            done
+                            echo "Select a snapshot to use (or press Enter to download the latest):"
+                            read -p "Choice [1-${#available_snapshots[@]}]: " snapshot_choice
+                            
+                            if [[ -n "$snapshot_choice" && "$snapshot_choice" =~ ^[0-9]+$ && "$snapshot_choice" -ge 1 && "$snapshot_choice" -le ${#available_snapshots[@]} ]]; then
+                                selected_snapshot_path="${available_snapshots[$((snapshot_choice-1))]}"
+                                if verify_snapshot_integrity "$selected_snapshot_path"; then
+                                    echo "Using selected snapshot: $selected_snapshot_path"
+                                    USE_SNAPSHOT_PATH="$selected_snapshot_path"
+                                    break
+                                else
+                                    echo "Selected snapshot failed integrity check or is corrupted. Please select a different snapshot."
+                                fi
+                                elif [[ -z "$snapshot_choice" ]]; then
+                                echo "Downloading and using the latest snapshot..."
+                                sudo mkdir -p "$SNAPSHOT_SAVE_PATH"
+                                if curl -L "https://downloads.csnapshots.io/$url_network_segment/$snapshot_url" --progress-bar --output "$final_snapshot_path" && verify_snapshot_integrity "$final_snapshot_path"; then
+                                    echo "Snapshot downloaded and verified successfully."
+                                    USE_SNAPSHOT_PATH="$final_snapshot_path"
+                                    break
+                                else
+                                    echo "Failed to download or verify snapshot. Please check your internet connection or try again later."
+                                    exit 1
+                                fi
                             else
-                                echo "Selected snapshot failed integrity check or is corrupted. Please select a different snapshot."
+                                echo "Invalid choice, please try again."
                             fi
-                            elif [[ -z "$snapshot_choice" ]]; then
-                            echo "Downloading and using the latest snapshot..."
+                        else
+                            echo "No available snapshots found. Downloading the latest..."
                             sudo mkdir -p "$SNAPSHOT_SAVE_PATH"
                             if curl -L "https://downloads.csnapshots.io/$url_network_segment/$snapshot_url" --progress-bar --output "$final_snapshot_path" && verify_snapshot_integrity "$final_snapshot_path"; then
                                 echo "Snapshot downloaded and verified successfully."
                                 USE_SNAPSHOT_PATH="$final_snapshot_path"
                                 break
                             else
-                                echo "Failed to download or verify snapshot. Please check your internet connection or try again later."
+                                echo "Failed to download snapshot. Please check your internet connection or try again later."
                                 exit 1
                             fi
-                        else
-                            echo "Invalid choice, please try again."
                         fi
-                    else
-                        echo "No available snapshots found. Downloading the latest..."
-                        sudo mkdir -p "$SNAPSHOT_SAVE_PATH"
-                        if curl -L "https://downloads.csnapshots.io/$url_network_segment/$snapshot_url" --progress-bar --output "$final_snapshot_path" && verify_snapshot_integrity "$final_snapshot_path"; then
-                            echo "Snapshot downloaded and verified successfully."
-                            USE_SNAPSHOT_PATH="$final_snapshot_path"
-                            break
-                        else
-                            echo "Failed to download snapshot. Please check your internet connection or try again later."
-                            exit 1
-                        fi
+                    done
+                fi
+                sudo rm -rf "$CARDANO_NODE_DB_PATH/*"
+                sudo mkdir -p "$CARDANO_NODE_DB_PATH"
+                if lz4 -c -d "$USE_SNAPSHOT_PATH" | sudo tar -x -C "$CARDANO_NODE_DB_PATH"; then
+                    # Instead of moving the entire db directory, synchronize its contents to the parent directory
+                    if [ -d "$CARDANO_NODE_DB_PATH/db" ]; then
+                        echo "Merging extracted 'db' directory contents with the target directory..."
+                        # Use 'rsync' to merge directories content safely
+                        sudo rsync -avh --remove-source-files "$CARDANO_NODE_DB_PATH/db/" "$CARDANO_NODE_DB_PATH/"
+                        # After rsync, remove the now empty 'db' directory
+                        sudo find "$CARDANO_NODE_DB_PATH/db" -type d -empty -delete
                     fi
-                done
-            fi
-            echo "Extracting snapshot from $USE_SNAPSHOT_PATH to $CARDANO_NODE_DB_PATH..."
-            sudo rm -rf "$CARDANO_NODE_DB_PATH/*"
-            sudo mkdir -p "$CARDANO_NODE_DB_PATH"
-            if lz4 -c -d "$USE_SNAPSHOT_PATH" | sudo tar -x -C "$CARDANO_NODE_DB_PATH"; then
-                sudo mv $CARDANO_NODE_DB_PATH/db/* $CARDANO_NODE_DB_PATH/
-                echo "Snapshot extracted successfully."
+                    echo "Snapshot extracted and merged successfully."
+                else
+                    echo "Failed to extract snapshot."
+                    exit 1
+                fi
             else
-                echo "Failed to extract snapshot."
-                exit 1
+                echo "No snapshot available for node version $CARDANO_NODE_VERSION."
             fi
         else
-            echo "No snapshot available for node version $CARDANO_NODE_VERSION."
+            echo "Snapshot download skipped."
         fi
-    else
-        echo "Snapshot download skipped."
     fi
-    
     
     # Install jq if not already available
     if ! command -v jq &> /dev/null; then
@@ -261,6 +276,27 @@ set_dbsync_env_variables() {
     POSTGRES_PORT=${POSTGRES_PORT:-5432}
     export POSTGRES_PORT
     
+    # Check if the Docker volume exists and has a mismatched database
+    volume_exists=$(docker volume ls -q | grep "cardano-dbsync_postgres")
+    if [ ! -z "$volume_exists" ]; then
+        echo "A Docker volume for PostgreSQL exists."
+        read -p "Do you want to delete the existing volume and recreate the database? This will result in data loss. [y/N]: " confirm_action
+        if [[ "$confirm_action" =~ ^[Yy]$ ]]; then
+            echo "Identifying any containers using the volume..."
+            containers_using_volume=$(docker ps -a --filter volume=cardano-dbsync_postgres -q)
+            if [ ! -z "$containers_using_volume" ]; then
+                echo "Stopping and removing containers that use the volume..."
+                docker stop $containers_using_volume
+                docker rm $containers_using_volume
+            fi
+            
+            echo "Deleting the Docker volume..."
+            docker volume rm cardano-dbsync_postgres
+            echo "The volume has been deleted. A new database will be created upon starting the Docker Compose setup."
+        else
+            echo "Proceeding without deleting the Docker volume. Ensure the existing database matches your configuration."
+        fi
+    fi
     # Optionally, you can prompt for other DB Sync-specific variables here
 }
 
