@@ -22,7 +22,7 @@ load_env_variables() {
     if [[ -f ".env.cardano" ]]; then
         source .env.cardano
         export CARDANO_NETWORK  # Make sure this is exported
-        echo "CARDANO_NETWORK=${CARDANO_NETWORK}" 
+        echo "CARDANO_NETWORK=${CARDANO_NETWORK}"
     else
         echo "No saved environment variables found. Please set up the Cardano Node first."
         exit 1
@@ -58,82 +58,121 @@ check_and_offer_snapshots() {
     fi
 }
 
+verify_snapshot_integrity() {
+    local snapshot_path="$1"
+    echo "Verifying integrity of the snapshot: $snapshot_path..."
+    if lz4 -t "$snapshot_path" &>/dev/null; then
+        echo "Snapshot verification successful."
+        return 0 # Return success
+    else
+        echo "Snapshot verification failed."
+        return 1 # Return failure
+    fi
+}
+
 # Function to prompt user to set environment variables
 set_node_env_variables() {
     read -p "Enter CARDANO_NODE_VERSION [default: 8.9.0]: " CARDANO_NODE_VERSION
     CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION:-"8.9.0"}
     export CARDANO_NODE_VERSION
-
+    
     read -p "Enter CARDANO_NETWORK [default: preprod, options: sanchonet-preview-preprod-mainnet]: " CARDANO_NETWORK
     CARDANO_NETWORK=${CARDANO_NETWORK:-preprod}
     export CARDANO_NETWORK
-
+    
     read -p "Enter CARDANO_NODE_PORT [default: 3001]: " CARDANO_NODE_PORT
     CARDANO_NODE_PORT=${CARDANO_NODE_PORT:-3001}
     export CARDANO_NODE_PORT
-
+    
     read -p "Enter base CARDANO_NODE_DB_PATH absolute path [default: /var/lib/cardano/data]: " base_CARDANO_NODE_DB_PATH
     CARDANO_NODE_DB_PATH="${base_CARDANO_NODE_DB_PATH:-/var/lib/cardano/data}/$CARDANO_NETWORK"
     echo "Node database will be located at: $CARDANO_NODE_DB_PATH"
     export CARDANO_NODE_DB_PATH
-
+    
     # Ensure the database directory exists.
     if [ ! -d "$CARDANO_NODE_DB_PATH" ]; then
-        echo "Creating directory for CARDANO_NODE_DB_PATH at $CARDANO_NODE_DB_PATH"
+        echo "Creating directory for CARDANO_NODEls co_DB_PATH at $CARDANO_NODE_DB_PATH"
         sudo mkdir -p "$CARDANO_NODE_DB_PATH"
     else
         echo "Directory for CARDANO_NODE_DB_PATH already exists."
     fi
-
+    
     read -p "Download snapshot for faster setup? (yes/no) [default: yes]: " download_snapshot
     download_snapshot=${download_snapshot:-yes}
-
+    
     if [[ "$download_snapshot" =~ ^[Yy][Ee][Ss]$ ]]; then
         read -p "Enter path for saving snapshot [default: $CONFIG_DIR_ABSOLUTE/cardano-node-snapshot/$CARDANO_NETWORK]: " SNAPSHOT_SAVE_PATH
         SNAPSHOT_SAVE_PATH=${SNAPSHOT_SAVE_PATH:-"$CONFIG_DIR_ABSOLUTE/cardano-node-snapshot/$CARDANO_NETWORK"}
         echo "Snapshots will be saved to: $SNAPSHOT_SAVE_PATH"
         export SNAPSHOT_SAVE_PATH
-
+        # ensuring directory permissions are set appropriately.
+        if [ ! -d "$SNAPSHOT_SAVE_PATH" ]; then
+            echo "Creating directory for snapshots at $SNAPSHOT_SAVE_PATH with appropriate permissions..."
+            sudo mkdir -p "$SNAPSHOT_SAVE_PATH"
+            sudo chmod 755 "$SNAPSHOT_SAVE_PATH"
+            sudo chown $(whoami):$(whoami) "$SNAPSHOT_SAVE_PATH"
+        fi
         echo "Checking for available snapshots for node version $CARDANO_NODE_VERSION..."
         url_network_segment="$CARDANO_NETWORK"
         if [[ "$CARDANO_NETWORK" == "preprod" ]]; then
             url_network_segment="testnet"
         fi
-
         snapshots_json=$(curl -s "https://downloads.csnapshots.io/$url_network_segment/${url_network_segment}-db-snapshot.json")
         snapshot_info=$(echo "$snapshots_json" | jq --arg NODE_VERSION "$CARDANO_NODE_VERSION" '.[] | select(.node_version == $NODE_VERSION)')
-
         if [[ -n "$snapshot_info" ]]; then
             snapshot_url=$(echo "$snapshot_info" | jq -r '.file_name')
             final_snapshot_path="$SNAPSHOT_SAVE_PATH/$(basename "$snapshot_url")"
-
-            if [ -f "$final_snapshot_path" ]; then
+            if [ -f "$final_snapshot_path" ] && verify_snapshot_integrity "$final_snapshot_path"; then
                 echo "Snapshot file already exists. Skipping download."
                 USE_SNAPSHOT_PATH="$final_snapshot_path"
             else
-                available_snapshots=($(ls "$SNAPSHOT_SAVE_PATH"/*.lz4 2>/dev/null))
-                if [ ${#available_snapshots[@]} -gt 0 ]; then
-                    echo "Available snapshots:"
-                    for i in "${!available_snapshots[@]}"; do
-                        echo "$((i+1))) ${available_snapshots[$i]}"
-                    done
-                    read -p "Select a snapshot to use (or press Enter to download the latest): " snapshot_choice
-                    if [[ -n "$snapshot_choice" && "$snapshot_choice" =~ ^[0-9]+$ && "$snapshot_choice" -ge 1 && "$snapshot_choice" -le ${#available_snapshots[@]} ]]; then
-                        USE_SNAPSHOT_PATH="${available_snapshots[$((snapshot_choice-1))]}"
-                        echo "Using selected snapshot: $USE_SNAPSHOT_PATH"
-                    fi
-                fi
-                if [[ -z "$USE_SNAPSHOT_PATH" ]]; then
-                    echo "Downloading and using the latest snapshot..."
-                    sudo mkdir -p "$SNAPSHOT_SAVE_PATH"
-                    if curl -L "https://downloads.csnapshots.io/$url_network_segment/$snapshot_url" --progress-bar --output "$final_snapshot_path"; then
-                        echo "Snapshot downloaded successfully to $final_snapshot_path."
-                        USE_SNAPSHOT_PATH="$final_snapshot_path"
+                echo "The latest snapshot for node version $CARDANO_NODE_VERSION not found at $final_snapshot_path or is corrupted."
+                while : ; do
+                    available_snapshots=($(find "$SNAPSHOT_SAVE_PATH" -maxdepth 1 -name "*.lz4" 2>/dev/null))
+                    if [ ${#available_snapshots[@]} -gt 0 ]; then
+                        echo "Available snapshots:"
+                        for i in "${!available_snapshots[@]}"; do
+                            echo "$((i+1))) ${available_snapshots[$i]}"
+                        done
+                        echo "Select a snapshot to use (or press Enter to download the latest):"
+                        read -p "Choice [1-${#available_snapshots[@]}]: " snapshot_choice
+                        
+                        if [[ -n "$snapshot_choice" && "$snapshot_choice" =~ ^[0-9]+$ && "$snapshot_choice" -ge 1 && "$snapshot_choice" -le ${#available_snapshots[@]} ]]; then
+                            selected_snapshot_path="${available_snapshots[$((snapshot_choice-1))]}"
+                            if verify_snapshot_integrity "$selected_snapshot_path"; then
+                                echo "Using selected snapshot: $selected_snapshot_path"
+                                USE_SNAPSHOT_PATH="$selected_snapshot_path"
+                                break
+                            else
+                                echo "Selected snapshot failed integrity check or is corrupted. Please select a different snapshot."
+                            fi
+                            elif [[ -z "$snapshot_choice" ]]; then
+                            echo "Downloading and using the latest snapshot..."
+                            sudo mkdir -p "$SNAPSHOT_SAVE_PATH"
+                            if curl -L "https://downloads.csnapshots.io/$url_network_segment/$snapshot_url" --progress-bar --output "$final_snapshot_path" && verify_snapshot_integrity "$final_snapshot_path"; then
+                                echo "Snapshot downloaded and verified successfully."
+                                USE_SNAPSHOT_PATH="$final_snapshot_path"
+                                break
+                            else
+                                echo "Failed to download or verify snapshot. Please check your internet connection or try again later."
+                                exit 1
+                            fi
+                        else
+                            echo "Invalid choice, please try again."
+                        fi
                     else
-                        echo "Failed to download snapshot. Please check your internet connection or try again later."
-                        exit 1
+                        echo "No available snapshots found. Downloading the latest..."
+                        sudo mkdir -p "$SNAPSHOT_SAVE_PATH"
+                        if curl -L "https://downloads.csnapshots.io/$url_network_segment/$snapshot_url" --progress-bar --output "$final_snapshot_path" && verify_snapshot_integrity "$final_snapshot_path"; then
+                            echo "Snapshot downloaded and verified successfully."
+                            USE_SNAPSHOT_PATH="$final_snapshot_path"
+                            break
+                        else
+                            echo "Failed to download snapshot. Please check your internet connection or try again later."
+                            exit 1
+                        fi
                     fi
-                fi
+                done
             fi
             echo "Extracting snapshot from $USE_SNAPSHOT_PATH to $CARDANO_NODE_DB_PATH..."
             sudo rm -rf "$CARDANO_NODE_DB_PATH/*"
@@ -151,18 +190,18 @@ set_node_env_variables() {
     else
         echo "Snapshot download skipped."
     fi
-
-
+    
+    
     # Install jq if not already available
     if ! command -v jq &> /dev/null; then
         echo "Installing jq..."
         sudo apt-get install jq
     fi
-
+    
     CARDANO_SHELLEY=$CONFIG_DIR_ABSOLUTE/cardano-node/${CARDANO_NETWORK}/shelley-genesis.json
     if [[ -f "$CARDANO_SHELLEY"  ]];
     then
-        if [[ "$CARDANO_NETWORK" == "mainnet" ]]; then 
+        if [[ "$CARDANO_NETWORK" == "mainnet" ]]; then
             CARDANO_NETWORK_WITH_MAGIC="mainnet"
             export CARDANO_NETWORK_WITH_MAGIC
         else
@@ -171,7 +210,7 @@ set_node_env_variables() {
             export CARDANO_NETWORK_WITH_MAGIC
         fi
         echo "Network with magic: $CARDANO_NETWORK_WITH_MAGIC"
-     else
+    else
         echo "Shelley genesis file not found at $CARDANO_SHELLEY"
         exit 1
     fi
@@ -205,23 +244,23 @@ set_wallet_env_variables() {
 
 set_dbsync_env_variables() {
     echo "Setting up Cardano DB Sync environment..."
-
+    
     read -p "Enter POSTGRES_DB [default: dbsync]: " POSTGRES_DB
     POSTGRES_DB=${POSTGRES_DB:-dbsync}
     export POSTGRES_DB
-
+    
     read -p "Enter POSTGRES_USER [default: postgres]: " POSTGRES_USER
     POSTGRES_USER=${POSTGRES_USER:-postgres}
     export POSTGRES_USER
-
+    
     read -p "Enter POSTGRES_PASSWORD [default: '']: " POSTGRES_PASSWORD
     POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     export POSTGRES_PASSWORD
-
+    
     read -p "Enter POSTGRES_PORT [default: 5432]: " POSTGRES_PORT
     POSTGRES_PORT=${POSTGRES_PORT:-5432}
     export POSTGRES_PORT
-
+    
     # Optionally, you can prompt for other DB Sync-specific variables here
 }
 

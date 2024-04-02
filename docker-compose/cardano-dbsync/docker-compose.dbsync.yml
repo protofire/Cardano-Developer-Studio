@@ -8,10 +8,11 @@ services:
       - POSTGRES_PASSWORD= ${POSTGRES_PASSWORD}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_HOST_AUTH_METHOD=trust
+      - CARDANO_NETWORK=${CARDANO_NETWORK:-mainnet}
     ports:
       - "${POSTGRES_PORT}:5432"
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/${CARDANO_NETWORK:-mainnet}/data
     restart: on-failure
     healthcheck:
       # Use pg_isready to check postgres is running. Substitute different
@@ -31,6 +32,7 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - CARDANO_NETWORK=${CARDANO_NETWORK:-mainnet}
       - NETWORK=${CARDANO_NETWORK:-mainnet}
       - DISABLE_LEDGER=${DISABLE_LEDGER:-Y}
       # - EXTRA_DB_SYNC_ARGS=${EXTRA_DB_SYNC_ARGS:- --disable-cache --disable-epoch}

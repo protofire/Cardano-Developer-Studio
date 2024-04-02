@@ -4,8 +4,28 @@ This repository is the home of the Cardano Developer Studio, an all-in-one suite
 
 ## Features
 
-- Dockerfiles for Cardano Node, Cardano Wallet, cardano-cli, and cardano-db-sync
 - Docker Compose configurations for easy setup and integration
+- Script tool with menus to navigate and configure and run differents tools
+
+## What is included
+
+### Cardano Node
+
+Knowing how to operate a Cardano Node is fundamental for developers because it serves as your gateway to the Cardano blockchain. With it, you can create and submit transactions, query the blockchain state, and participate in consensus. For dApp development, it provides the infrastructure needed to interact with the blockchain, ensuring your applications are well-integrated within the Cardano ecosystem. Additionally, understanding the node's workings is crucial for optimizing network participation, whether for personal projects or running a stake pool.
+
+### Cardano Wallet
+
+The wallet is more than just a way to store cryptocurrency; it's a critical component for any application needing to handle ADA transactions or manage staking operations. For developers, integrating wallet functionalities into your applications can significantly enhance user experience by providing secure and seamless transaction capabilities. Moreover, understanding wallet operations, such as key management and wallet restoration, is vital for building robust and secure applications on the Cardano platform.
+
+### Cardano DB Sync
+
+Data is king in the modern world, and Cardano DB Sync allows developers to harness blockchain data efficiently. Whether you're building financial tools, exploring chain analytics, or creating user-friendly interfaces for interacting with the blockchain, DB Sync provides the data backbone for these applications. By enabling complex queries and easy access to historical data, it allows for deep insights into blockchain operations and user transactions. This can inform business decisions, provide analytics services, or enhance application functionalities with rich data features.
+
+## Why Developers Need to Experiment with These Tools
+
+Experimentation leads to innovation. By getting hands-on experience with the Cardano Node, Wallet, and DB Sync, developers can push the boundaries of what's possible within the Cardano ecosystem. It's not just about building applications; it's about understanding the intricacies of blockchain technology and leveraging that knowledge to create solutions that are secure, efficient, and user-friendly.
+
+For instance, experimenting with the Cardano Node can help developers optimize transaction fees, understand block propagation, and secure their applications against common blockchain threats. Learning the ins and outs of the Cardano Wallet can lead to the development of new wallet features, improved user security practices, and the integration of ADA payments into e-commerce platforms. And with Cardano DB Sync, the possibilities for blockchain data analytics, reporting tools, and real-time monitoring services are endless.
 
 ## Getting Started
 
