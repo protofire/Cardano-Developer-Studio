@@ -37,7 +37,7 @@ show_main_menu() {
     echo "4) Cardano DB Sync Tools"
     echo "5) Other Tool [Placeholder]"
     echo "6) Exit"
-    read -p "Enter choice [1-4]: " main_choice
+    read -p "Enter choice [1-6]: " main_choice
 }
 
 # Function to handle Docker Compose Workflow

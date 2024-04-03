@@ -36,10 +36,14 @@ load_env_variables() {
 }
 # Function to prompt user to set environment variables
 set_node_env_variables() {
-    
+    echo "----"
     echo "Setting up Cardano Node environment..."
+    echo "----"
+    echo "Installing required packages..."
     install_package jq
-    
+    install_package lz4
+    install_package curl
+    echo "----"
     read -p "Enter CARDANO_NODE_VERSION [default: 8.9.0]: " CARDANO_NODE_VERSION
     CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION:-"8.9.0"}
     export CARDANO_NODE_VERSION
@@ -76,6 +80,9 @@ set_node_env_variables() {
     else
         echo "Directory for CARDANO_NODE_DB_PATH already exists."
     fi
+    # change permissions
+    sudo chmod -R 755 "$CARDANO_NODE_DB_PATH"
+    sudo chown -R $(whoami) "$CARDANO_NODE_DB_PATH"
     
     if  [[ "$CARDANO_NETWORK" == "mainnet" || "$CARDANO_NETWORK" == "preprod" ]]; then
         read -p "Download snapshot for faster setup? (yes/no) [default: yes]: " download_snapshot
@@ -91,10 +98,8 @@ set_node_env_variables() {
                 echo "Creating directory for snapshots at $SNAPSHOT_SAVE_PATH with appropriate permissions..."
                 sudo mkdir -p "$SNAPSHOT_SAVE_PATH"
                 sudo chmod 755 "$SNAPSHOT_SAVE_PATH"
-                sudo chown $(whoami):$(whoami) "$SNAPSHOT_SAVE_PATH"
+                sudo chown $(whoami) "$SNAPSHOT_SAVE_PATH"
             fi
-            
-            install_package lz4
             
             echo "Checking for available snapshots for node version $CARDANO_NODE_VERSION..."
             url_network_segment="$CARDANO_NETWORK"
@@ -171,6 +176,9 @@ set_node_env_variables() {
                         sudo rsync -avh --remove-source-files "$CARDANO_NODE_DB_PATH/db/" "$CARDANO_NODE_DB_PATH/"
                         # After rsync, remove the now empty 'db' directory
                         sudo find "$CARDANO_NODE_DB_PATH/db" -type d -empty -delete
+                        # change permissions
+                        sudo chmod -R 755 "$CARDANO_NODE_DB_PATH"
+                        sudo chown -R $(whoami) "$CARDANO_NODE_DB_PATH"
                     fi
                     echo "Snapshot extracted and merged successfully."
                 else
@@ -189,6 +197,7 @@ set_node_env_variables() {
 }
 
 set_wallet_env_variables() {
+    echo "----"
     echo "Setting up Cardano Wallet environment..."
     
     read -p "Enter CARDANO_WALLET_VERSION [default: 2023.4.14]: " CARDANO_WALLET_VERSION
@@ -215,6 +224,7 @@ set_wallet_env_variables() {
 }
 
 set_dbsync_env_variables() {
+    echo "----"
     echo "Setting up Cardano DB Sync environment..."
     
     read -p "Enter POSTGRES_VERSION [default: 14.10-alpine]: " POSTGRES_VERSION

@@ -63,7 +63,9 @@ determine_network_with_magic() {
 
 
 check_node_resources() {
-    echo "Checking for Cardano Node resources..."
+    echo "----"
+    echo "Setting up Cardano Node environment..."
+    echo "----"
     
     read -p "Enter CARDANO_NODE_VERSION [default: 8.9.0]: " CARDANO_NODE_VERSION
     CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION:-"8.9.0"}
@@ -80,7 +82,9 @@ check_node_resources() {
             echo "Invalid network. Please enter 'preprod' or 'mainnet'."
         fi
     done
-    
+
+    echo "----"
+     
     if ! docker ps | grep -q "cardano-node-container-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}"; then
         echo "Cardano node container is not running. Please start the Cardano Node Version: ${CARDANO_NODE_VERSION:-"8.9.0"} and Network: ${CARDANO_NETWORK:-mainnet} first."
         exit 1
@@ -178,7 +182,7 @@ delete_dbsync_container_and_associated_postgres() {
     local CARDANO_NETWORK=$(docker inspect --format='{{range .Config.Env}}{{println .}}{{end}}' "$dbsync_container" | grep CARDANO_NETWORK= | cut -d'=' -f2)
     
     local postgres_container="postgres-container-${POSTGRES_VERSION:-"14.10-alpine"}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}"
-
+    
     echo "Cardano DB Sync container: $dbsync_container"
     echo "PostgreSQL container: $postgres_container"
     
@@ -195,7 +199,7 @@ delete_wallet_container_and_associated_icarus() {
     local CARDANO_NETWORK=$(docker inspect --format='{{range .Config.Env}}{{println .}}{{end}}' "$wallet_container" | grep CARDANO_NETWORK= | cut -d'=' -f2)
     
     local icarus_container="icarus-container-${ICARUS_VERSION:-v2023-04-14}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}"
-
+    
     echo "Cardano Wallet container: $wallet_container"
     echo "Icarus container: $icarus_container"
     
