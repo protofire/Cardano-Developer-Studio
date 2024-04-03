@@ -155,7 +155,7 @@ After selecting the Docker Compose Workflow, you will be presented with another 
 - `1) Cardano Node`: Starts the Cardano Node container with the configured environment.
 - `2) Cardano Wallet`: Initiates the Cardano Wallet container setup.
 - `3) Cardano DB Sync`: Begins the Cardano DB Sync container.
-- `4) Exit`: Returns to the main menu.
+- `4) Return Main Menu`: Returns to the main menu.
 
 For each selection, you will be prompted to enter environment variables such as `CARDANO_NODE_VERSION`, `CARDANO_NETWORK`, `CARDANO_NODE_DB_PATH`, and `CARDANO_NODE_PORT`. Default values are provided, but you may customize them as needed.
 
@@ -166,7 +166,7 @@ Selecting option `2` from the main menu, you can:
 - `1) Cardano Node Version`: Display the version of the Cardano Node.
 - `2) Cardano CLI Query Tip`: Query the current tip of the blockchain.
 - `3) Delete this Container and Optionally Its Volumes`: To delete selected container and dependences
-- `4) Exit to container selection`: Return to the container selection menu.
+- `4) Return Main Menu`: Returns to the main menu.
 
 ### Cardano Wallet Tools Menu
 
@@ -177,7 +177,7 @@ Selecting option `3` from the main menu, the wallet tools menu allows you to:
 - `3) List wallets`: Display all created wallets.
 - `4) Fetch network information`: Get current network information.
 - `5) Delete this Container and Optionally Its Volumes`: To delete selected container and dependences
-- `6) Exit to container selection`: Return to the container selection menu.
+- `6) Return Main Menu`: Returns to the main menu.
 
 ### Cardano DB Sync Tools Menu
 
@@ -188,7 +188,7 @@ By choosing option `4` from the main menu, the DB Sync tools menu provides:
 - `3) Slot number of the most recent block`: Query the slot number of the latest block.
 - `4) Current total on-chain supply of Ada`: Calculate the current total supply of ADA.
 - `5) Delete this Container and Optionally Its Volumes`: To delete selected container and dependences
-- `6) Exit to container selection`: Return to the container selection menu.
+- `6) Return Main Menu`: Returns to the main menu.
 
 ### Note:
 
