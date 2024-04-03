@@ -4,6 +4,8 @@
 set -e
 # set -x # Enables a mode of the shell where all executed commands are printed to the terminal
 
+source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
+
 # If SCRIPT_DIR is not set, determine the directory where compose.sh resides
 # This makes compose.sh more robust and standalone-capable
 if [[ -z "${SCRIPT_DIR}" ]]; then
@@ -32,47 +34,6 @@ load_env_variables() {
         exit 1
     fi
 }
-
-install_package() {
-    local package_name="$1"
-    echo "Checking if $package_name is installed..."
-
-    if ! command -v "$package_name" &> /dev/null; then
-        echo "$package_name is not installed. Attempting to install $package_name..."
-        # Detect package manager and install the package
-        if command -v apt-get &> /dev/null; then
-            echo "Using apt-get to install $package_name..."
-            sudo apt-get update && sudo apt-get install -y "$package_name"
-        elif command -v dnf &> /dev/null; then
-            echo "Using dnf to install $package_name..."
-            sudo dnf install -y "$package_name"
-        elif command -v brew &> /dev/null; then
-            echo "Using brew to install $package_name..."
-            brew install "$package_name"
-        elif command -v pacman &> /dev/null; then
-            echo "Using pacman to install $package_name..."
-            sudo pacman -Syu "$package_name" --noconfirm
-        else
-            echo "Package manager not detected. Please install $package_name manually."
-            return 1 # Return failure
-        fi
-    else
-        echo "$package_name is already installed."
-    fi
-}
-
-verify_snapshot_integrity() {
-    local snapshot_path="$1"
-    echo "Verifying integrity of the snapshot: $snapshot_path..."
-    if lz4 -t "$snapshot_path" &>/dev/null; then
-        echo "Snapshot verification successful."
-        return 0 # Return success
-    else
-        echo "Snapshot verification failed."
-        return 1 # Return failure
-    fi
-}
-
 # Function to prompt user to set environment variables
 set_node_env_variables() {
 
@@ -223,23 +184,8 @@ set_node_env_variables() {
             echo "Snapshot download skipped."
         fi
     fi
-    
-    CARDANO_SHELLEY=$CONFIG_DIR_ABSOLUTE/cardano-node/${CARDANO_NETWORK}/shelley-genesis.json
-    if [[ -f "$CARDANO_SHELLEY"  ]];
-    then
-        if [[ "$CARDANO_NETWORK" == "mainnet" ]]; then
-            CARDANO_NETWORK_WITH_MAGIC="mainnet"
-            export CARDANO_NETWORK_WITH_MAGIC
-        else
-            NETWORKMAGIC_NRO=$(cat $CARDANO_SHELLEY | jq -r '.networkMagic')
-            CARDANO_NETWORK_WITH_MAGIC="testnet-magic "$NETWORKMAGIC_NRO
-            export CARDANO_NETWORK_WITH_MAGIC
-        fi
-        echo "Network with magic: $CARDANO_NETWORK_WITH_MAGIC"
-    else
-        echo "Shelley genesis file not found at $CARDANO_SHELLEY"
-        exit 1
-    fi
+
+    determine_network_with_magic "$CARDANO_NETWORK" "$CONFIG_DIR_ABSOLUTE"
 }
 
 set_wallet_env_variables() {
@@ -266,34 +212,6 @@ set_wallet_env_variables() {
     read -p "Enter ICARUS_PORT [default: 4444]: " ICARUS_PORT
     ICARUS_PORT=${ICARUS_PORT:-4444}
     export ICARUS_PORT
-}
-
-delete_docker_volume() {
-    local volume_name=$1  # The name of the volume to delete
-
-    echo "Checking if the Docker volume '$volume_name' exists..."
-    volume_exists=$(docker volume ls -q | grep "$volume_name" || true)
-    if [ ! -z "$volume_exists" ]; then
-        echo "A Docker volume for '$volume_name' exists."
-        read -p "Do you want to delete the existing volume? This will result in data loss. [y/N]: " confirm_action
-        if [[ "$confirm_action" =~ ^[Yy]$ ]]; then
-            echo "Identifying any containers using the volume '$volume_name'..."
-            containers_using_volume=$(docker ps -a --filter volume="$volume_name" -q)
-            if [ ! -z "$containers_using_volume" ]; then
-                echo "Stopping and removing containers that use the volume..."
-                docker stop $containers_using_volume
-                docker rm $containers_using_volume
-            fi
-
-            echo "Deleting the Docker volume '$volume_name'..."
-            docker volume rm "$volume_name"
-            echo "The volume '$volume_name' has been deleted. A new database/data will be created upon starting the Docker Compose setup."
-        else
-            echo "Proceeding without deleting the Docker volume. Ensure the existing database/data matches your configuration."
-        fi
-    # else
-    #     echo "No volume named '$volume_name' found. Skipping deletion."
-    fi
 }
 
 set_dbsync_env_variables() {
@@ -329,44 +247,6 @@ set_dbsync_env_variables() {
     delete_docker_volume "cardano-dbsync-data-${CARDANO_DBSYNC_VERSION:-"13.2.0.1"}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}"
 }
 
-check_node_resources() {
-    echo "Checking for Cardano Node resources..."
-
-    read -p "Enter CARDANO_NODE_VERSION [default: 8.9.0]: " CARDANO_NODE_VERSION
-    CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION:-"8.9.0"}
-    export CARDANO_NODE_VERSION
-
-    while :; do
-        read -p "Enter CARDANO_NETWORK [options: preprod, mainnet] (default: preprod): " CARDANO_NETWORK
-        CARDANO_NETWORK=${CARDANO_NETWORK:-preprod}
-        
-        if [[ "$CARDANO_NETWORK" == "preprod" || "$CARDANO_NETWORK" == "mainnet" ]]; then
-            export CARDANO_NETWORK
-            break
-        else
-            echo "Invalid network. Please enter 'preprod' or 'mainnet'."
-        fi
-    done
-    
-    if ! docker ps | grep -q "cardano-node-container-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}"; then
-        echo "Cardano node container is not running. Please start the Cardano Node Version: ${CARDANO_NODE_VERSION:-"8.9.0"} and Network: ${CARDANO_NETWORK:-mainnet} first."
-        exit 1
-    fi
-
-    # Check if the cardano-network is available
-    if ! docker network ls | grep -q "cardano-node-network-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}"; then
-        echo "Cardano network not found. Please ensure the Cardano Node Version: ${CARDANO_NODE_VERSION:-"8.9.0"} and Network: ${CARDANO_NETWORK:-mainnet} is set up."
-        exit 1
-    fi
-    
-    # Check if the node-ipc volume exists
-    if ! docker volume ls | grep -q "cardano-node-node-ipc-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}"; then
-        echo "node-ipc volume not found. Please ensure the Cardano Node Version: ${CARDANO_NODE_VERSION:-"8.9.0"} and Network: ${CARDANO_NETWORK:-mainnet} is set up."
-        exit 1
-    fi
-    
-    echo "Cardano Node resources verified."
-}
 
 # Function to display menu and read user choice
 show_menu() {
