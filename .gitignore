@@ -38,3 +38,4 @@ files/config/blockfrost/blockfrost-mainnet.key
 .priv
 
 /configs/cardano-node-snapshot/**
+/configs/cardano-node-snapshot*/**

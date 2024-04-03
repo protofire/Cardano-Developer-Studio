@@ -29,32 +29,31 @@ load_env_variables() {
     fi
 }
 
-# Check if the specified snapshot exists, and if not, offer alternatives
-check_and_offer_snapshots() {
-    if [ -f "$final_snapshot_path" ]; then
-        echo "Snapshot file already exists. Skipping download."
-        USE_SNAPSHOT_PATH="$final_snapshot_path"
-    else
-        echo "The latest snapshot for node version $CARDANO_NODE_VERSION not found at $final_snapshot_path."
-        # List available snapshots
-        available_snapshots=($(ls "$SNAPSHOT_SAVE_PATH" | grep .lz4))
-        if [ ${#available_snapshots[@]} -eq 0 ]; then
-            echo "No previously downloaded snapshots found."
-            USE_SNAPSHOT_PATH=""
+install_package() {
+    local package_name="$1"
+    echo "Checking if $package_name is installed..."
+
+    if ! command -v "$package_name" &> /dev/null; then
+        echo "$package_name is not installed. Attempting to install $package_name..."
+        # Detect package manager and install the package
+        if command -v apt-get &> /dev/null; then
+            echo "Using apt-get to install $package_name..."
+            sudo apt-get update && sudo apt-get install -y "$package_name"
+        elif command -v dnf &> /dev/null; then
+            echo "Using dnf to install $package_name..."
+            sudo dnf install -y "$package_name"
+        elif command -v brew &> /dev/null; then
+            echo "Using brew to install $package_name..."
+            brew install "$package_name"
+        elif command -v pacman &> /dev/null; then
+            echo "Using pacman to install $package_name..."
+            sudo pacman -Syu "$package_name" --noconfirm
         else
-            echo "Available snapshots:"
-            for i in "${!available_snapshots[@]}"; do
-                echo "$((i+1))) ${available_snapshots[$i]}"
-            done
-            read -p "Enter the number of the snapshot to use (or press Enter to download the latest): " snapshot_choice
-            if [[ -n "$snapshot_choice" && $snapshot_choice =~ ^[0-9]+$ && $snapshot_choice -ge 1 && $snapshot_choice -le ${#available_snapshots[@]} ]]; then
-                USE_SNAPSHOT_PATH="$SNAPSHOT_SAVE_PATH/${available_snapshots[$((snapshot_choice-1))]}"
-                echo "Selected snapshot: $USE_SNAPSHOT_PATH"
-            else
-                echo "Invalid selection or no selection made. Proceeding to download the latest snapshot."
-                USE_SNAPSHOT_PATH=""
-            fi
+            echo "Package manager not detected. Please install $package_name manually."
+            return 1 # Return failure
         fi
+    else
+        echo "$package_name is already installed."
     fi
 }
 
@@ -72,6 +71,10 @@ verify_snapshot_integrity() {
 
 # Function to prompt user to set environment variables
 set_node_env_variables() {
+
+    echo "Setting up Cardano Node environment..."
+    install_package jq
+
     read -p "Enter CARDANO_NODE_VERSION [default: 8.9.0]: " CARDANO_NODE_VERSION
     CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION:-"8.9.0"}
     export CARDANO_NODE_VERSION
@@ -99,7 +102,7 @@ set_node_env_variables() {
     
     # Ensure the database directory exists.
     if [ ! -d "$CARDANO_NODE_DB_PATH" ]; then
-        echo "Creating directory for CARDANO_NODEls co_DB_PATH at $CARDANO_NODE_DB_PATH"
+        echo "Creating directory for CARDANO_NODE_DB_PATH at $CARDANO_NODE_DB_PATH"
         sudo mkdir -p "$CARDANO_NODE_DB_PATH"
     else
         echo "Directory for CARDANO_NODE_DB_PATH already exists."
@@ -121,6 +124,9 @@ set_node_env_variables() {
                 sudo chmod 755 "$SNAPSHOT_SAVE_PATH"
                 sudo chown $(whoami):$(whoami) "$SNAPSHOT_SAVE_PATH"
             fi
+            
+            install_package lz4
+            
             echo "Checking for available snapshots for node version $CARDANO_NODE_VERSION..."
             url_network_segment="$CARDANO_NETWORK"
             if [[ "$CARDANO_NETWORK" == "preprod" ]]; then
@@ -131,11 +137,14 @@ set_node_env_variables() {
             if [[ -n "$snapshot_info" ]]; then
                 snapshot_url=$(echo "$snapshot_info" | jq -r '.file_name')
                 final_snapshot_path="$SNAPSHOT_SAVE_PATH/$(basename "$snapshot_url")"
+                echo "Latest snapshot available for download: $snapshot_url"
                 if [ -f "$final_snapshot_path" ] && verify_snapshot_integrity "$final_snapshot_path"; then
                     echo "Snapshot file already exists. Skipping download."
                     USE_SNAPSHOT_PATH="$final_snapshot_path"
                 else
-                    echo "The latest snapshot for node version $CARDANO_NODE_VERSION not found at $final_snapshot_path or is corrupted."
+                    if [ -f "$final_snapshot_path" ];  then
+                        echo "Snapshot file already exists but is corrupted."
+                    fi
                     while : ; do
                         available_snapshots=($(find "$SNAPSHOT_SAVE_PATH" -maxdepth 1 -name "*.lz4" 2>/dev/null))
                         if [ ${#available_snapshots[@]} -gt 0 ]; then
@@ -205,12 +214,6 @@ set_node_env_variables() {
         else
             echo "Snapshot download skipped."
         fi
-    fi
-    
-    # Install jq if not already available
-    if ! command -v jq &> /dev/null; then
-        echo "Installing jq..."
-        sudo apt-get install jq
     fi
     
     CARDANO_SHELLEY=$CONFIG_DIR_ABSOLUTE/cardano-node/${CARDANO_NETWORK}/shelley-genesis.json
