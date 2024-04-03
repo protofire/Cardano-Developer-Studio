@@ -2,17 +2,19 @@ version: "3.9"
 
 services:
   postgres:
-    image: postgres:14.10-alpine
+    container_name: postgres-container-${POSTGRES_VERSION:-"14.10-alpine"}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
+    image: postgres:${POSTGRES_VERSION:-"14.10-alpine"}
     environment:
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_PASSWORD= ${POSTGRES_PASSWORD}
-      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_VERSION=${POSTGRES_VERSION:-"14.10-alpine"}
+      - POSTGRES_DB=${POSTGRES_DB:-dbsync}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_HOST_AUTH_METHOD=trust
       - CARDANO_NETWORK=${CARDANO_NETWORK:-mainnet}
     ports:
       - "${POSTGRES_PORT}:5432"
     volumes:
-      - postgres:/var/lib/postgresql/${CARDANO_NETWORK:-mainnet}/data
+      - postgres-data:/var/lib/postgresql/data/
     restart: on-failure
     healthcheck:
       # Use pg_isready to check postgres is running. Substitute different
@@ -23,14 +25,15 @@ services:
       retries: 5
     command: ${POSTGRES_ARGS:--c maintenance_work_mem=1GB -c max_parallel_maintenance_workers=4}
 
-  cardano-db-sync:
-    container_name: cardano-db-sync-container-13.2.0.1-${CARDANO_NETWORK:-mainnet}
-    image: ghcr.io/intersectmbo/cardano-db-sync:13.2.0.1
+  cardano-dbsync:
+    container_name: cardano-dbsync-container-${CARDANO_DBSYNC_VERSION:-"13.2.0.1"}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
+    image: ghcr.io/intersectmbo/cardano-db-sync:${CARDANO_DBSYNC_VERSION:-"13.2.0.1"}
     environment:
+      - CARDANO_DBSYNC_VERSION=${CARDANO_DBSYNC_VERSION:-"13.2.0.1"}
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
-      - POSTGRES_DB=${POSTGRES_DB}
-      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB:-dbsync}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - CARDANO_NETWORK=${CARDANO_NETWORK:-mainnet}
       - NETWORK=${CARDANO_NETWORK:-mainnet}
@@ -42,14 +45,16 @@ services:
     depends_on:
       - postgres
     volumes:
-      - db-sync-data:/var/lib/cexplorer
+      - dbsync-data:/var/lib/cardano-dbsync
       - node-ipc:/node-ipc  # Assuming this volume is shared with the running node
     restart: on-failure
 
 volumes:
-  db-sync-data:
-  postgres:
+  dbsync-data:
+    name: cardano-dbsync-data-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
+  postgres-data:
+    name: cardano-dbsync-postgres-data-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
   node-ipc:
-    name: cardano-node_node-ipc
+    name: cardano-node-node-ipc-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
     external: true
 

@@ -20,7 +20,7 @@ mkdir -p /wallet-db
 # Start the cardano-wallet server with the appropriate network argument
 cardano-wallet serve \
   --node-socket /ipc/node.socket \
-  --database /wallet-db \
+  --database /var/lib/cardano-wallet-db \
   --listen-address 0.0.0.0 \
   $CARDANO_NETWORK_ARG
 

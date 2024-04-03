@@ -2,15 +2,15 @@ version: "3.5"
 
 services:
   cardano-wallet:
-    container_name: cardano-wallet-container-${CARDANO_WALLET_TAG:-2023.04.14}-${CARDANO_NETWORK:-mainnet}
-    image: cardanofoundation/cardano-wallet:${CARDANO_WALLET_TAG:-2023.04.14}
+    container_name: cardano-wallet-container-${CARDANO_WALLET_VERSION:-2023.04.14}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
+    image: cardanofoundation/cardano-wallet:${CARDANO_WALLET_VERSION:-2023.04.14}
     environment:
       - CARDANO_NETWORK=${CARDANO_NETWORK:-mainnet}
       - CARDANO_WALLET_PORT=${CARDANO_WALLET_PORT:-8090}
     networks:
       - cardano-network
     volumes:
-      - ${CARDANO_WALLET_DB_PATH}:/wallet-db
+      - cardano-wallet-data:/var/lib/cardano-wallet-db
       - node-ipc:/ipc
       - ${CONFIG_DIR_ABSOLUTE}:/configs
       - ${WORKSPACE_ROOT_DIR_ABSOLUTE}/scripts/init-cardano-wallet.sh:/init-cardano-wallet.sh # Mount the script into the container
@@ -30,19 +30,22 @@ services:
     # Ensure /init-cardano-wallet.sh includes the necessary logic to start the Cardano wallet correctly
 
   icarus:
-    image: piotrstachyra/icarus:v2023-04-14
+    container_name: icarus-container-${ICARUS_VERSION:-v2023-04-14}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
+    image: piotrstachyra/icarus:${ICARUS_VERSION:-v2023-04-14}
     networks:
       - cardano-network
     ports:
-      - "4444:4444"
+      - "${ICARUS_PORT}:4444"
     restart: on-failure
 
 networks:
   cardano-network:
-    name: cardano-node_cardano-network
+    name: cardano-node-network-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
     external: true
 
 volumes:
+  cardano-wallet-data:
+    name: cardano-wallet-data-${CARDANO_WALLET_VERSION:-2023.04.14}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
   node-ipc:
-    name: cardano-node_node-ipc
+    name: cardano-node-node-ipc-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
     external: true

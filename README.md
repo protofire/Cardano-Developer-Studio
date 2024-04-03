@@ -93,6 +93,34 @@ The installation steps provided above are a general guide. Due to the rapid deve
 
 This ensures that users follow the latest guidelines and troubleshooting steps directly from Docker, accommodating any recent changes or system-specific requirements.
 
+## Running Bash Scripts on Windows
+
+To run bash scripts on Windows, you will need to use a Unix-like environment. The most common approach is to install Git Bash or enable the Windows Subsystem for Linux (WSL).
+
+### Git Bash:
+
+- Download and install Git for Windows from https://git-scm.com/download/win.
+- During installation, ensure you select the option to use Git and optional Unix tools from the Windows Command Prompt.
+- After installation, you can right-click in any folder in Windows Explorer and select "Git Bash Here" to open a Bash terminal in that directory.
+
+### Windows Subsystem for Linux (WSL):
+
+- Open PowerShell as Administrator and run: `wsl --install`.
+- Follow the instructions to complete the installation of your preferred Linux distribution from the Microsoft Store.
+- Once installed, you can access Linux terminals directly from Windows.
+
+For detailed instructions on setting up WSL, visit the Microsoft documentation: https://docs.microsoft.com/en-us/windows/wsl/install.
+
+## Running Bash Scripts on Mac
+
+MacOS comes with a built-in Terminal application that supports running bash scripts out-of-the-box.
+
+- Open the Terminal app from your Applications folder or by using Spotlight search (`Cmd + Space`, then type "Terminal").
+- Navigate to the directory containing your bash script using the `cd` command.
+- To run your script, type `bash script_name.sh`, replacing "script_name.sh" with the name of your script.
+
+Ensure you have the necessary permissions to execute the script. If not, run `chmod +x script_name.sh` before executing it.
+
 ## Running Docker Compose Workflows
 
 To streamline the setup and execution of the Cardano Developer Studio tools, we provide a utility script, `run.sh`, located in the `scripts` directory. This script simplifies the management of Docker Compose workflows, allowing for an intuitive selection of different configurations for development purposes.

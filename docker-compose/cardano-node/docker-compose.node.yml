@@ -36,14 +36,14 @@ services:
       timeout: 10s
       retries: 5
     ports:
-      - "12788:12788"
+     - "${CARDANO_NODE_HEALTH_PORT}:12788"
 
 networks:
   cardano-network:
-    name: cardano-node_cardano-network
+    name: cardano-node-network-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
     driver: bridge
 
 volumes:
   node-ipc:
-    name: cardano-node_node-ipc
+    name: cardano-node-node-ipc-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
     
