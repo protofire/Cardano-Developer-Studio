@@ -323,6 +323,8 @@ set_dbsync_env_variables() {
     CARDANO_DBSYNC_VERSION=${CARDANO_DBSYNC_VERSION:-13.2.0.1}
     export CARDANO_DBSYNC_VERSION
 
+    echo "Checking for existing Docker volumes. If found, you'll have the option to delete them. Should you choose not to delete, ensure that your specified database details (name, user, and password) align with those of the existing setup."
+
     delete_docker_volume "cardano-dbsync-postgres-data-${POSTGRES_VERSION:-"14.10-alpine"}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}"
     delete_docker_volume "cardano-dbsync-data-${CARDANO_DBSYNC_VERSION:-"13.2.0.1"}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}"
 }
