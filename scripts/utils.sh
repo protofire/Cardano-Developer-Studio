@@ -115,17 +115,18 @@ select_container() {
     
     if [ ${#containers[@]} -eq 0 ]; then
         echo "No $container_type containers found. Please ensure they are running."
+        read -p "Press Enter to continue..."
         return 1  # Return with error status to signal no containers found
     fi
     
     while true; do
         
         echo "----"
-        echo "Available $container_type Containers (0 to exit):"
+        echo "Available $container_type Containers (0 to Return Main Menu):"
         for i in "${!containers[@]}"; do
             echo "$((i+1))) ${containers[i]}"
         done
-        read -p "Select a container [1-${#containers[@]}] or 0 to exit: " container_choice
+        read -p "Select a container [1-${#containers[@]}] or 0 to Return Main Menu: " container_choice
         echo "----"
         if [ "$container_choice" -eq 0 ]; then
             return 1  # Return with error status to signal user requested exit

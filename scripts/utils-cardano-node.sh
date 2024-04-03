@@ -20,29 +20,34 @@ cardano_node_tools() {
             echo "1) Cardano Node Version"
             echo "2) Cardano CLI Query Tip"
             echo "3) Delete this Container and Optionally Its Volumes"
-            echo "4) Exit to container selection"
+            echo "4) Return Main Menu"
             read -p "Enter your choice or 4 to exit: " tool_choice
             
             case $tool_choice in
                 1)
                     docker exec -it "$selected_container" cardano-node --version
+                    read -p "Press Enter to continue..."
                     ;;
+                    
                 2)
                     CARDANO_NETWORK_WITH_MAGIC=$(docker exec -it "$selected_container" printenv CARDANO_NETWORK_WITH_MAGIC | tr -d '\r')
                     docker exec -it "$selected_container" cardano-cli query tip --socket-path /ipc/node.socket --$CARDANO_NETWORK_WITH_MAGIC
+                    read -p "Press Enter to continue..."
                     ;;
+                    
                 3)
                     delete_container_and_optionally_volumes "$selected_container"
                     break 2 # Breaks out of the current loop and the container selection loop
+                    read -p "Press Enter to continue..."
                     ;;
                 4)
-                    break  
+                    break 2 # Breaks out of the current loop and the container selection loop
                     ;;
                 *)
                     echo "Invalid choice, please select a valid option."
+                    read -p "Press Enter to continue..."
                     ;;
             esac
-            read -p "Press Enter to continue..."
         done
     done
 }

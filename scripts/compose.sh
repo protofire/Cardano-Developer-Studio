@@ -27,7 +27,7 @@ load_env_variables() {
         source .env.cardano
         export CARDANO_NETWORK  # Make sure this is exported
         echo "CARDANO_NETWORK=${CARDANO_NETWORK}"
-        export CARDANO_NODE_VERSION  
+        export CARDANO_NODE_VERSION
         echo "CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION}"
     else
         echo "No saved environment variables found. Please set up the Cardano Node first."
@@ -36,10 +36,10 @@ load_env_variables() {
 }
 # Function to prompt user to set environment variables
 set_node_env_variables() {
-
+    
     echo "Setting up Cardano Node environment..."
     install_package jq
-
+    
     read -p "Enter CARDANO_NODE_VERSION [default: 8.9.0]: " CARDANO_NODE_VERSION
     CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION:-"8.9.0"}
     export CARDANO_NODE_VERSION
@@ -59,11 +59,11 @@ set_node_env_variables() {
     read -p "Enter CARDANO_NODE_PORT [default: 3001]: " CARDANO_NODE_PORT
     CARDANO_NODE_PORT=${CARDANO_NODE_PORT:-3001}
     export CARDANO_NODE_PORT
-
+    
     read -p "Enter CARDANO_NODE_HEALTH_PORT [default: 12788]: " CARDANO_NODE_HEALTH_PORT
     CARDANO_NODE_HEALTH_PORT=${CARDANO_NODE_HEALTH_PORT:-12788}
     export CARDANO_NODE_HEALTH_PORT
-
+    
     read -p "Enter base CARDANO_NODE_DB_PATH absolute path [default: /var/lib/cardano/data]: " base_CARDANO_NODE_DB_PATH
     CARDANO_NODE_DB_PATH="${base_CARDANO_NODE_DB_PATH:-/var/lib/cardano/data}/$CARDANO_NETWORK"
     echo "Node database will be located at: $CARDANO_NODE_DB_PATH"
@@ -184,7 +184,7 @@ set_node_env_variables() {
             echo "Snapshot download skipped."
         fi
     fi
-
+    
     determine_network_with_magic "$CARDANO_NETWORK" "$CONFIG_DIR_ABSOLUTE"
 }
 
@@ -208,7 +208,7 @@ set_wallet_env_variables() {
     read -p "Enter ICARUS_VERSION [default: v2023-04-14]: " ICARUS_VERSION
     ICARUS_VERSION=${ICARUS_VERSION:-v2023-04-14}
     export ICARUS_VERSION
-
+    
     read -p "Enter ICARUS_PORT [default: 4444]: " ICARUS_PORT
     ICARUS_PORT=${ICARUS_PORT:-4444}
     export ICARUS_PORT
@@ -220,7 +220,7 @@ set_dbsync_env_variables() {
     read -p "Enter POSTGRES_VERSION [default: 14.10-alpine]: " POSTGRES_VERSION
     POSTGRES_VERSION=${POSTGRES_VERSION:-"14.10-alpine"}
     export POSTGRES_VERSION
-
+    
     read -p "Enter POSTGRES_DB [default: dbsync]: " POSTGRES_DB
     POSTGRES_DB=${POSTGRES_DB:-dbsync}
     export POSTGRES_DB
@@ -240,9 +240,9 @@ set_dbsync_env_variables() {
     read -p "Enter CARDANO_DBSYNC_VERSION [default: 13.2.0.1]: " CARDANO_DBSYNC_VERSION
     CARDANO_DBSYNC_VERSION=${CARDANO_DBSYNC_VERSION:-13.2.0.1}
     export CARDANO_DBSYNC_VERSION
-
+    
     echo "Checking for existing Docker volumes. If found, you'll have the option to delete them. Should you choose not to delete, ensure that your specified database details (name, user, and password) align with those of the existing setup."
-
+    
     force_delete_docker_volume "cardano-dbsync-postgres-data-${POSTGRES_VERSION:-"14.10-alpine"}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}"
     force_delete_docker_volume "cardano-dbsync-data-${CARDANO_DBSYNC_VERSION:-"13.2.0.1"}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}"
 }
@@ -250,11 +250,13 @@ set_dbsync_env_variables() {
 
 # Function to display menu and read user choice
 show_menu() {
-    echo "Choose Docker Compose configuration to run:"
+    echo "----"
+    echo "Docker Compose configuration to run"
+    echo "----"
     echo "1) Cardano Node"
     echo "2) Cardano Wallet"
     echo "3) Cardano DB Sync"
-    echo "4) Exit"
+    echo "4) Return Main Menu"
     read -p "Enter choice [1-4]: " choice
     main_choice=$choice
 }
@@ -269,25 +271,30 @@ while true; do
             save_env_variables
             PROJECT_NAME=$(echo "cardano-node-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}" | tr '.:' '_' | tr -d '[:upper:]')
             docker-compose -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-node/docker-compose.node.yml" --verbose up -d
+            read -p "Press Enter to continue..."
         ;;
         2)
             check_node_resources
             set_wallet_env_variables
             PROJECT_NAME=$(echo "cardano-wallet-${CARDANO_WALLET_VERSION:-2023.04.14}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}" | tr '.:' '_' | tr -d '[:upper:]')
             docker-compose -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-wallet/docker-compose.wallet.yml" --verbose up -d
+            read -p "Press Enter to continue..."
         ;;
         3)
             check_node_resources
             set_dbsync_env_variables
             PROJECT_NAME=$(echo "cardano-dbsync-${CARDANO_DBSYNC_VERSION:-"13.2.0.1"}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}" | tr '.:' '_' | tr -d '[:upper:]')
             docker-compose -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-dbsync/docker-compose.dbsync.yml" --verbose up -d
+            read -p "Press Enter to continue..."
         ;;
         4)
-            echo "Exiting."
+            echo "returning to Main Menu.."
             exit 0
         ;;
         *)
             echo "Invalid choice, please select a valid option."
+            read -p "Press Enter to continue..."
         ;;
     esac
+    
 done

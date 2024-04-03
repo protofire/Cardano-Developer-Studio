@@ -28,7 +28,9 @@ declare -g main_choice
 
 # Function to display the main menu and capture the choice
 show_main_menu() {
+    echo "----"
     echo "Main Menu - Choose an option:"
+    echo "----"
     echo "1) Docker Compose Workflow"
     echo "2) Cardano Node Testing and Tools"
     echo "3) Cardano Wallet Testing and Tools"
@@ -68,6 +70,7 @@ while true; do
         5)
             # Placeholder for other tools
             echo "Other tools (Placeholder)"
+            read -p "Press Enter to continue..."
         ;;
         6)
             echo "Exiting."
@@ -75,6 +78,8 @@ while true; do
         ;;
         *)
             echo "Invalid choice, please select a valid option."
+            read -p "Press Enter to continue..."
         ;;
     esac
+    
 done
