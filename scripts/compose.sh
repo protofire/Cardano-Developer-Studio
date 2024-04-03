@@ -268,6 +268,34 @@ set_wallet_env_variables() {
     export ICARUS_PORT
 }
 
+delete_docker_volume() {
+    local volume_name=$1  # The name of the volume to delete
+
+    echo "Checking if the Docker volume '$volume_name' exists..."
+    volume_exists=$(docker volume ls -q | grep "$volume_name" || true)
+    if [ ! -z "$volume_exists" ]; then
+        echo "A Docker volume for '$volume_name' exists."
+        read -p "Do you want to delete the existing volume? This will result in data loss. [y/N]: " confirm_action
+        if [[ "$confirm_action" =~ ^[Yy]$ ]]; then
+            echo "Identifying any containers using the volume '$volume_name'..."
+            containers_using_volume=$(docker ps -a --filter volume="$volume_name" -q)
+            if [ ! -z "$containers_using_volume" ]; then
+                echo "Stopping and removing containers that use the volume..."
+                docker stop $containers_using_volume
+                docker rm $containers_using_volume
+            fi
+
+            echo "Deleting the Docker volume '$volume_name'..."
+            docker volume rm "$volume_name"
+            echo "The volume '$volume_name' has been deleted. A new database/data will be created upon starting the Docker Compose setup."
+        else
+            echo "Proceeding without deleting the Docker volume. Ensure the existing database/data matches your configuration."
+        fi
+    # else
+    #     echo "No volume named '$volume_name' found. Skipping deletion."
+    fi
+}
+
 set_dbsync_env_variables() {
     echo "Setting up Cardano DB Sync environment..."
     
@@ -291,32 +319,12 @@ set_dbsync_env_variables() {
     POSTGRES_PORT=${POSTGRES_PORT:-5432}
     export POSTGRES_PORT
     
-    # Check if the Docker volume exists and has a mismatched database
-    volume_exists=$(docker volume ls -q | grep "cardano-dbsync-postgres-data-${CARDANO_NODE_VERSION:-8.9.0}-${CARDANO_NETWORK:-mainnet}" || true)
-    if [ ! -z "$volume_exists" ]; then
-        echo "A Docker volume for PostgreSQL exists."
-        read -p "Do you want to delete the existing volume and recreate the database? This will result in data loss. [y/N]: " confirm_action
-        if [[ "$confirm_action" =~ ^[Yy]$ ]]; then
-            echo "Identifying any containers using the volume..."
-            containers_using_volume=$(docker ps -a --filter volume=cardano-dbsync-postgres-data-${CARDANO_NODE_VERSION:-8.9.0}-${CARDANO_NETWORK:-mainnet} -q)
-            if [ ! -z "$containers_using_volume" ]; then
-                echo "Stopping and removing containers that use the volume..."
-                docker stop $containers_using_volume
-                docker rm $containers_using_volume
-            fi
-            
-            echo "Deleting the Docker volume..."
-            docker volume rm cardano-dbsync-postgres-data-${CARDANO_NODE_VERSION:-8.9.0}-${CARDANO_NETWORK:-mainnet}
-            echo "The volume has been deleted. A new database will be created upon starting the Docker Compose setup."
-        else
-            echo "Proceeding without deleting the Docker volume. Ensure the existing database matches your configuration."
-        fi
-    fi
-    
     read -p "Enter CARDANO_DBSYNC_VERSION [default: 13.2.0.1]: " CARDANO_DBSYNC_VERSION
     CARDANO_DBSYNC_VERSION=${CARDANO_DBSYNC_VERSION:-13.2.0.1}
     export CARDANO_DBSYNC_VERSION
 
+    delete_docker_volume "cardano-dbsync-postgres-data-${POSTGRES_VERSION:-"14.10-alpine"}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}"
+    delete_docker_volume "cardano-dbsync-data-${CARDANO_DBSYNC_VERSION:-"13.2.0.1"}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}"
 }
 
 check_node_resources() {

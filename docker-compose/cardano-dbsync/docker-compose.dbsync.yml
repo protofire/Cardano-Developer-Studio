@@ -45,15 +45,15 @@ services:
     depends_on:
       - postgres
     volumes:
-      - dbsync-data:/var/lib/cardano-dbsync
+      - cardano-dbsync-data:/var/lib/cexplorer
       - node-ipc:/node-ipc  # Assuming this volume is shared with the running node
     restart: on-failure
 
 volumes:
-  dbsync-data:
-    name: cardano-dbsync-data-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
+  cardano-dbsync-data:
+    name: cardano-dbsync-data-${CARDANO_DBSYNC_VERSION:-"13.2.0.1"}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
   postgres-data:
-    name: cardano-dbsync-postgres-data-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
+    name: cardano-dbsync-postgres-data-${POSTGRES_VERSION:-"14.10-alpine"}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
   node-ipc:
     name: cardano-node-node-ipc-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
     external: true
