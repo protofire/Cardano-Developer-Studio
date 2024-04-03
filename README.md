@@ -21,6 +21,10 @@ The wallet is more than just a way to store cryptocurrency; it's a critical comp
 
 Data is king in the modern world, and Cardano DB Sync allows developers to harness blockchain data efficiently. Whether you're building financial tools, exploring chain analytics, or creating user-friendly interfaces for interacting with the blockchain, DB Sync provides the data backbone for these applications. By enabling complex queries and easy access to historical data, it allows for deep insights into blockchain operations and user transactions. This can inform business decisions, provide analytics services, or enhance application functionalities with rich data features.
 
+### Script Menus and Tools
+
+To facilitate interaction with Cardano Node, Wallet, and DB Sync, we have provided scripts that include menus for easy navigation and tool execution. 
+
 ## Why Developers Need to Experiment with These Tools
 
 Experimentation leads to innovation. By getting hands-on experience with the Cardano Node, Wallet, and DB Sync, developers can push the boundaries of what's possible within the Cardano ecosystem. It's not just about building applications; it's about understanding the intricacies of blockchain technology and leveraging that knowledge to create solutions that are secure, efficient, and user-friendly.
@@ -121,34 +125,67 @@ MacOS comes with a built-in Terminal application that supports running bash scri
 
 Ensure you have the necessary permissions to execute the script. If not, run `chmod +x script_name.sh` before executing it.
 
-## Running Docker Compose Workflows
+## Running the main script
 
 To streamline the setup and execution of the Cardano Developer Studio tools, we provide a utility script, `run.sh`, located in the `scripts` directory. This script simplifies the management of Docker Compose workflows, allowing for an intuitive selection of different configurations for development purposes.
 
 ### How to Use `run.sh`
 
-1. **Open a terminal** and navigate to the root directory of the Cardano Developer Studio project.
-2. **Execute the script** by running the following command:
+- **Open a terminal** and navigate to the root directory of the Cardano Developer Studio project.
+- **Execute the script** by running the following command:
 
 ```
 bash scripts/run.sh
 ```
 
-3. **Follow the on-screen prompts**. The main menu will provide you with the following options:
-- `1) Docker Compose Workflow`: Initiates the Docker Compose workflow, allowing you to select which components to run (e.g., Cardano Node, Cardano Wallet).
-- `2) Other Tool [Placeholder]`: Reserved for future tools and utilities.
-- `3) Exit`: Exits the script.
+## Main Menu
 
+The main menu will provide you with the following options:
+
+- `1) Docker Compose Workflow`: Initiates the Docker Compose workflow, allowing you to select which components to run (e.g., Cardano Node, Cardano Wallet).
+- `2) Cardano Node Testing and Tools`: Access tools related to the Cardano Node.
+- `3) Cardano Wallet Testing and Tools`: Manage wallets and perform wallet-related operations.
+- `4) Cardano DB Sync Tools`: Execute queries and interact with the Cardano DB Sync.
+- `5) Other Tool [Placeholder]`: Reserved for future tools and utilities.
+- `6) Exit`: Exits the script.
+  
 ### Docker Compose Menu
 
 After selecting the Docker Compose Workflow, you will be presented with another menu to choose the specific component you wish to run:
-- `1) Base`: Sets up the basic Docker environment, including necessary networks and volumes.
-- `2) Cardano Node`: Starts the Cardano Node container with the configured environment.
-- `3) Cardano Wallet`: Initiates the Cardano Wallet container setup.
-- `4) Cardano DB Sync`: Begins synchronization with the Cardano blockchain database.
-- `5) Exit`: Returns to the main menu.
+- `1) Cardano Node`: Starts the Cardano Node container with the configured environment.
+- `2) Cardano Wallet`: Initiates the Cardano Wallet container setup.
+- `3) Cardano DB Sync`: Begins the Cardano DB Sync container.
+- `4) Exit`: Returns to the main menu.
 
 For each selection, you will be prompted to enter environment variables such as `CARDANO_NODE_VERSION`, `CARDANO_NETWORK`, `CARDANO_NODE_DB_PATH`, and `CARDANO_NODE_PORT`. Default values are provided, but you may customize them as needed.
+
+### Cardano Node Tools Menu
+
+Selecting option `2` from the main menu, you can:
+
+- `1) Cardano Node Version`: Display the version of the Cardano Node.
+- `2) Cardano CLI Query Tip`: Query the current tip of the blockchain.
+- `3) Exit to container selection`: Return to the container selection menu.
+
+### Cardano Wallet Tools Menu
+
+Selecting option `3` from the main menu, the wallet tools menu allows you to:
+
+- `1) Generate mnemonic`: Create a new recovery phrase.
+- `2) Generate mnemonic and create wallet`: Create a new wallet with a generated mnemonic.
+- `3) List wallets`: Display all created wallets.
+- `4) Fetch network information`: Get current network information.
+- `5) Exit to container selection`: Return to the container selection menu.
+
+### Cardano DB Sync Tools Menu
+
+By choosing option `4` from the main menu, the DB Sync tools menu provides:
+
+- `1) Sync progress of db-sync`: Check the synchronization progress of DB Sync.
+- `2) Retrieving most recent block`: Fetch the most recent block from the blockchain.
+- `3) Slot number of the most recent block`: Query the slot number of the latest block.
+- `4) Current total on-chain supply of Ada`: Calculate the current total supply of ADA.
+- `5) Exit to container selection`: Return to the container selection menu.
 
 ### Note:
 
