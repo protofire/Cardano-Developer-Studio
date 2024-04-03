@@ -141,6 +141,8 @@ set_node_env_variables() {
                                 elif [[ -z "$snapshot_choice" ]]; then
                                 echo "Downloading and using the latest snapshot..."
                                 sudo mkdir -p "$SNAPSHOT_SAVE_PATH"
+                                sudo chmod 755 "$SNAPSHOT_SAVE_PATH"
+                                sudo chown $(whoami) "$SNAPSHOT_SAVE_PATH"
                                 if curl -L "https://downloads.csnapshots.io/$url_network_segment/$snapshot_url" --progress-bar --output "$final_snapshot_path" && verify_snapshot_integrity "$final_snapshot_path"; then
                                     echo "Snapshot downloaded and verified successfully."
                                     USE_SNAPSHOT_PATH="$final_snapshot_path"
@@ -155,6 +157,8 @@ set_node_env_variables() {
                         else
                             echo "No available snapshots found. Downloading the latest..."
                             sudo mkdir -p "$SNAPSHOT_SAVE_PATH"
+                            sudo chmod 755 "$SNAPSHOT_SAVE_PATH"
+                            sudo chown $(whoami) "$SNAPSHOT_SAVE_PATH"
                             if curl -L "https://downloads.csnapshots.io/$url_network_segment/$snapshot_url" --progress-bar --output "$final_snapshot_path" && verify_snapshot_integrity "$final_snapshot_path"; then
                                 echo "Snapshot downloaded and verified successfully."
                                 USE_SNAPSHOT_PATH="$final_snapshot_path"
@@ -168,6 +172,8 @@ set_node_env_variables() {
                 fi
                 sudo rm -rf "$CARDANO_NODE_DB_PATH/*"
                 sudo mkdir -p "$CARDANO_NODE_DB_PATH"
+                sudo chmod 755 "$SNAPSHOT_SAVE_PATH"
+                sudo chown $(whoami) "$SNAPSHOT_SAVE_PATH"
                 if lz4 -c -d "$USE_SNAPSHOT_PATH" | sudo tar -x -C "$CARDANO_NODE_DB_PATH"; then
                     # Instead of moving the entire db directory, synchronize its contents to the parent directory
                     if [ -d "$CARDANO_NODE_DB_PATH/db" ]; then
