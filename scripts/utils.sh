@@ -62,34 +62,6 @@ determine_network_with_magic() {
 }
 
 
-delete_docker_volume() {
-    local volume_name=$1  # The name of the volume to delete
-    
-    echo "Checking if the Docker volume '$volume_name' exists..."
-    volume_exists=$(docker volume ls -q | grep "$volume_name" || true)
-    if [ ! -z "$volume_exists" ]; then
-        echo "A Docker volume for '$volume_name' exists."
-        read -p "Do you want to delete the existing volume? This will result in data loss. [y/N]: " confirm_action
-        if [[ "$confirm_action" =~ ^[Yy]$ ]]; then
-            echo "Identifying any containers using the volume '$volume_name'..."
-            containers_using_volume=$(docker ps -a --filter volume="$volume_name" -q)
-            if [ ! -z "$containers_using_volume" ]; then
-                echo "Stopping and removing containers that use the volume..."
-                docker stop $containers_using_volume
-                docker rm $containers_using_volume
-            fi
-            
-            echo "Deleting the Docker volume '$volume_name'..."
-            docker volume rm "$volume_name"
-            echo "The volume '$volume_name' has been deleted. A new database/data will be created upon starting the Docker Compose setup."
-        else
-            echo "Proceeding without deleting the Docker volume. Ensure the existing database/data matches your configuration."
-        fi
-        # else
-        #     echo "No volume named '$volume_name' found. Skipping deletion."
-    fi
-}
-
 check_node_resources() {
     echo "Checking for Cardano Node resources..."
     
@@ -167,4 +139,113 @@ select_container() {
         fi
         
     done
+}
+
+
+
+# Function to delete container and ask about deleting its volumes
+delete_container_and_optionally_volumes() {
+    local container_name="$1"
+    
+    read -p "Do you  want to delete the container ($container_name) and its volumes? [y/N]: " confirm_delete
+    if [[ "$confirm_delete" =~ ^[Yy]$ ]]; then
+        
+        echo "Preparing to delete container: $container_name"
+        
+        # Get all volumes attached to the container
+        local volumes=$(docker inspect --format='{{range .Mounts}}{{.Name}}{{"\n"}}{{end}}' "$container_name")
+        
+        # Stop and remove the container
+        docker stop "$container_name"
+        docker rm "$container_name"
+        echo "Container $container_name has been removed."
+        
+        # Ask about deleting each volume if it is not used by another container
+        for volume in $volumes; do
+            delete_volume_if_unused "$volume"
+        done
+        
+    fi
+}
+
+delete_dbsync_container_and_associated_postgres() {
+    local dbsync_container="$1"
+    
+    # Extract the POSTGRES_HOST environment variable value from the Cardano DB Sync container
+    local POSTGRES_VERSION=$(docker inspect --format='{{range .Config.Env}}{{println .}}{{end}}' "$dbsync_container" | grep POSTGRES_VERSION= | cut -d'=' -f2)
+    local CARDANO_NODE_VERSION=$(docker inspect --format='{{range .Config.Env}}{{println .}}{{end}}' "$dbsync_container" | grep CARDANO_NODE_VERSION= | cut -d'=' -f2)
+    local CARDANO_NETWORK=$(docker inspect --format='{{range .Config.Env}}{{println .}}{{end}}' "$dbsync_container" | grep CARDANO_NETWORK= | cut -d'=' -f2)
+    
+    local postgres_container="postgres-container-${POSTGRES_VERSION:-"14.10-alpine"}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}"
+
+    echo "Cardano DB Sync container: $dbsync_container"
+    echo "PostgreSQL container: $postgres_container"
+    
+    delete_container_and_optionally_volumes "$dbsync_container"
+    delete_container_and_optionally_volumes "$postgres_container"
+}
+
+delete_wallet_container_and_associated_icarus() {
+    local wallet_container="$1"
+    
+    # Extract the POSTGRES_HOST environment variable value from the Cardano DB Sync container
+    local ICARUS_VERSION=$(docker inspect --format='{{range .Config.Env}}{{println .}}{{end}}' "$wallet_container" | grep ICARUS_VERSION= | cut -d'=' -f2)
+    local CARDANO_NODE_VERSION=$(docker inspect --format='{{range .Config.Env}}{{println .}}{{end}}' "$wallet_container" | grep CARDANO_NODE_VERSION= | cut -d'=' -f2)
+    local CARDANO_NETWORK=$(docker inspect --format='{{range .Config.Env}}{{println .}}{{end}}' "$wallet_container" | grep CARDANO_NETWORK= | cut -d'=' -f2)
+    
+    local icarus_container="icarus-container-${ICARUS_VERSION:-v2023-04-14}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}"
+
+    echo "Cardano Wallet container: $wallet_container"
+    echo "Icarus container: $icarus_container"
+    
+    delete_container_and_optionally_volumes "$wallet_container"
+    delete_container_and_optionally_volumes "$icarus_container"
+}
+
+
+# Function to safely delete volumes if not used by any other container
+delete_volume_if_unused() {
+    local volume_name="$1"
+    # Check if the volume is attached to any running container
+    local attached_containers=$(docker ps -q --filter "volume=$volume_name")
+    if [[ -z "$attached_containers" ]]; then
+        read -p "Do you want to delete the unused volume '$volume_name'? [y/N]: " confirm_volume_delete
+        if [[ "$confirm_volume_delete" =~ ^[Yy]$ ]]; then
+            echo "Deleting volume '$volume_name'..."
+            docker volume rm "$volume_name"
+            echo "Volume '$volume_name' deleted."
+        else
+            echo "Volume '$volume_name' is kept."
+        fi
+    else
+        echo "Volume '$volume_name' is in use by other containers and will not be deleted."
+    fi
+}
+
+force_delete_docker_volume() {
+    local volume_name=$1  # The name of the volume to delete
+    
+    echo "Checking if the Docker volume '$volume_name' exists..."
+    volume_exists=$(docker volume ls -q | grep "$volume_name" || true)
+    if [ ! -z "$volume_exists" ]; then
+        echo "A Docker volume for '$volume_name' exists."
+        read -p "Do you want to delete the existing volume? This will result in data loss. [y/N]: " confirm_action
+        if [[ "$confirm_action" =~ ^[Yy]$ ]]; then
+            echo "Identifying any containers using the volume '$volume_name'..."
+            containers_using_volume=$(docker ps -a --filter volume="$volume_name" -q)
+            if [ ! -z "$containers_using_volume" ]; then
+                echo "Stopping and removing containers that use the volume..."
+                docker stop $containers_using_volume
+                docker rm $containers_using_volume
+            fi
+            
+            echo "Deleting the Docker volume '$volume_name'..."
+            docker volume rm "$volume_name"
+            echo "The volume '$volume_name' has been deleted. A new database/data will be created upon starting the Docker Compose setup."
+        else
+            echo "Proceeding without deleting the Docker volume. Ensure the existing database/data matches your configuration."
+        fi
+        # else
+        #     echo "No volume named '$volume_name' found. Skipping deletion."
+    fi
 }

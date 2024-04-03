@@ -84,8 +84,9 @@ cardano_wallet_tools() {
             echo "2) Generate mnemonic and create wallet"
             echo "3) List wallets"
             echo "4) Fetch network information"
-            echo "5) Exit to container selection"
-            read -p "Enter your choice or 5 to exit: " tool_choice
+            echo "5) Delete this Container and Optionally Its Volumes"
+            echo "6) Exit to container selection"
+            read -p "Enter your choice or 6 to exit: " tool_choice
             echo "----"
             
             case $tool_choice in
@@ -93,10 +94,14 @@ cardano_wallet_tools() {
                 2) generate_and_create_wallet "$selected_container" ;;
                 3) list_wallets "$selected_container" ;;
                 4) fetch_network_information "$selected_container" ;;
-                5) break ;;
-                *) 
-                    echo "Invalid choice, please select a valid option." 
-                    ;;
+                5)
+                    delete_wallet_container_and_associated_icarus "$selected_container"
+                    break 2 # Breaks out of the current loop and the container selection loop
+                ;;
+                6) break ;;
+                *)
+                    echo "Invalid choice, please select a valid option."
+                ;;
             esac
             read -p "Press Enter to continue..."
         done

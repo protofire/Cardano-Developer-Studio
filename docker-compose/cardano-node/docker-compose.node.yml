@@ -6,6 +6,7 @@ services:
     container_name: cardano-node-container-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
     image: ghcr.io/intersectmbo/cardano-node:${CARDANO_NODE_VERSION:-"8.9.0"}
     environment:
+      - CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION:-"8.9.0"}
       - CARDANO_NETWORK=${CARDANO_NETWORK:-mainnet}
       - CARDANO_NODE_PORT=${CARDANO_NODE_PORT:-3001}
       - CARDANO_NETWORK_WITH_MAGIC=${CARDANO_NETWORK_WITH_MAGIC:-"mainnet"}

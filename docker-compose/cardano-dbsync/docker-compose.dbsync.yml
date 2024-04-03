@@ -10,6 +10,7 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_HOST_AUTH_METHOD=trust
+      - CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION:-"8.9.0"}
       - CARDANO_NETWORK=${CARDANO_NETWORK:-mainnet}
     ports:
       - "${POSTGRES_PORT}:5432"
@@ -30,11 +31,13 @@ services:
     image: ghcr.io/intersectmbo/cardano-db-sync:${CARDANO_DBSYNC_VERSION:-"13.2.0.1"}
     environment:
       - CARDANO_DBSYNC_VERSION=${CARDANO_DBSYNC_VERSION:-"13.2.0.1"}
+      - POSTGRES_VERSION=${POSTGRES_VERSION:-"14.10-alpine"}
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
       - POSTGRES_DB=${POSTGRES_DB:-dbsync}
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION:-"8.9.0"}
       - CARDANO_NETWORK=${CARDANO_NETWORK:-mainnet}
       - NETWORK=${CARDANO_NETWORK:-mainnet}
       - DISABLE_LEDGER=${DISABLE_LEDGER:-Y}

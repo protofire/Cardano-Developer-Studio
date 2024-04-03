@@ -31,7 +31,7 @@ Experimentation leads to innovation. By getting hands-on experience with the Car
 
 For instance, experimenting with the Cardano Node can help developers optimize transaction fees, understand block propagation, and secure their applications against common blockchain threats. Learning the ins and outs of the Cardano Wallet can lead to the development of new wallet features, improved user security practices, and the integration of ADA payments into e-commerce platforms. And with Cardano DB Sync, the possibilities for blockchain data analytics, reporting tools, and real-time monitoring services are endless.
 
-## Getting Started
+## On going progress..
 
 Detailed instructions on setting up your development environment and using the tools provided will be added to this README.
 
@@ -165,7 +165,8 @@ Selecting option `2` from the main menu, you can:
 
 - `1) Cardano Node Version`: Display the version of the Cardano Node.
 - `2) Cardano CLI Query Tip`: Query the current tip of the blockchain.
-- `3) Exit to container selection`: Return to the container selection menu.
+- `3) Delete this Container and Optionally Its Volumes`: To delete selected container and dependences
+- `4) Exit to container selection`: Return to the container selection menu.
 
 ### Cardano Wallet Tools Menu
 
@@ -175,7 +176,8 @@ Selecting option `3` from the main menu, the wallet tools menu allows you to:
 - `2) Generate mnemonic and create wallet`: Create a new wallet with a generated mnemonic.
 - `3) List wallets`: Display all created wallets.
 - `4) Fetch network information`: Get current network information.
-- `5) Exit to container selection`: Return to the container selection menu.
+- `5) Delete this Container and Optionally Its Volumes`: To delete selected container and dependences
+- `6) Exit to container selection`: Return to the container selection menu.
 
 ### Cardano DB Sync Tools Menu
 
@@ -185,7 +187,8 @@ By choosing option `4` from the main menu, the DB Sync tools menu provides:
 - `2) Retrieving most recent block`: Fetch the most recent block from the blockchain.
 - `3) Slot number of the most recent block`: Query the slot number of the latest block.
 - `4) Current total on-chain supply of Ada`: Calculate the current total supply of ADA.
-- `5) Exit to container selection`: Return to the container selection menu.
+- `5) Delete this Container and Optionally Its Volumes`: To delete selected container and dependences
+- `6) Exit to container selection`: Return to the container selection menu.
 
 ### Note:
 

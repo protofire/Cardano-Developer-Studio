@@ -5,8 +5,10 @@ services:
     container_name: cardano-wallet-container-${CARDANO_WALLET_VERSION:-2023.04.14}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
     image: cardanofoundation/cardano-wallet:${CARDANO_WALLET_VERSION:-2023.04.14}
     environment:
+      - CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION:-"8.9.0"}
       - CARDANO_NETWORK=${CARDANO_NETWORK:-mainnet}
       - CARDANO_WALLET_PORT=${CARDANO_WALLET_PORT:-8090}
+      - ICARUS_VERSION=${ICARUS_VERSION:-v2023-04-14}
     networks:
       - cardano-network
     volumes:
@@ -32,6 +34,10 @@ services:
   icarus:
     container_name: icarus-container-${ICARUS_VERSION:-v2023-04-14}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
     image: piotrstachyra/icarus:${ICARUS_VERSION:-v2023-04-14}
+    environment:
+      - ICARUS_VERSION=${ICARUS_VERSION:-v2023-04-14}
+      - CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION:-"8.9.0"}
+      - CARDANO_NETWORK=${CARDANO_NETWORK:-mainnet}
     networks:
       - cardano-network
     ports:
