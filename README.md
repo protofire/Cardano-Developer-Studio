@@ -35,7 +35,7 @@ This repository is the home of the Cardano Developer Studio, an all-in-one suite
     - [Cardano Node Tools Menu](#cardano-node-tools-menu)
     - [Cardano Wallet Tools Menu](#cardano-wallet-tools-menu)
     - [Cardano DB Sync Tools Menu](#cardano-db-sync-tools-menu)
-    - [Note:](#note)
+    - [Note to Users](#note-to-users-1)
   - [Using Docker Containers](#using-docker-containers)
     - [Cardano Node](#cardano-node-1)
     - [Cardano Wallet](#cardano-wallet-1)
@@ -380,7 +380,7 @@ By choosing option `4` from the main menu, the DB Sync tools menu provides:
 - `5) Delete this Container and Optionally Its Volumes`: To delete selected container and dependences
 - `6) Return Main Menu`: Returns to the main menu.
 
-### Note:
+### Note to Users
 
 - Before running the `run.sh` script, ensure Docker is installed and running on your system. Follow the installation instructions provided in the previous sections for your respective operating system.
 - The `compose.sh` script, invoked by `run.sh`, handles the intricacies of configuring and starting the Docker Compose services based on your selections. It automatically sets necessary environment variables and permissions to ensure a smooth setup experience.
