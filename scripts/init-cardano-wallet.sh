@@ -14,11 +14,6 @@ fi
 
 echo "Network argument: $CARDANO_NETWORK_ARG"
 
-# Ensure the wallet database directory exists
-mkdir -p /var/lib/cardano-wallet-db
-sudo chmod 755 "$SNAPSHOT_SAVE_PATH"
-sudo chown $(whoami) "$SNAPSHOT_SAVE_PATH"
-
 # Start the cardano-wallet server with the appropriate network argument
 cardano-wallet serve \
   --node-socket /ipc/node.socket \

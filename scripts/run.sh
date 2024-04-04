@@ -17,12 +17,6 @@ cd "$SCRIPT_DIR"
 export WORKSPACE_ROOT_DIR_ABSOLUTE="$SCRIPT_DIR/.."
 export CONFIG_DIR_ABSOLUTE="$WORKSPACE_ROOT_DIR_ABSOLUTE/configs"
 
-# Function to set execute permissions on necessary scripts
-set_script_permissions() {
-    # Ensure compose.sh is executable
-    chmod +x "$SCRIPT_DIR/compose.sh"
-}
-
 # Declare a global variable for main_choice
 declare -g main_choice
 
@@ -42,13 +36,33 @@ show_main_menu() {
 
 # Function to handle Docker Compose Workflow
 docker_compose_workflow() {
-    # Ensure scripts have execute permissions
-    set_script_permissions
+    # Ensure compose.sh is executable
+    chmod +x "$SCRIPT_DIR/compose.sh"
     
     # Use SCRIPT_DIR to reference compose.sh relative to run.sh's location
     "$SCRIPT_DIR/compose.sh"
 }
 
+
+# Requirements check
+echo "----"
+echo "Checking requirements..."
+check_package_manager || exit 1
+echo "----"
+# Installation of required packages
+echo "Installing required packages..."
+install_package jq
+install_package lz4
+install_package curl
+install_package grep
+install_package sed
+install_package awk
+install_package cut
+echo "----"
+echo "Checking required software versions..."
+check_bash_version "4.0" || exit 1
+check_docker_version "19.03" || exit 1
+check_docker_compose_version "1.25" || exit 1
 
 # Main script logic
 while true; do

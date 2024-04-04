@@ -14,7 +14,7 @@ services:
       - cardano-network
     volumes:
       - node-ipc:/ipc
-      - ${CARDANO_NODE_DB_PATH}:/data
+      - ${CARDANO_NODE_DB_PATH}:/var/lib/cardano-node-db
       - ${CONFIG_DIR_ABSOLUTE}:/configs  
       - ${WORKSPACE_ROOT_DIR_ABSOLUTE}/scripts/init-cardano-node.sh:/init-cardano-node.sh  # Mount the script into the container
     restart: on-failure
@@ -46,5 +46,5 @@ networks:
 
 volumes:
   node-ipc:
-    name: cardano-node-node-ipc-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
+    name: cardano-node-ipc-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
     

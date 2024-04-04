@@ -1,5 +1,100 @@
 #!/bin/bash
 
+set -e
+
+check_bash_version() {
+    local MIN_BASH_VERSION="$1" # Define the minimum required version of Bash
+    local bash_version="${BASH_VERSION%%(*}" # Extract the version number before the parenthesis
+    
+    # Now use the compare_versions function to compare the extracted version with the minimum required version
+    if compare_versions "$bash_version" "$MIN_BASH_VERSION"; then
+        echo "Bash version $bash_version is sufficient."
+    else
+        echo "Bash version $bash_version is too old. Please upgrade to Bash version $MIN_BASH_VERSION or newer."
+        return 1 # Return failure
+    fi
+}
+
+check_docker_version() {
+    local MIN_DOCKER_VERSION="$1" # Specify the minimum Docker version required
+    if ! command -v docker &> /dev/null; then
+        echo "Docker is not installed."
+        return 1 # Return failure
+    fi
+
+    # Extract the version string. This adjustment accounts for various version formats.
+    local version
+    version=$(docker --version | grep -oP 'Docker version \K[^,]+' | cut -d'-' -f1) # Gets '19.03.12' for example
+
+    # Now use the compare_versions function to check if the installed version meets the requirement
+    if compare_versions $version $MIN_DOCKER_VERSION; then
+        echo "Docker version $version is sufficient."
+    else
+        echo "Docker version $version is too old. Please upgrade to Docker version $MIN_DOCKER_VERSION or newer."
+        return 1 # Return failure
+    fi
+}
+
+check_docker_compose_version() { 
+    local MIN_COMPOSE_VERSION="$1"
+    if ! command -v docker-compose &> /dev/null; then
+        echo "Docker Compose is not installed."
+        return 1 # Return failure
+    fi
+
+    # Extract the version string properly
+    local version
+    version=$(docker-compose --version | grep -oP 'version \K[^,]+' | cut -d'-' -f1 | sed 's/^v//') # Removes 'v' at the start
+
+    if compare_versions $version $MIN_COMPOSE_VERSION; then
+        echo "Docker Compose version $version is sufficient."
+    else
+        echo "Docker Compose version $version is too old. Please upgrade to Docker Compose version $MIN_COMPOSE_VERSION or newer."
+        return 1 # Return failure
+    fi
+}
+
+compare_versions() {
+    local version_a=(${1//./ }) # Split version by '.' into array
+    local version_b=(${2//./ })
+    
+    # Compare each part of the version numbers
+    for ((i=0; i<${#version_a[@]}; i++)); do
+        if [[ -z ${version_b[i]} ]]; then
+            # If b is shorter than a, and we're already here, a is greater
+            return 0
+        fi
+        if ((10#${version_a[i]} > 10#${version_b[i]})); then
+            return 0
+        elif ((10#${version_a[i]} < 10#${version_b[i]})); then
+            return 1
+        fi
+    done
+    
+    # If we're here, the versions are equal or b is longer than a
+    if [[ ${#version_a[@]} -lt ${#version_b[@]} ]]; then
+        return 1
+    fi
+    
+    return 0
+}   
+
+check_package_manager() {
+    if command -v brew &> /dev/null; then
+        echo "Homebrew is installed."
+    elif command -v apt-get &> /dev/null; then
+        echo "apt-get is available."
+    elif command -v dnf &> /dev/null; then
+        echo "dnf is available."
+    elif command -v pacman &> /dev/null; then
+        echo "pacman is available."
+    else
+        echo "No recognized package manager found. Please ensure you have a package manager such as brew, apt-get, dnf, or pacman."
+        return 1 # Return failure
+    fi
+}
+
+
 install_package() {
     local package_name="$1"
     echo "Checking if $package_name is installed..."
@@ -82,9 +177,9 @@ check_node_resources() {
             echo "Invalid network. Please enter 'preprod' or 'mainnet'."
         fi
     done
-
+    
     echo "----"
-     
+    
     if ! docker ps | grep -q "cardano-node-container-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}"; then
         echo "Cardano node container is not running. Please start the Cardano Node Version: ${CARDANO_NODE_VERSION:-"8.9.0"} and Network: ${CARDANO_NETWORK:-mainnet} first."
         exit 1
@@ -97,7 +192,7 @@ check_node_resources() {
     fi
     
     # Check if the node-ipc volume exists
-    if ! docker volume ls | grep -q "cardano-node-node-ipc-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}"; then
+    if ! docker volume ls | grep -q "cardano-node-ipc-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}"; then
         echo "node-ipc volume not found. Please ensure the Cardano Node Version: ${CARDANO_NODE_VERSION:-"8.9.0"} and Network: ${CARDANO_NETWORK:-mainnet} is set up."
         exit 1
     fi

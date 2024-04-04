@@ -97,6 +97,25 @@ The installation steps provided above are a general guide. Due to the rapid deve
 
 This ensures that users follow the latest guidelines and troubleshooting steps directly from Docker, accommodating any recent changes or system-specific requirements.
 
+## Initial Requirements Checks by the Script
+
+The main script starts by performing several checks to ensure the environment meets all necessary requirements for successful execution. These checks include verifying the presence of a package manager, installing required commands, and confirming that the versions of Bash, Docker, and Docker Compose are sufficient.
+
+### What the Script Checks
+1. Package Manager: The script checks if a recognized package manager is available on the system. This is crucial for installing other required packages.
+2. Required Commands: The script automatically installs the following essential commands if they are not already present:
+- jq
+- lz4
+- curl
+- grep
+- sed
+- awk
+- cut
+3. Software Versions: The script verifies that the installed versions of Bash, Docker, and Docker Compose meet the minimum requirements:
+- Bash version 4.0 or newer
+- Docker version 19.03 or newer
+- Docker Compose version 1.25 or newer
+
 ## Running Bash Scripts on Windows
 
 To run bash scripts on Windows, you will need to use a Unix-like environment. The most common approach is to install Git Bash or enable the Windows Subsystem for Linux (WSL).
@@ -113,7 +132,7 @@ To run bash scripts on Windows, you will need to use a Unix-like environment. Th
 - Follow the instructions to complete the installation of your preferred Linux distribution from the Microsoft Store.
 - Once installed, you can access Linux terminals directly from Windows.
 
-For detailed instructions on setting up WSL, visit the Microsoft documentation: https://docs.microsoft.com/en-us/windows/wsl/install.
+For detailed instructions on setting up WSL, visit the Microsoft documentation: https://learn.microsoft.com/en-us/windows/wsl/install.
 
 ## Running Bash Scripts on Mac
 
@@ -124,6 +143,71 @@ MacOS comes with a built-in Terminal application that supports running bash scri
 - To run your script, type `bash script_name.sh`, replacing "script_name.sh" with the name of your script.
 
 Ensure you have the necessary permissions to execute the script. If not, run `chmod +x script_name.sh` before executing it.
+
+## Updating Bash and Installing Package Managers
+
+### Windows
+For Windows users, Bash can be accessed through Git Bash or WSL (Windows Subsystem for Linux). 
+
+To update Bash within WSL:
+
+Open your Linux distribution through WSL.
+Run `sudo apt-get update && sudo apt-get upgrade` to update all installed packages to their latest versions, including Bash.
+
+### Mac
+To update Bash on MacOS:
+
+Install Homebrew, a package manager for MacOS, by pasting the following command in the Terminal:
+
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+Once Homebrew is installed, update Bash by running:
+
+```
+brew install bash
+```
+
+Add the new Bash to your list of shells:
+
+```
+sudo bash -c 'echo /usr/local/bin/bash >> /etc/shells'
+```
+
+Change your default shell to the new Bash:
+
+```
+chsh -s /usr/local/bin/bash
+```
+
+### Ubuntu (and other Linux Distributions)
+Update your package lists:
+
+```
+sudo apt-get update
+```
+
+Upgrade Bash to the latest version available in your repositories:
+
+```
+sudo apt-get install --only-upgrade bash
+```
+
+Install missing commands as needed using apt-get, for example:
+
+```
+sudo apt-get install jq lz4 curl
+```
+
+### Note on Package Managers
+
+Windows: WSL users can utilize Linux package managers like apt for Ubuntu. Git Bash users might rely on installing Unix command utilities through Git for Windows.
+
+Mac: Homebrew (brew) is recommended for installing Unix tools and updating Bash.
+
+Ubuntu/Linux: The native package manager (apt for Ubuntu, dnf for Fedora, pacman for Arch) is used for installations and updates.
+
 
 ## Running the main script
 
@@ -157,7 +241,7 @@ After selecting the Docker Compose Workflow, you will be presented with another 
 - `3) Cardano DB Sync`: Begins the Cardano DB Sync container.
 - `4) Return Main Menu`: Returns to the main menu.
 
-For each selection, you will be prompted to enter environment variables such as `CARDANO_NODE_VERSION`, `CARDANO_NETWORK`, `CARDANO_NODE_DB_PATH`, and `CARDANO_NODE_PORT`. Default values are provided, but you may customize them as needed.
+For each selection, you will be prompted to enter environment variables such as `CARDANO_NODE_VERSION`, `CARDANO_NETWORK`, and `CARDANO_NODE_PORT`. Default values are provided, but you may customize them as needed.
 
 ### Cardano Node Tools Menu
 

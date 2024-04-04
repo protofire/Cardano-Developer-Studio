@@ -39,11 +39,6 @@ set_node_env_variables() {
     echo "----"
     echo "Setting up Cardano Node environment..."
     echo "----"
-    echo "Installing required packages..."
-    install_package jq
-    install_package lz4
-    install_package curl
-    echo "----"
     read -p "Enter CARDANO_NODE_VERSION [default: 8.9.0]: " CARDANO_NODE_VERSION
     CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION:-"8.9.0"}
     export CARDANO_NODE_VERSION
@@ -81,6 +76,7 @@ set_node_env_variables() {
         echo "Directory for CARDANO_NODE_DB_PATH already exists."
     fi
     # change permissions
+    echo "Setting up CARDANO_NODE_DB_PATH permissions..."
     sudo chmod -R 755 "$CARDANO_NODE_DB_PATH"
     sudo chown -R $(whoami) "$CARDANO_NODE_DB_PATH"
     
@@ -97,9 +93,12 @@ set_node_env_variables() {
             if [ ! -d "$SNAPSHOT_SAVE_PATH" ]; then
                 echo "Creating directory for snapshots at $SNAPSHOT_SAVE_PATH with appropriate permissions..."
                 sudo mkdir -p "$SNAPSHOT_SAVE_PATH"
-                sudo chmod 755 "$SNAPSHOT_SAVE_PATH"
-                sudo chown $(whoami) "$SNAPSHOT_SAVE_PATH"
+            else
+                echo "Directory for SNAPSHOT_SAVE_PATH already exists."
             fi
+            echo "Setting up SNAPSHOT_SAVE_PATH permissions..."
+            sudo chmod -R 755 "$SNAPSHOT_SAVE_PATH"
+            sudo chown -R $(whoami) "$SNAPSHOT_SAVE_PATH"
             
             echo "Checking for available snapshots for node version $CARDANO_NODE_VERSION..."
             url_network_segment="$CARDANO_NETWORK"
@@ -140,9 +139,7 @@ set_node_env_variables() {
                                 fi
                                 elif [[ -z "$snapshot_choice" ]]; then
                                 echo "Downloading and using the latest snapshot..."
-                                sudo mkdir -p "$SNAPSHOT_SAVE_PATH"
-                                sudo chmod 755 "$SNAPSHOT_SAVE_PATH"
-                                sudo chown $(whoami) "$SNAPSHOT_SAVE_PATH"
+                                
                                 if curl -L "https://downloads.csnapshots.io/$url_network_segment/$snapshot_url" --progress-bar --output "$final_snapshot_path" && verify_snapshot_integrity "$final_snapshot_path"; then
                                     echo "Snapshot downloaded and verified successfully."
                                     USE_SNAPSHOT_PATH="$final_snapshot_path"
@@ -156,9 +153,6 @@ set_node_env_variables() {
                             fi
                         else
                             echo "No available snapshots found. Downloading the latest..."
-                            sudo mkdir -p "$SNAPSHOT_SAVE_PATH"
-                            sudo chmod 755 "$SNAPSHOT_SAVE_PATH"
-                            sudo chown $(whoami) "$SNAPSHOT_SAVE_PATH"
                             if curl -L "https://downloads.csnapshots.io/$url_network_segment/$snapshot_url" --progress-bar --output "$final_snapshot_path" && verify_snapshot_integrity "$final_snapshot_path"; then
                                 echo "Snapshot downloaded and verified successfully."
                                 USE_SNAPSHOT_PATH="$final_snapshot_path"
@@ -170,23 +164,35 @@ set_node_env_variables() {
                         fi
                     done
                 fi
-                sudo rm -rf "$CARDANO_NODE_DB_PATH/*"
-                sudo mkdir -p "$CARDANO_NODE_DB_PATH"
-                sudo chmod 755 "$SNAPSHOT_SAVE_PATH"
-                sudo chown $(whoami) "$SNAPSHOT_SAVE_PATH"
-                if lz4 -c -d "$USE_SNAPSHOT_PATH" | sudo tar -x -C "$CARDANO_NODE_DB_PATH"; then
-                    # Instead of moving the entire db directory, synchronize its contents to the parent directory
-                    if [ -d "$CARDANO_NODE_DB_PATH/db" ]; then
-                        echo "Merging extracted 'db' directory contents with the target directory..."
-                        # Use 'rsync' to merge directories content safely
-                        sudo rsync -avh --remove-source-files "$CARDANO_NODE_DB_PATH/db/" "$CARDANO_NODE_DB_PATH/"
-                        # After rsync, remove the now empty 'db' directory
-                        sudo find "$CARDANO_NODE_DB_PATH/db" -type d -empty -delete
-                        # change permissions
+                
+                # Define where to extract the snapshot (same as the snapshot save location)
+                SNAPSHOT_EXTRACT_PATH="$SNAPSHOT_SAVE_PATH"
+                
+                # Extract the snapshot
+                if lz4 -c -d "$USE_SNAPSHOT_PATH" | sudo tar -x -C "$SNAPSHOT_EXTRACT_PATH"; then
+                    echo "Snapshot extracted successfully into $SNAPSHOT_EXTRACT_PATH."
+                    
+                    # The extracted 'db' directory's full path
+                    EXTRACTED_DB_PATH="$SNAPSHOT_EXTRACT_PATH/db"
+                    
+                    if [ -d "$EXTRACTED_DB_PATH" ]; then
+                        echo "Moving extracted 'db' directory contents to the Cardano node database directory..."
+                        
+                        # Use 'rsync' to merge the contents safely and then remove the source
+                        sudo rsync -avh --remove-source-files "$EXTRACTED_DB_PATH/" "$CARDANO_NODE_DB_PATH/"
+                        
+                        # Remove the now-empty 'db' directory from the extraction location
+                        sudo find "$EXTRACTED_DB_PATH" -type d -empty -delete
+                        
+                        # Change permissions to the Cardano node DB directory
                         sudo chmod -R 755 "$CARDANO_NODE_DB_PATH"
                         sudo chown -R $(whoami) "$CARDANO_NODE_DB_PATH"
+                        
+                        echo "Snapshot 'db' directory contents moved and merged successfully."
+                    else
+                        echo "'db' directory not found after extracting the snapshot. Please check the snapshot content."
+                        exit 1
                     fi
-                    echo "Snapshot extracted and merged successfully."
                 else
                     echo "Failed to extract snapshot."
                     exit 1
