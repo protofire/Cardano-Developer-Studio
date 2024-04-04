@@ -2,9 +2,9 @@
 
 This repository is the home of the Cardano Developer Studio, an all-in-one suite designed to streamline the development process for Cardano blockchain developers. Our goal is to provide an accessible, comprehensive set of tools and resources to support developers in building dApps and smart contracts efficiently on the Cardano platform.
 
-# Table of Contents
+## Table of Contents
 - [Welcome to Cardano Developer Studio](#welcome-to-cardano-developer-studio)
-- [Table of Contents](#table-of-contents)
+  - [Table of Contents](#table-of-contents)
   - [Features](#features)
   - [What is included](#what-is-included)
     - [Cardano Node](#cardano-node)
@@ -12,7 +12,15 @@ This repository is the home of the Cardano Developer Studio, an all-in-one suite
     - [Cardano DB Sync](#cardano-db-sync)
     - [Script Menus and Tools](#script-menus-and-tools)
   - [Why Developers Need to Experiment with These Tools](#why-developers-need-to-experiment-with-these-tools)
-  - [On going progress..](#on-going-progress)
+  - [Installation and Setup](#installation-and-setup)
+    - [Updating Bash and Installing Package Managers](#updating-bash-and-installing-package-managers)
+      - [In Windows](#in-windows)
+      - [In Mac](#in-mac)
+      - [In Ubuntu (and other Linux Distributions)](#in-ubuntu-and-other-linux-distributions)
+    - [Note on Package Managers](#note-on-package-managers)
+    - [Running Bash Scripts](#running-bash-scripts)
+      - [On Windows](#on-windows)
+      - [On Mac](#on-mac)
   - [Docker Containers](#docker-containers)
     - [What is Docker?](#what-is-docker)
     - [Why Docker for Our Scripts?](#why-docker-for-our-scripts)
@@ -20,18 +28,9 @@ This repository is the home of the Cardano Developer Studio, an all-in-one suite
     - [Note to Users](#note-to-users)
   - [Initial Requirements Checks by the Script](#initial-requirements-checks-by-the-script)
     - [What the Script Checks](#what-the-script-checks)
-  - [Running Bash Scripts on Windows](#running-bash-scripts-on-windows)
-    - [Git Bash:](#git-bash)
-    - [Windows Subsystem for Linux (WSL):](#windows-subsystem-for-linux-wsl)
-  - [Running Bash Scripts on Mac](#running-bash-scripts-on-mac)
-  - [Updating Bash and Installing Package Managers](#updating-bash-and-installing-package-managers)
-    - [Windows](#windows)
-    - [Mac](#mac)
-    - [Ubuntu (and other Linux Distributions)](#ubuntu-and-other-linux-distributions)
-    - [Note on Package Managers](#note-on-package-managers)
-  - [Running the main script](#running-the-main-script)
+  - [Running the Main Script](#running-the-main-script)
     - [How to Use `run.sh`](#how-to-use-runsh)
-  - [Main Menu](#main-menu)
+    - [Main Menu](#main-menu)
     - [Docker Compose Menu](#docker-compose-menu)
     - [Cardano Node Tools Menu](#cardano-node-tools-menu)
     - [Cardano Wallet Tools Menu](#cardano-wallet-tools-menu)
@@ -41,17 +40,16 @@ This repository is the home of the Cardano Developer Studio, an all-in-one suite
     - [Cardano Node](#cardano-node-1)
     - [Cardano Wallet](#cardano-wallet-1)
       - [Importing API Collections into Postman](#importing-api-collections-into-postman)
-        - [Import the Collection:](#import-the-collection)
-        - [Using the Collection:](#using-the-collection)
     - [Cardano DB Sync](#cardano-db-sync-1)
   - [Contribution](#contribution)
   - [License](#license)
   - [Acknowledgements](#acknowledgements)
+  - [Ongoing Progress](#ongoing-progress)
 
 ## Features
 
 - Docker Compose configurations for easy setup and integration
-- Script tool with menus to navigate and configure and run differents tools
+- Script tool with menus to navigate and configure and run different tools
 
 ## What is included
 
@@ -77,137 +75,12 @@ Experimentation leads to innovation. By getting hands-on experience with the Car
 
 For instance, experimenting with the Cardano Node can help developers optimize transaction fees, understand block propagation, and secure their applications against common blockchain threats. Learning the ins and outs of the Cardano Wallet can lead to the development of new wallet features, improved user security practices, and the integration of ADA payments into e-commerce platforms. And with Cardano DB Sync, the possibilities for blockchain data analytics, reporting tools, and real-time monitoring services are endless.
 
-## On going progress..
+## Installation and Setup
 
-Detailed instructions on setting up your development environment and using the tools provided will be added to this README.
+### Updating Bash and Installing Package Managers
 
-## Docker Containers
+#### In Windows
 
-Our scripts require Docker to run successfully, as it plays a critical role in creating isolated and reproducible environments for development and testing.
-
-### What is Docker?
-
-Docker is a platform that uses containerization technology to package an application and its dependencies into a container—a standardized executable component combining application source code with the operating system (OS) libraries and dependencies required to run that code in any environment.
-
-Containers are isolated from one another and the host system, yet can communicate with each other through well-defined channels. Unlike virtual machines, containers do not bundle a full operating system—only libraries and settings required to make the software work are needed. This makes for efficient, lightweight, self-contained systems and guarantees that software will always run the same, regardless of where it’s deployed.
-
-### Why Docker for Our Scripts?
-
-Using Docker, we can easily create separate containers for each version of the Cardano node and network, as well as for the Cardano wallet and Cardano DB Sync. This allows us to:
-
-- Ensure Consistency: Each container runs the same regardless of the host environment, from development to production.
-- Simplify Configuration: Docker containers can be configured and started with a single command, without the need for complex setup procedures.
-- Manage Dependencies: Each container encapsulates its own dependencies, preventing conflicts between projects or versions.
-- Isolate Environments: By running different containers for different components (nodes, wallets, DB Sync), we prevent interference and allow for simultaneous, side-by-side operation of multiple configurations.
-  
-### Getting Started with Docker
-
-Before proceeding with our scripts, you'll need to install Docker on your machine. Installation instructions vary depending on your operating system:
-
-**Docker Desktop for Windows:**
-
-- Visit the Docker Hub at https://www.docker.com/products/docker-desktop and download the installer for Windows.
-- Run the installer and follow the instructions to install Docker Desktop on Windows.
-- After installation, Docker will start automatically. You might need to log out and log back in or reboot your computer to complete the installation.
-
-**Docker Desktop for Mac:**
-
-- Visit the Docker Hub at https://www.docker.com/products/docker-desktop and download the installer for Mac.
-- Open the `.dmg` file and drag Docker to the Applications folder.
-- Run Docker from the Applications folder. Docker will request your password to install a helper tool.
-- After installation, Docker will start automatically.
-
-**Install using the repository:**
-
-Update your package index and install packages to allow `apt` to use a repository over HTTPS:
-```
-sudo apt-get update
-sudo apt-get install \
-  ca-certificates \
-  curl \
-  gnupg \
-  lsb-release
-```
-
-Add Docker’s official GPG key:
-```
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-```
-
-Use the following command to set up the stable repository:
-```
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-```
-
-Update `apt` package index, and install the latest version of Docker Engine and containerd:
-```
-sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io
-```
-
-Verify that Docker Engine is installed correctly by running the hello-world image:
-```
-sudo docker run hello-world
-```
-
-### Note to Users
-
-The installation steps provided above are a general guide. Due to the rapid development of Docker and the differences between system configurations, it's recommended to refer to the official Docker documentation for the most accurate and detailed instructions:
-
-- Docker Documentation: https://docs.docker.com/get-docker/
-
-This ensures that users follow the latest guidelines and troubleshooting steps directly from Docker, accommodating any recent changes or system-specific requirements.
-
-## Initial Requirements Checks by the Script
-
-The main script starts by performing several checks to ensure the environment meets all necessary requirements for successful execution. These checks include verifying the presence of a package manager, installing required commands, and confirming that the versions of Bash, Docker, and Docker Compose are sufficient.
-
-### What the Script Checks
-1. Package Manager: The script checks if a recognized package manager is available on the system. This is crucial for installing other required packages.
-2. Required Commands: The script automatically installs the following essential commands if they are not already present:
-- jq
-- lz4
-- curl
-- grep
-- sed
-- awk
-- cut
-3. Software Versions: The script verifies that the installed versions of Bash, Docker, and Docker Compose meet the minimum requirements:
-- Bash version 4.0 or newer
-- Docker version 19.03 or newer
-- Docker Compose version 1.25 or newer
-
-## Running Bash Scripts on Windows
-
-To run bash scripts on Windows, you will need to use a Unix-like environment. The most common approach is to install Git Bash or enable the Windows Subsystem for Linux (WSL).
-
-### Git Bash:
-
-- Download and install Git for Windows from https://git-scm.com/download/win.
-- During installation, ensure you select the option to use Git and optional Unix tools from the Windows Command Prompt.
-- After installation, you can right-click in any folder in Windows Explorer and select "Git Bash Here" to open a Bash terminal in that directory.
-
-### Windows Subsystem for Linux (WSL):
-
-- Open PowerShell as Administrator and run: `wsl --install`.
-- Follow the instructions to complete the installation of your preferred Linux distribution from the Microsoft Store.
-- Once installed, you can access Linux terminals directly from Windows.
-
-For detailed instructions on setting up WSL, visit the Microsoft documentation: https://learn.microsoft.com/en-us/windows/wsl/install.
-
-## Running Bash Scripts on Mac
-
-MacOS comes with a built-in Terminal application that supports running bash scripts out-of-the-box.
-
-- Open the Terminal app from your Applications folder or by using Spotlight search (`Cmd + Space`, then type "Terminal").
-- Navigate to the directory containing your bash script using the `cd` command.
-- To run your script, type `bash script_name.sh`, replacing "script_name.sh" with the name of your script.
-
-Ensure you have the necessary permissions to execute the script. If not, run `chmod +x script_name.sh` before executing it.
-
-## Updating Bash and Installing Package Managers
-
-### Windows
 For Windows users, Bash can be accessed through Git Bash or WSL (Windows Subsystem for Linux). 
 
 To update Bash within WSL:
@@ -215,7 +88,7 @@ To update Bash within WSL:
 Open your Linux distribution through WSL.
 Run `sudo apt-get update && sudo apt-get upgrade` to update all installed packages to their latest versions, including Bash.
 
-### Mac
+#### In Mac
 
 **To update Bash on MacOS:**
 
@@ -285,7 +158,8 @@ Change your default shell to the new Bash:
 chsh -s /usr/local/bin/bash
 ```
 
-### Ubuntu (and other Linux Distributions)
+#### In Ubuntu (and other Linux Distributions)
+
 Update your package lists:
 
 ```
@@ -312,21 +186,149 @@ Mac: Homebrew (brew) is recommended for installing Unix tools and updating Bash.
 
 Ubuntu/Linux: The native package manager (apt for Ubuntu, dnf for Fedora, pacman for Arch) is used for installations and updates.
 
+### Running Bash Scripts
 
-## Running the main script
+#### On Windows
+
+To run bash scripts on Windows, you will need to use a Unix-like environment. The most common approach is to install Git Bash or enable the Windows Subsystem for Linux (WSL).
+
+**Git Bash:**
+
+- Download and install Git for Windows from https://git-scm.com/download/win.
+- During installation, ensure you select the option to use Git and optional Unix tools from the Windows Command Prompt.
+- After installation, you can right-click in any folder in Windows Explorer and select "Git Bash Here" to open a Bash terminal in that directory.
+
+**Windows Subsystem for Linux (WSL):**
+
+- Open PowerShell as Administrator and run: `wsl --install`.
+- Follow the instructions to complete the installation of your preferred Linux distribution from the Microsoft Store.
+- Once installed, you can access Linux terminals directly from Windows.
+
+For detailed instructions on setting up WSL, visit the Microsoft documentation: https://learn.microsoft.com/en-us/windows/wsl/install.
+
+#### On Mac
+
+MacOS comes with a built-in Terminal application that supports running bash scripts out-of-the-box.
+
+- Open the Terminal app from your Applications folder or by using Spotlight search (`Cmd + Space`, then type "Terminal").
+- Navigate to the directory containing your bash script using the `cd` command.
+- To run your script, type `bash script_name.sh`, replacing "script_name.sh" with the name of your script.
+
+Ensure you have the necessary permissions to execute the script. If not, run `chmod +x script_name.sh` before executing it.
+
+## Docker Containers
+
+Our scripts require Docker to run successfully, as it plays a critical role in creating isolated and reproducible environments for development and testing.
+
+### What is Docker?
+
+Docker is a platform that uses containerization technology to package an application and its dependencies into a container—a standardized executable component combining application source code with the operating system (OS) libraries and dependencies required to run that code in any environment.
+
+Containers are isolated from one another and the host system, yet can communicate with each other through well-defined channels. Unlike virtual machines, containers do not bundle a full operating system—only libraries and settings required to make the software work are needed. This makes for efficient, lightweight, self-contained systems and guarantees that software will always run the same, regardless of where it’s deployed.
+
+### Why Docker for Our Scripts?
+
+Using Docker, we can easily create separate containers for each version of the Cardano node and network, as well as for the Cardano wallet and Cardano DB Sync. This allows us to:
+
+- Ensure Consistency: Each container runs the same regardless of the host environment, from development to production.
+- Simplify Configuration: Docker containers can be configured and started with a single command, without the need for complex setup procedures.
+- Manage Dependencies: Each container encapsulates its own dependencies, preventing conflicts between projects or versions.
+- Isolate Environments: By running different containers for different components (nodes, wallets, DB Sync), we prevent interference and allow for simultaneous, side-by-side operation of multiple configurations.
+
+### Getting Started with Docker
+
+Before proceeding with our scripts, you'll need to install Docker on your machine. Installation instructions vary depending on your operating system:
+
+**Docker Desktop for Windows:**
+
+- Visit the Docker Hub at https://www.docker.com/products/docker-desktop and download the installer for Windows.
+- Run the installer and follow the instructions to install Docker Desktop on Windows.
+- After installation, Docker will start automatically. You might need to log out and log back in or reboot your computer to complete the installation.
+
+**Docker Desktop for Mac:**
+
+- Visit the Docker Hub at https://www.docker.com/products/docker-desktop and download the installer for Mac.
+- Open the `.dmg` file and drag Docker to the Applications folder.
+- Run Docker from the Applications folder. Docker will request your password to install a helper tool.
+- After installation, Docker will start automatically.
+
+**Install using the repository:**
+
+Update your package index and install packages to allow `apt` to use a repository over HTTPS:
+```
+sudo apt-get update
+sudo apt-get install \
+  ca-certificates \
+  curl \
+  gnupg \
+  lsb-release
+```
+
+Add Docker’s official GPG key:
+```
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+```
+
+Use the following command to set up the stable repository:
+```
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+```
+
+Update `apt` package index, and install the latest version of Docker Engine and containerd:
+```
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+```
+
+Verify that Docker Engine is installed correctly by running the hello-world image:
+```
+sudo docker run hello-world
+```
+
+### Note to Users
+
+The installation steps provided above are a general guide. Due to the rapid development of Docker and the differences between system configurations, it's recommended to refer to the official Docker documentation for the most accurate and detailed instructions:
+
+- Docker Documentation: https://docs.docker.com/get-docker/
+
+This ensures that users follow the latest guidelines and troubleshooting steps directly from Docker, accommodating any recent changes or system-specific requirements.
+
+## Initial Requirements Checks by the Script
+
+The main script starts by performing several checks to ensure the environment meets all necessary requirements for successful execution. These checks include verifying the presence of a package manager, installing required commands, and confirming that the versions of Bash, Docker, and Docker Compose are sufficient.
+
+### What the Script Checks
+
+1. Package Manager: The script checks if a recognized package manager is available on the system. This is crucial for installing other required packages.
+   
+2. Required Commands: The script automatically installs the following essential commands if they are not already present:
+- jq
+- lz4
+- curl
+- grep
+- sed
+- awk
+- cut
+
+3. Software Versions: The script verifies that the installed versions of Bash, Docker, and Docker Compose meet the minimum requirements:
+- Bash version 4.0 or newer
+- Docker version 19.03 or newer
+- Docker Compose version 1.25 or newer
+  
+## Running the Main Script
 
 To streamline the setup and execution of the Cardano Developer Studio tools, we provide a utility script, `run.sh`, located in the `scripts` directory. This script simplifies the management of Docker Compose workflows, allowing for an intuitive selection of different configurations for development purposes.
 
 ### How to Use `run.sh`
 
 - **Open a terminal** and navigate to the root directory of the Cardano Developer Studio project.
-- **Execute the script** by running the following command:
+- **Execute the main script** by running the following command:
 
 ```
 bash scripts/run.sh
 ```
 
-## Main Menu
+### Main Menu
 
 The main menu will provide you with the following options:
 
@@ -444,13 +446,13 @@ To facilitate the testing and interaction with the Cardano Wallet Backend API, w
 
 Open Postman: Launch the Postman application on your computer.
 
-##### Import the Collection:
+**Import the Collection:**
 
 Click on the Import button, which can be found at the top left corner of the Postman interface.
 In the dialog that appears, go to the File tab and click on Upload Files.
 Browse to the location of the `cardano-wallet-API.json` file located in `configs/cardano-wallet` folder of the project, select it, and click Open to start the import process.
 
-##### Using the Collection:
+**Using the Collection:**
 
 After the import is complete, the Cardano Wallet Backend API collection will appear in the Collections sidebar on the left.
 
@@ -465,7 +467,6 @@ This collection provides a comprehensive set of API calls, enabling you to inter
 http://localhost:8090/v2/network/information
 
 http://localhost:8090/v2/wallets
-
 
 ### Cardano DB Sync
 
@@ -564,7 +565,11 @@ Contributions to the Cardano Developer Studio are welcome. Whether you're lookin
 
 This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
 
-
 ## Acknowledgements
 
 We express our deepest gratitude to the Cardano community for their unwavering support and valuable contributions to this project. This work is part of a funded project through Cardano Catalyst, a community-driven innovation platform. For more details on the proposal and its progress, please visit our proposal page on [IdeaScale](https://cardano.ideascale.com/c/idea/110047).
+
+## Ongoing Progress
+
+Welcome to the beginning of a journey! You're looking at the first milestone and release of our Cardano Developer Studio, where the foundations are set, but the building is far from over. As we continue to grow and evolve, expect to see an array of new menus, tools, and functionalities rolled out in future updates. Each release will be packed with features designed to make the Cardano development experience smoother, more intuitive, and increasingly powerful. Stay tuned, and grow with us, as we expand the possibilities and support you, the builders of tomorrow's Cardano ecosystem. Your feedback, ideas, and contributions will shape the road ahead, so let's forge this path together!
+
