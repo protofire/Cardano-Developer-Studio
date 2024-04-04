@@ -155,7 +155,8 @@ Open your Linux distribution through WSL.
 Run `sudo apt-get update && sudo apt-get upgrade` to update all installed packages to their latest versions, including Bash.
 
 ### Mac
-To update Bash on MacOS:
+
+**To update Bash on MacOS:**
 
 Install Homebrew, a package manager for MacOS, by pasting the following command in the Terminal:
 
@@ -163,7 +164,49 @@ Install Homebrew, a package manager for MacOS, by pasting the following command 
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ```
 
-Once Homebrew is installed, update Bash by running:
+**Post-Installation Configuration for Homebrew on MacOS**
+
+After installing Homebrew, perform the following steps to ensure it's properly set up and integrated into your shell environment:
+
+Determine the installation path of Homebrew by running:
+
+```
+HOMEBREW_PREFIX=$(brew --prefix)
+```
+
+Configure your shell environment:
+
+For Zsh users (default on macOS Catalina and later):
+
+```
+echo "eval \"\$($HOMEBREW_PREFIX/bin/brew shellenv)\"" >> ~/.zprofile
+eval "$($HOMEBREW_PREFIX/bin/brew shellenv)"
+```
+
+For Bash users (default on macOS Mojave and earlier):
+
+```
+echo "eval \"\$($HOMEBREW_PREFIX/bin/brew shellenv)\"" >> ~/.bash_profile
+eval "$($HOMEBREW_PREFIX/bin/brew shellenv)"
+```
+
+Verify that Homebrew is set up correctly:
+
+```
+brew doctor
+```
+
+The brew doctor command will check your Homebrew setup and confirm that everything is configured properly.
+
+**Notes:**
+
+This method dynamically finds the Homebrew installation path, ensuring compatibility with both Intel and Apple Silicon Macs.
+
+Close and reopen your terminal after running these commands to apply the changes to new terminal sessions.
+
+You can confirm which shell you're using by executing echo $SHELL in the terminal.
+
+**Once Homebrew is installed, update Bash by running:**
 
 ```
 brew install bash
