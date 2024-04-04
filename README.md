@@ -2,6 +2,52 @@
 
 This repository is the home of the Cardano Developer Studio, an all-in-one suite designed to streamline the development process for Cardano blockchain developers. Our goal is to provide an accessible, comprehensive set of tools and resources to support developers in building dApps and smart contracts efficiently on the Cardano platform.
 
+# Table of Contents
+- [Welcome to Cardano Developer Studio](#welcome-to-cardano-developer-studio)
+- [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [What is included](#what-is-included)
+    - [Cardano Node](#cardano-node)
+    - [Cardano Wallet](#cardano-wallet)
+    - [Cardano DB Sync](#cardano-db-sync)
+    - [Script Menus and Tools](#script-menus-and-tools)
+  - [Why Developers Need to Experiment with These Tools](#why-developers-need-to-experiment-with-these-tools)
+  - [On going progress..](#on-going-progress)
+  - [Docker Containers](#docker-containers)
+    - [What is Docker?](#what-is-docker)
+    - [Why Docker for Our Scripts?](#why-docker-for-our-scripts)
+    - [Getting Started with Docker](#getting-started-with-docker)
+    - [Note to Users](#note-to-users)
+  - [Initial Requirements Checks by the Script](#initial-requirements-checks-by-the-script)
+    - [What the Script Checks](#what-the-script-checks)
+  - [Running Bash Scripts on Windows](#running-bash-scripts-on-windows)
+    - [Git Bash:](#git-bash)
+    - [Windows Subsystem for Linux (WSL):](#windows-subsystem-for-linux-wsl)
+  - [Running Bash Scripts on Mac](#running-bash-scripts-on-mac)
+  - [Updating Bash and Installing Package Managers](#updating-bash-and-installing-package-managers)
+    - [Windows](#windows)
+    - [Mac](#mac)
+    - [Ubuntu (and other Linux Distributions)](#ubuntu-and-other-linux-distributions)
+    - [Note on Package Managers](#note-on-package-managers)
+  - [Running the main script](#running-the-main-script)
+    - [How to Use `run.sh`](#how-to-use-runsh)
+  - [Main Menu](#main-menu)
+    - [Docker Compose Menu](#docker-compose-menu)
+    - [Cardano Node Tools Menu](#cardano-node-tools-menu)
+    - [Cardano Wallet Tools Menu](#cardano-wallet-tools-menu)
+    - [Cardano DB Sync Tools Menu](#cardano-db-sync-tools-menu)
+    - [Note:](#note)
+  - [Using Docker Containers](#using-docker-containers)
+    - [Cardano Node](#cardano-node-1)
+    - [Cardano Wallet](#cardano-wallet-1)
+      - [Importing API Collections into Postman](#importing-api-collections-into-postman)
+        - [Import the Collection:](#import-the-collection)
+        - [Using the Collection:](#using-the-collection)
+    - [Cardano DB Sync](#cardano-db-sync-1)
+  - [Contribution](#contribution)
+  - [License](#license)
+  - [Acknowledgements](#acknowledgements)
+
 ## Features
 
 - Docker Compose configurations for easy setup and integration
@@ -35,9 +81,28 @@ For instance, experimenting with the Cardano Node can help developers optimize t
 
 Detailed instructions on setting up your development environment and using the tools provided will be added to this README.
 
-## Installing Docker
+## Docker Containers
 
-### Windows
+Our scripts require Docker to run successfully, as it plays a critical role in creating isolated and reproducible environments for development and testing.
+
+### What is Docker?
+
+Docker is a platform that uses containerization technology to package an application and its dependencies into a container—a standardized executable component combining application source code with the operating system (OS) libraries and dependencies required to run that code in any environment.
+
+Containers are isolated from one another and the host system, yet can communicate with each other through well-defined channels. Unlike virtual machines, containers do not bundle a full operating system—only libraries and settings required to make the software work are needed. This makes for efficient, lightweight, self-contained systems and guarantees that software will always run the same, regardless of where it’s deployed.
+
+### Why Docker for Our Scripts?
+
+Using Docker, we can easily create separate containers for each version of the Cardano node and network, as well as for the Cardano wallet and Cardano DB Sync. This allows us to:
+
+- Ensure Consistency: Each container runs the same regardless of the host environment, from development to production.
+- Simplify Configuration: Docker containers can be configured and started with a single command, without the need for complex setup procedures.
+- Manage Dependencies: Each container encapsulates its own dependencies, preventing conflicts between projects or versions.
+- Isolate Environments: By running different containers for different components (nodes, wallets, DB Sync), we prevent interference and allow for simultaneous, side-by-side operation of multiple configurations.
+  
+### Getting Started with Docker
+
+Before proceeding with our scripts, you'll need to install Docker on your machine. Installation instructions vary depending on your operating system:
 
 **Docker Desktop for Windows:**
 
@@ -45,16 +110,12 @@ Detailed instructions on setting up your development environment and using the t
 - Run the installer and follow the instructions to install Docker Desktop on Windows.
 - After installation, Docker will start automatically. You might need to log out and log back in or reboot your computer to complete the installation.
 
-### Mac
-
 **Docker Desktop for Mac:**
 
 - Visit the Docker Hub at https://www.docker.com/products/docker-desktop and download the installer for Mac.
 - Open the `.dmg` file and drag Docker to the Applications folder.
 - Run Docker from the Applications folder. Docker will request your password to install a helper tool.
 - After installation, Docker will start automatically.
-
-### Ubuntu
 
 **Install using the repository:**
 
