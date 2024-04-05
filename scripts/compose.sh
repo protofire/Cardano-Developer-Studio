@@ -20,26 +20,27 @@ if [[ -z "${HOST_PROJECT_PATH}" ]]; then
   export HOST_PROJECT_PATH="$WORKSPACE_ROOT_DIR_ABSOLUTE"
 fi
 
-# Example function to save environment variables to a file
-save_env_variables() {
-    echo "CARDANO_NETWORK=${CARDANO_NETWORK}" > .env.cardano
-    echo "CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION}" >> .env.cardano
-    # Add other variables as needed
-}
+# # Example function to save environment variables to a file
+# save_env_variables() {
+#     echo "CARDANO_NETWORK=${CARDANO_NETWORK}" > .env.cardano
+#     echo "CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION}" >> .env.cardano
+#     # Add other variables as needed
+# }
 
-# Example function to load environment variables from a file
-load_env_variables() {
-    if [[ -f ".env.cardano" ]]; then
-        source .env.cardano
-        export CARDANO_NETWORK  # Make sure this is exported
-        echo "CARDANO_NETWORK=${CARDANO_NETWORK}"
-        export CARDANO_NODE_VERSION
-        echo "CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION}"
-    else
-        echo "No saved environment variables found. Please set up the Cardano Node first."
-        exit 1
-    fi
-}
+# # Example function to load environment variables from a file
+# load_env_variables() {
+#     if [[ -f ".env.cardano" ]]; then
+#         source .env.cardano
+#         export CARDANO_NETWORK  # Make sure this is exported
+#         echo "CARDANO_NETWORK=${CARDANO_NETWORK}"
+#         export CARDANO_NODE_VERSION
+#         echo "CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION}"
+#     else
+#         echo "No saved environment variables found. Please set up the Cardano Node first."
+#         exit 1
+#     fi
+# }
+
 # Function to prompt user to set environment variables
 set_node_env_variables() {
     echo "----"
@@ -180,7 +181,8 @@ set_node_env_variables() {
                 
                 # Define where to extract the snapshot (same as the snapshot save location)
                 SNAPSHOT_EXTRACT_PATH="$SNAPSHOT_SAVE_PATH"
-                
+                echo "Extracting snapshot..."
+
                 # Extract the snapshot
                 if lz4 -c -d "$USE_SNAPSHOT_PATH" | sudo tar -x -C "$SNAPSHOT_EXTRACT_PATH"; then
                     echo "Snapshot extracted successfully into $SNAPSHOT_EXTRACT_PATH."
@@ -306,7 +308,7 @@ while true; do
     case $main_choice in
         1)
             set_node_env_variables
-            save_env_variables
+            # save_env_variables
             PROJECT_NAME=$(echo "cardano-node-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}" | tr '.:' '_' | tr -d '[:upper:]')
 
             # # Explicitly build the images without cache
