@@ -270,7 +270,7 @@ select_container() {
 delete_container_and_optionally_volumes() {
     local container_name="$1"
     
-    read -p "Do you  want to delete the container ($container_name) and its volumes? [y/N]: " confirm_delete
+    read -p "Do you  want to delete the container ($container_name)? [y/N]: " confirm_delete
     if [[ "$confirm_delete" =~ ^[Yy]$ ]]; then
         
         echo "Preparing to delete container: $container_name"
