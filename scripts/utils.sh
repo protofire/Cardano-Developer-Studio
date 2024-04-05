@@ -21,11 +21,11 @@ check_docker_version() {
         echo "Docker is not installed."
         return 1 # Return failure
     fi
-
+    
     # Extract the version string. This adjustment accounts for various version formats.
     local version
     version=$(docker --version | grep -oP 'Docker version \K[^,]+' | cut -d'-' -f1) # Gets '19.03.12' for example
-
+    
     # Now use the compare_versions function to check if the installed version meets the requirement
     if compare_versions $version $MIN_DOCKER_VERSION; then
         echo "Docker version $version is sufficient."
@@ -35,17 +35,40 @@ check_docker_version() {
     fi
 }
 
-check_docker_compose_version() { 
+# Function to determine the appropriate Docker Compose command
+get_docker_compose_command() {
+    if command -v docker-compose &> /dev/null; then
+        echo "docker-compose"
+    elif command -v docker &> /dev/null && docker compose &> /dev/null; then
+        echo "docker compose"
+    else
+        echo "Docker Compose is not installed." >&2
+        exit 1
+    fi
+}
+
+check_docker_compose_version() {
     local MIN_COMPOSE_VERSION="$1"
-    if ! command -v docker-compose &> /dev/null; then
+    local version_command
+    
+    # Check if Docker Compose CLI plugin is available
+    if command -v docker-compose &> /dev/null; then
+        version_command="docker-compose --version"
+        elif command -v docker &> /dev/null && docker compose version &> /dev/null; then
+        version_command="docker compose version"
+    else
         echo "Docker Compose is not installed."
         return 1 # Return failure
     fi
-
+    
     # Extract the version string properly
     local version
-    version=$(docker-compose --version | grep -oP 'version \K[^,]+' | cut -d'-' -f1 | sed 's/^v//') # Removes 'v' at the start
-
+    if [[ "$version_command" == "docker-compose --version" ]]; then
+        version=$(docker-compose --version | grep -oP 'version \K[^,]+' | cut -d'-' -f1 | sed 's/^v//') # For standalone Docker Compose
+        elif [[ "$version_command" == "docker compose version" ]]; then
+        version=$(docker compose version | grep -oP 'version \K[^,]+' | cut -d'-' -f1 | sed 's/^v//')  # For Docker Compose CLI plugin
+    fi
+    
     if compare_versions $version $MIN_COMPOSE_VERSION; then
         echo "Docker Compose version $version is sufficient."
     else
@@ -66,7 +89,7 @@ compare_versions() {
         fi
         if ((10#${version_a[i]} > 10#${version_b[i]})); then
             return 0
-        elif ((10#${version_a[i]} < 10#${version_b[i]})); then
+            elif ((10#${version_a[i]} < 10#${version_b[i]})); then
             return 1
         fi
     done
@@ -77,16 +100,16 @@ compare_versions() {
     fi
     
     return 0
-}   
+}
 
 check_package_manager() {
     if command -v brew &> /dev/null; then
         echo "Homebrew is installed."
-    elif command -v apt-get &> /dev/null; then
+        elif command -v apt-get &> /dev/null; then
         echo "apt-get is available."
-    elif command -v dnf &> /dev/null; then
+        elif command -v dnf &> /dev/null; then
         echo "dnf is available."
-    elif command -v pacman &> /dev/null; then
+        elif command -v pacman &> /dev/null; then
         echo "pacman is available."
     else
         echo "No recognized package manager found. Please ensure you have a package manager such as brew, apt-get, dnf, or pacman."

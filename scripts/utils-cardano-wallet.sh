@@ -33,7 +33,7 @@ generate_and_create_wallet() {
     # Call generate_mnemonic and capture its output
     mnemonic=$(generate_mnemonic "$container")
     # Convert the mnemonic to a JSON array format
-    mnemonic_json_array=$(echo "$mnemonic" | awk '{for(i=1;i<=NF;i++) printf "\"%s\"%s", $i, (i<NF?", ":"")}')
+    mnemonic_json_array=$(echo "$mnemonic" | gawk '{for(i=1;i<=NF;i++) printf "\"%s\"%s", $i, (i<NF?", ":"")}')
     echo "Mnemonic generated. Please keep it safe."
     echo "$mnemonic"
     echo ""
@@ -44,7 +44,15 @@ generate_and_create_wallet() {
     
     CARDANO_WALLET_PORT=$(docker exec -it "$container" printenv CARDANO_WALLET_PORT | tr -d '\r')
     
-    response=$(curl -s -X POST http://localhost:${CARDANO_WALLET_PORT}/v2/wallets \
+    if [ -f /.dockerenv ]; then
+        # echo "Running inside a Docker container."
+        BASE_URL="http://host.docker.internal:${CARDANO_WALLET_PORT}"
+    else
+        # echo "Running on the host."
+        BASE_URL="http://localhost:${CARDANO_WALLET_PORT}"
+    fi
+
+    response=$(curl -s -X POST ${BASE_URL}/v2/wallets \
         -H "Content-Type: application/json" \
         -d "{
             \"name\": \"$wallet_name\",
@@ -60,7 +68,16 @@ list_wallets() {
     local container=$1
     echo "Listing all wallets..."
     CARDANO_WALLET_PORT=$(docker exec -it "$container" printenv CARDANO_WALLET_PORT | tr -d '\r')
-    response=$(curl -s "http://localhost:${CARDANO_WALLET_PORT}/v2/wallets")
+    # echo "Container: ${container}"
+    # echo "CARDANO_WALLET_PORT: ${CARDANO_WALLET_PORT}"
+    if [ -f /.dockerenv ]; then
+        # echo "Running inside a Docker container."
+        BASE_URL="http://host.docker.internal:${CARDANO_WALLET_PORT}"
+    else
+        # echo "Running on the host."
+        BASE_URL="http://localhost:${CARDANO_WALLET_PORT}"
+    fi
+    response=$(curl -s "${BASE_URL}/v2/wallets")
     echo "Wallets: $response"
 }
 
@@ -69,7 +86,14 @@ fetch_network_information() {
     local container=$1
     echo "Fetching network information..."
     CARDANO_WALLET_PORT=$(docker exec -it "$container" printenv CARDANO_WALLET_PORT | tr -d '\r')
-    response=$(curl -s "http://localhost:${CARDANO_WALLET_PORT}/v2/network/information")
+    if [ -f /.dockerenv ]; then
+        # echo "Running inside a Docker container."
+        BASE_URL="http://host.docker.internal:${CARDANO_WALLET_PORT}"
+    else
+        # echo "Running on the host."
+        BASE_URL="http://localhost:${CARDANO_WALLET_PORT}"
+    fi
+    response=$(curl -s "${BASE_URL}/v2/network/information")
     echo "Network Information: $response"
 }
 # Function to select a Cardano Wallet container and navigate between options

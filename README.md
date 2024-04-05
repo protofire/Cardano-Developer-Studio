@@ -307,7 +307,7 @@ The main script starts by performing several checks to ensure the environment me
 - curl
 - grep
 - sed
-- awk
+- gawk
 - cut
 
 3. Software Versions: The script verifies that the installed versions of Bash, Docker, and Docker Compose meet the minimum requirements:

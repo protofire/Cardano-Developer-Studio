@@ -8,14 +8,24 @@ source "$(dirname "${BASH_SOURCE[0]}")/utils-cardano-node.sh"
 source "$(dirname "${BASH_SOURCE[0]}")/utils-cardano-wallet.sh"
 source "$(dirname "${BASH_SOURCE[0]}")/utils-cardano-dbsync.sh"
 
-# Determine the directory where run.sh resides
+# Determine the directory where script resides
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+if [[ -z "${WORKSPACE_ROOT_DIR_ABSOLUTE}" ]]; then
+    WORKSPACE_ROOT_DIR_ABSOLUTE="$(dirname "$SCRIPT_DIR")"
+fi
+export WORKSPACE_ROOT_DIR_ABSOLUTE
 
 # Change to the script's directory
-cd "$SCRIPT_DIR"
+cd "$WORKSPACE_ROOT_DIR_ABSOLUTE"
 
-export WORKSPACE_ROOT_DIR_ABSOLUTE="$SCRIPT_DIR/.."
-export CONFIG_DIR_ABSOLUTE="$WORKSPACE_ROOT_DIR_ABSOLUTE/configs"
+# Check if HOST_PROJECT_PATH is set, otherwise default to WORKSPACE_ROOT_DIR_ABSOLUTE
+if [[ -z "${HOST_PROJECT_PATH}" ]]; then
+  export HOST_PROJECT_PATH="$WORKSPACE_ROOT_DIR_ABSOLUTE"
+fi
+
+echo "----"
+echo "WORKSPACE_ROOT_DIR_ABSOLUTE=$WORKSPACE_ROOT_DIR_ABSOLUTE"
+echo "HOST_PROJECT_PATH=$HOST_PROJECT_PATH"
 
 # Declare a global variable for main_choice
 declare -g main_choice
@@ -56,7 +66,7 @@ install_package lz4
 install_package curl
 install_package grep
 install_package sed
-install_package awk
+install_package gawk
 install_package cut
 echo "----"
 echo "Checking required software versions..."

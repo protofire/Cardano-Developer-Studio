@@ -14,9 +14,9 @@ services:
       - cardano-network
     volumes:
       - node-ipc:/ipc
-      - ${CARDANO_NODE_DB_PATH}:/var/lib/cardano-node-db
-      - ${CONFIG_DIR_ABSOLUTE}:/configs  
-      - ${WORKSPACE_ROOT_DIR_ABSOLUTE}/scripts/init-cardano-node.sh:/init-cardano-node.sh  # Mount the script into the container
+      - ${HOST_PROJECT_PATH}/data/cardano-node-data/${CARDANO_NETWORK:-mainnet}:/var/lib/cardano-node-db
+      - ${HOST_PROJECT_PATH}/configs:/configs  
+      - ${HOST_PROJECT_PATH}/scripts/init-cardano-node.sh:/init-cardano-node.sh  # Mount the script into the container
     restart: on-failure
     logging:
       driver: "json-file"

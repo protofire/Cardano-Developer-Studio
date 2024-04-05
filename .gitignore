@@ -39,3 +39,12 @@ files/config/blockfrost/blockfrost-mainnet.key
 
 /configs/cardano-node-snapshot/**
 /configs/cardano-node-snapshot*/**
+
+/configs/cardano-node-data/**
+/configs/cardano-node-data*/**
+
+/data/cardano-node-snapshot/**
+/data/cardano-node-snapshot*/**
+
+/data/cardano-node-data/**
+/data/cardano-node-data*/**

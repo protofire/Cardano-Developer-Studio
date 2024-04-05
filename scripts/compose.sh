@@ -6,12 +6,18 @@ set -e
 
 source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
 
-# If SCRIPT_DIR is not set, determine the directory where compose.sh resides
-# This makes compose.sh more robust and standalone-capable
-if [[ -z "${SCRIPT_DIR}" ]]; then
-    SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-    export WORKSPACE_ROOT_DIR_ABSOLUTE="$SCRIPT_DIR/.."
-    export CONFIG_DIR_ABSOLUTE="$WORKSPACE_ROOT_DIR_ABSOLUTE/configs"
+# Determine the directory where script resides
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+if [[ -z "${WORKSPACE_ROOT_DIR_ABSOLUTE}" ]]; then
+    WORKSPACE_ROOT_DIR_ABSOLUTE="$(dirname "$SCRIPT_DIR")"
+fi
+export WORKSPACE_ROOT_DIR_ABSOLUTE
+# Change to the script's directory
+cd "$WORKSPACE_ROOT_DIR_ABSOLUTE"
+
+# Check if HOST_PROJECT_PATH is set, otherwise default to WORKSPACE_ROOT_DIR_ABSOLUTE
+if [[ -z "${HOST_PROJECT_PATH}" ]]; then
+  export HOST_PROJECT_PATH="$WORKSPACE_ROOT_DIR_ABSOLUTE"
 fi
 
 # Example function to save environment variables to a file
@@ -63,10 +69,13 @@ set_node_env_variables() {
     CARDANO_NODE_HEALTH_PORT=${CARDANO_NODE_HEALTH_PORT:-12788}
     export CARDANO_NODE_HEALTH_PORT
     
-    read -p "Enter base CARDANO_NODE_DB_PATH absolute path [default: /var/lib/cardano/data]: " base_CARDANO_NODE_DB_PATH
-    CARDANO_NODE_DB_PATH="${base_CARDANO_NODE_DB_PATH:-/var/lib/cardano/data}/$CARDANO_NETWORK"
-    echo "Node database will be located at: $CARDANO_NODE_DB_PATH"
-    export CARDANO_NODE_DB_PATH
+    # read -p "Enter absolute host path for Cardano Node database [default: $WORKSPACE_ROOT_DIR_ABSOLUTE/configs/cardano-node-data/$CARDANO_NETWORK]: " CARDANO_NODE_DB_PATH
+    # CARDANO_NODE_DB_PATH=${CARDANO_NODE_DB_PATH:-"$WORKSPACE_ROOT_DIR_ABSOLUTE/configs/cardano-node-data/$CARDANO_NETWORK"}
+    # echo "Cardano Node database will be located at: $CARDANO_NODE_DB_PATH"
+    # export CARDANO_NODE_DB_PATH
+
+    CARDANO_NODE_DB_PATH="$WORKSPACE_ROOT_DIR_ABSOLUTE/data/cardano-node-data/$CARDANO_NETWORK"
+    echo "Cardano Node database will be located at: $CARDANO_NODE_DB_PATH"
     
     # Ensure the database directory exists.
     if [ ! -d "$CARDANO_NODE_DB_PATH" ]; then
@@ -85,10 +94,14 @@ set_node_env_variables() {
         download_snapshot=${download_snapshot:-yes}
         
         if [[ "$download_snapshot" =~ ^[Yy][Ee][Ss]$ ]]; then
-            read -p "Enter path for saving snapshot [default: $CONFIG_DIR_ABSOLUTE/cardano-node-snapshot/$CARDANO_NETWORK]: " SNAPSHOT_SAVE_PATH
-            SNAPSHOT_SAVE_PATH=${SNAPSHOT_SAVE_PATH:-"$CONFIG_DIR_ABSOLUTE/cardano-node-snapshot/$CARDANO_NETWORK"}
-            echo "Snapshots will be saved to: $SNAPSHOT_SAVE_PATH"
-            export SNAPSHOT_SAVE_PATH
+            # read -p "Enter path for saving Cardano Node snapshot [default: $WORKSPACE_ROOT_DIR_ABSOLUTE/configs/cardano-node-snapshot/$CARDANO_NETWORK]: " SNAPSHOT_SAVE_PATH
+            # SNAPSHOT_SAVE_PATH=${SNAPSHOT_SAVE_PATH:-"$WORKSPACE_ROOT_DIR_ABSOLUTE/configs/cardano-node-snapshot/$CARDANO_NETWORK"}
+            # echo "Cardano Node snapshot will be saved to: $SNAPSHOT_SAVE_PATH"
+            # export SNAPSHOT_SAVE_PATH
+
+            SNAPSHOT_SAVE_PATH="$WORKSPACE_ROOT_DIR_ABSOLUTE/data/cardano-node-snapshot/$CARDANO_NETWORK"
+            echo "Cardano Node snapshot will be saved to: $SNAPSHOT_SAVE_PATH"
+            
             # ensuring directory permissions are set appropriately.
             if [ ! -d "$SNAPSHOT_SAVE_PATH" ]; then
                 echo "Creating directory for snapshots at $SNAPSHOT_SAVE_PATH with appropriate permissions..."
@@ -179,7 +192,7 @@ set_node_env_variables() {
                         echo "Moving extracted 'db' directory contents to the Cardano node database directory..."
                         
                         # Use 'rsync' to merge the contents safely and then remove the source
-                        sudo rsync -avh --remove-source-files "$EXTRACTED_DB_PATH/" "$CARDANO_NODE_DB_PATH/"
+                        sudo rsync -ah --remove-source-files "$EXTRACTED_DB_PATH/" "$CARDANO_NODE_DB_PATH/"
                         
                         # Remove the now-empty 'db' directory from the extraction location
                         sudo find "$EXTRACTED_DB_PATH" -type d -empty -delete
@@ -205,7 +218,7 @@ set_node_env_variables() {
         fi
     fi
     
-    determine_network_with_magic "$CARDANO_NETWORK" "$CONFIG_DIR_ABSOLUTE"
+    determine_network_with_magic "$CARDANO_NETWORK" "$WORKSPACE_ROOT_DIR_ABSOLUTE/configs"
 }
 
 set_wallet_env_variables() {
@@ -286,27 +299,36 @@ show_menu() {
 # Main script logic
 while true; do
     show_menu
+
+    # Get the appropriate Docker Compose command
+    DOCKER_COMPOSE_CMD=$(get_docker_compose_command)
     
     case $main_choice in
         1)
             set_node_env_variables
             save_env_variables
             PROJECT_NAME=$(echo "cardano-node-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}" | tr '.:' '_' | tr -d '[:upper:]')
-            docker-compose -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-node/docker-compose.node.yml" --verbose up -d
+
+            # # Explicitly build the images without cache
+            # $DOCKER_COMPOSE_CMD -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-node/docker-compose.node.yml" -p $PROJECT_NAME build --no-cache
+            # # Then, bring up the containers. Since the images were just built, this step won't rebuild them.
+            # $DOCKER_COMPOSE_CMD -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-node/docker-compose.node.yml" -p $PROJECT_NAME --verbose up -d
+           
+            $DOCKER_COMPOSE_CMD  -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-node/docker-compose.node.yml" --verbose up -d
             read -p "Press Enter to continue..."
         ;;
         2)
             check_node_resources
             set_wallet_env_variables
             PROJECT_NAME=$(echo "cardano-wallet-${CARDANO_WALLET_VERSION:-2023.04.14}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}" | tr '.:' '_' | tr -d '[:upper:]')
-            docker-compose -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-wallet/docker-compose.wallet.yml" --verbose up -d
+            $DOCKER_COMPOSE_CMD -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-wallet/docker-compose.wallet.yml" --verbose up -d
             read -p "Press Enter to continue..."
         ;;
         3)
             check_node_resources
             set_dbsync_env_variables
             PROJECT_NAME=$(echo "cardano-dbsync-${CARDANO_DBSYNC_VERSION:-"13.2.0.1"}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}" | tr '.:' '_' | tr -d '[:upper:]')
-            docker-compose -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-dbsync/docker-compose.dbsync.yml" --verbose up -d
+            $DOCKER_COMPOSE_CMD -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-dbsync/docker-compose.dbsync.yml" --verbose up -d
             read -p "Press Enter to continue..."
         ;;
         4)

@@ -14,10 +14,10 @@ services:
     volumes:
       - cardano-wallet-data:/var/lib/cardano-wallet-db
       - node-ipc:/ipc
-      - ${CONFIG_DIR_ABSOLUTE}:/configs
-      - ${WORKSPACE_ROOT_DIR_ABSOLUTE}/scripts/init-cardano-wallet.sh:/init-cardano-wallet.sh # Mount the script into the container
+      - ${HOST_PROJECT_PATH}/configs:/configs
+      - ${HOST_PROJECT_PATH}/scripts/init-cardano-wallet.sh:/init-cardano-wallet.sh # Mount the script into the container
     ports:
-      - "${CARDANO_WALLET_PORT}:8090"
+      - "${CARDANO_WALLET_PORT:-8090}:8090"
 
     restart: on-failure
     logging:
@@ -41,7 +41,7 @@ services:
     networks:
       - cardano-network
     ports:
-      - "${ICARUS_PORT}:4444"
+      - "${ICARUS_PORT:-4444}:4444"
     restart: on-failure
 
 networks:
