@@ -1,6 +1,8 @@
 #!/bin/bash
 
-source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/../../utils/utils.sh"
+
+setWorkspaceDir
 
 # Function to select a Cardano DB Sync container and navigate between options
 select_dbsync_container() {
@@ -36,9 +38,10 @@ cardano_dbsync_tools() {
             echo "2) Retrieving most recent block"
             echo "3) Slot number of the most recent block"
             echo "4) Current total on-chain supply of Ada"
-            echo "5) Delete this Container and Optionally Its Volumes"
-            echo "6) Return Main Menu"
-            read -p "Enter your choice or 6 to exit: " tool_choice
+            echo "5) Docker Logs"
+            echo "6) Delete this Container and Optionally Its Volumes"
+            echo "0) Return Main Menu"
+            read -p "Enter your choice or 0 to exit: " tool_choice
             
             case $tool_choice in
                 1)
@@ -62,11 +65,15 @@ cardano_dbsync_tools() {
                     read -p "Press Enter to continue..."
                 ;;
                 5)
+                    monitor_logs "$selected_container"
+                    read -p "Press Enter to continue..."
+                ;;
+                6)
                     delete_dbsync_container_and_associated_postgres "$selected_container"
                     read -p "Press Enter to continue..."
                     break 2 # Breaks out of the current loop and the container selection loop
                 ;;
-                6)
+                0)
                     break  2 # Breaks out of both the inner loop and the container selection loop
                 ;;
                 *)

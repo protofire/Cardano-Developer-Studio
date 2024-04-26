@@ -3,55 +3,13 @@
 # Exit on any error
 set -e
 
-source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
-source "$(dirname "${BASH_SOURCE[0]}")/utils-cardano-node.sh"
-source "$(dirname "${BASH_SOURCE[0]}")/utils-cardano-wallet.sh"
-source "$(dirname "${BASH_SOURCE[0]}")/utils-cardano-dbsync.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/utils/utils.sh"
 
-# Determine the directory where script resides
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-if [[ -z "${WORKSPACE_ROOT_DIR_ABSOLUTE}" ]]; then
-    WORKSPACE_ROOT_DIR_ABSOLUTE="$(dirname "$SCRIPT_DIR")"
-fi
-export WORKSPACE_ROOT_DIR_ABSOLUTE
-
-# Change to the script's directory
-cd "$WORKSPACE_ROOT_DIR_ABSOLUTE"
-
-# Check if HOST_PROJECT_PATH is set, otherwise default to WORKSPACE_ROOT_DIR_ABSOLUTE
-if [[ -z "${HOST_PROJECT_PATH}" ]]; then
-  export HOST_PROJECT_PATH="$WORKSPACE_ROOT_DIR_ABSOLUTE"
-fi
+setWorkspaceDir
 
 echo "----"
 echo "WORKSPACE_ROOT_DIR_ABSOLUTE=$WORKSPACE_ROOT_DIR_ABSOLUTE"
 echo "HOST_PROJECT_PATH=$HOST_PROJECT_PATH"
-
-# Declare a global variable for main_choice
-declare -g main_choice
-
-# Function to display the main menu and capture the choice
-show_main_menu() {
-    echo "----"
-    echo "Main Menu - Choose an option:"
-    echo "----"
-    echo "1) Docker Compose Workflow"
-    echo "2) Cardano Node Testing and Tools"
-    echo "3) Cardano Wallet Testing and Tools"
-    echo "4) Cardano DB Sync Tools"
-    echo "5) Other Tool [Placeholder]"
-    echo "6) Exit"
-    read -p "Enter choice [1-6]: " main_choice
-}
-
-# Function to handle Docker Compose Workflow
-docker_compose_workflow() {
-    # Ensure compose.sh is executable
-    chmod +x "$SCRIPT_DIR/compose.sh"
-    
-    # Use SCRIPT_DIR to reference compose.sh relative to run.sh's location
-    "$SCRIPT_DIR/compose.sh"
-}
 
 
 # Requirements check
@@ -73,6 +31,36 @@ echo "Checking required software versions..."
 check_bash_version "4.0" || exit 1
 check_docker_version "19.03" || exit 1
 check_docker_compose_version "1.25" || exit 1
+echo "----"
+find "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts" -type f -name "*.sh" -exec sudo chmod +x {} \;
+echo "Permissions set for all Bash scripts in $WORKSPACE_ROOT_DIR_ABSOLUTE/scripts"
+
+#--------------------------------------------------------------------------------
+
+source "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts/menu-compose/compose.sh"
+source "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts/menu-tools/cardano-node/tools-cardano-node.sh"
+source "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts/menu-tools/cardano-wallet/tools-cardano-wallet.sh"
+source "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts/menu-tools/cardano-dbsync/tools-cardano-dbsync.sh"
+source "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts/menu-tools/ogmios/tools-ogmios.sh"
+source "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts/menu-tools/kupo/tools-kupo.sh"
+
+# Declare a global variable for main_choice
+declare -g main_choice
+
+# Function to display the main menu and capture the choice
+show_main_menu() {
+    echo "----"
+    echo "Main Menu - Choose an option:"
+    echo "----"
+    echo "1) Docker Compose Workflow"
+    echo "2) Cardano Node Testing and Tools"
+    echo "3) Cardano Wallet Testing and Tools"
+    echo "4) Cardano DB Sync Tools"
+    echo "5) Ogmios Tools"
+    echo "6) Kupo Tools"
+    echo "0) Exit"
+    read -p "Enter your choice or 0 to exit: " main_choice
+}
 
 # Main script logic
 while true; do
@@ -92,11 +80,12 @@ while true; do
             cardano_dbsync_tools
         ;;
         5)
-            # Placeholder for other tools
-            echo "Other tools (Placeholder)"
-            read -p "Press Enter to continue..."
+           cardano_ogmios_tools
         ;;
         6)
+           cardano_kupo_tools
+        ;;
+        0)
             echo "Exiting."
             exit 0
         ;;

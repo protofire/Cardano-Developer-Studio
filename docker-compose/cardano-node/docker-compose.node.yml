@@ -16,7 +16,7 @@ services:
       - node-ipc:/ipc
       - ${HOST_PROJECT_PATH}/data/cardano-node-data/${CARDANO_NETWORK:-mainnet}:/var/lib/cardano-node-db
       - ${HOST_PROJECT_PATH}/configs:/configs  
-      - ${HOST_PROJECT_PATH}/scripts/init-cardano-node.sh:/init-cardano-node.sh  # Mount the script into the container
+      - ${HOST_PROJECT_PATH}/scripts/init/init-cardano-node.sh:/init-cardano-node.sh  # Mount the script into the container
     restart: on-failure
     logging:
       driver: "json-file"
@@ -24,10 +24,14 @@ services:
         compress: "true"
         max-file: "10"
         max-size: "50m"
-    entrypoint: []
+    entrypoint:
+      - /bin/bash
+      - -c
+      - "chmod +x /init-cardano-node.sh && /init-cardano-node.sh"
+    # entrypoint: []
     # command: tail -f /dev/null  # Keep the container running indefinitely
-    command: >
-      /bin/bash -c "chmod +x /init-cardano-node.sh && /init-cardano-node.sh"
+    # command: >
+    # /bin/bash -c "chmod +x /init-cardano-node.sh && /init-cardano-node.sh"
     # Ensure /init-cardano-node.sh includes the necessary logic to start the Cardano node correctly
     healthcheck:
       # Ping the EKG port to see if it responds.

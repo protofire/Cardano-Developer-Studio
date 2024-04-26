@@ -5,14 +5,13 @@ set -e
 
 # This script is intended to be run inside the Docker container.
 
-echo "Starting node on: $CARDANO_NETWORK"
+echo "Starting Cardano Node on: $CARDANO_NETWORK"
 
 echo "--topology: /configs/cardano-node/${CARDANO_NETWORK}/topology.json"
 echo "--database-path: /var/lib/cardano-node-db"
 echo "--socket-path: /ipc/node.socket"  # As set in the Docker Compose file
 echo "--port: ${CARDANO_NODE_PORT}"  # Adjust as needed
 echo "--config: /configs/cardano-node/${CARDANO_NETWORK}/config.json"
-
 
 sleep 5
 

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Exit on any error
 set -e
 
 check_bash_version() {
@@ -39,7 +40,7 @@ check_docker_version() {
 get_docker_compose_command() {
     if command -v docker-compose &> /dev/null; then
         echo "docker-compose"
-    elif command -v docker &> /dev/null && docker compose &> /dev/null; then
+        elif command -v docker &> /dev/null && docker compose &> /dev/null; then
         echo "docker compose"
     else
         echo "Docker Compose is not installed." >&2
@@ -190,10 +191,10 @@ check_node_resources() {
     export CARDANO_NODE_VERSION
     
     while :; do
-        read -p "Enter CARDANO_NETWORK [options: preprod, mainnet] (default: preprod): " CARDANO_NETWORK
+        read -p "Enter CARDANO_NETWORK [options: preprod, mainnet, preview] (default: preprod): " CARDANO_NETWORK
         CARDANO_NETWORK=${CARDANO_NETWORK:-preprod}
         
-        if [[ "$CARDANO_NETWORK" == "preprod" || "$CARDANO_NETWORK" == "mainnet" ]]; then
+        if [[ "$CARDANO_NETWORK" == "preprod" || "$CARDANO_NETWORK" == "mainnet"  || "$CARDANO_NETWORK" == "preview" ]]; then
             export CARDANO_NETWORK
             break
         else
@@ -204,7 +205,7 @@ check_node_resources() {
     echo "----"
     
     if ! docker ps | grep -q "cardano-node-container-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}"; then
-        echo "Cardano node container is not running. Please start the Cardano Node Version: ${CARDANO_NODE_VERSION:-"8.9.0"} and Network: ${CARDANO_NETWORK:-mainnet} first."
+        echo "Cardano node container is not running. Please create or start the Cardano Node Version: ${CARDANO_NODE_VERSION:-"8.9.0"} and Network: ${CARDANO_NETWORK:-mainnet} first."
         exit 1
     fi
     
@@ -229,14 +230,16 @@ select_container() {
     local container_type="$1"  # e.g., 'cardano-wallet-container'
     
     echo "----"
-    echo "Fetching list of $container_type containers..."
+    echo "Fetching list of $container_type containers (including stopped)..."
     containers=()
+    statuses=()
     while IFS= read -r line; do
-        containers+=("$line")
-    done < <(docker ps --format "{{.Names}}" | grep "$container_type")
+        containers+=("${line%% *}")
+        statuses+=("${line#* }")
+    done < <(docker ps -a --format "{{.Names}} {{.Status}}" | grep "$container_type")
     
     if [ ${#containers[@]} -eq 0 ]; then
-        echo "No $container_type containers found. Please ensure they are running."
+        echo "No $container_type containers found. Please ensure they are deployed."
         read -p "Press Enter to continue..."
         return 1  # Return with error status to signal no containers found
     fi
@@ -246,15 +249,23 @@ select_container() {
         echo "----"
         echo "Available $container_type Containers (0 to Return Main Menu):"
         for i in "${!containers[@]}"; do
-            echo "$((i+1))) ${containers[i]}"
+            echo "$((i+1))) ${containers[i]} - ${statuses[i]}"
         done
         read -p "Select a container [1-${#containers[@]}] or 0 to Return Main Menu: " container_choice
         echo "----"
-        if [ "$container_choice" -eq 0 ]; then
+        
+        if [[ -z "$container_choice" ]] || ! [[ "$container_choice" =~ ^[0-9]+$ ]]; then
+            echo "Invalid selection. Please try again."
+            read -p "Press Enter to continue..."
+            elif [ "$container_choice" -eq 0 ]; then
             return 1  # Return with error status to signal user requested exit
-            elif [[ "$container_choice" =~ ^[0-9]+$ ]] && [ "$container_choice" -ge 1 ] && [ "$container_choice" -le ${#containers[@]} ]; then
+            elif [ "$container_choice" -ge 1 ] && [ "$container_choice" -le ${#containers[@]} ]; then
             selected_container="${containers[$container_choice-1]}"
             echo "Selected container: $selected_container"
+            if [[ "${statuses[$container_choice-1]}" != *"Up"* ]]; then
+                echo "Container is stopped, starting it..."
+                docker start "$selected_container"
+            fi
             return 0  # Return success status
         else
             echo "Invalid selection. Please try again."
@@ -263,7 +274,6 @@ select_container() {
         
     done
 }
-
 
 
 # Function to delete container and ask about deleting its volumes
@@ -372,3 +382,100 @@ force_delete_docker_volume() {
         #     echo "No volume named '$volume_name' found. Skipping deletion."
     fi
 }
+
+
+# Function to run docker logs in the background and allow user to exit with Ctrl+C
+monitor_logs() {
+    local container_name="$1"
+    
+    echo "Press 'q' to stop monitoring logs and return to the menu."
+    read -p "Press Enter to continue..."
+    
+    # Run docker logs in the background
+    docker logs -f "$container_name" &
+    local logs_pid=$!
+    
+    # Loop to wait for user to press 'q'
+    while :; do
+        read -rsn1 input
+        if [[ "$input" == "q" ]]; then
+            echo "Stopping log monitoring..."
+            kill $logs_pid  # Send SIGTERM to stop the background process
+            break
+        fi
+    done
+    
+    # Wait for the background process to finish if not already done
+    # wait $logs_pid
+    
+    # Ensure the process is stopped
+    kill -0 $logs_pid 2>/dev/null && kill $logs_pid
+    
+    echo "Log monitoring stopped."
+    
+}
+
+
+setWorkspaceDir() {
+    # Determine the directory where script resides
+    CURRENT_SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+    # echo $CURRENT_SCRIPT_DIR
+    
+    # Search for the 'scripts' directory by moving up the directory tree
+    FOUND_SCRIPTS_DIR=""
+    CHECK_DIR="$CURRENT_SCRIPT_DIR"
+    while [[ "$CHECK_DIR" != "/" && -z "$FOUND_SCRIPTS_DIR" ]]; do
+        # echo "Checking: $CHECK_DIR"
+        if [[ -d "$CHECK_DIR/scripts" ]]; then
+            FOUND_SCRIPTS_DIR="$CHECK_DIR/scripts"
+            break
+        fi
+        CHECK_DIR="$(dirname "$CHECK_DIR")"
+    done
+    
+    # Set WORKSPACE_ROOT_DIR_ABSOLUTE to the parent directory of the found 'scripts' directory
+    if [[ -n "$FOUND_SCRIPTS_DIR" ]]; then
+        # echo "FOUND_SCRIPTS_DIR=$FOUND_SCRIPTS_DIR"
+        if [[ -z "${WORKSPACE_ROOT_DIR_ABSOLUTE}" ]]; then
+            WORKSPACE_ROOT_DIR_ABSOLUTE="$(dirname "$FOUND_SCRIPTS_DIR")"
+        fi
+        export WORKSPACE_ROOT_DIR_ABSOLUTE
+    else
+        echo "Error: 'scripts' directory not found in the path tree."
+        return 1  # Exit function with error status
+    fi
+    
+    # Change to the script's directory
+    cd "$WORKSPACE_ROOT_DIR_ABSOLUTE"
+    
+    # Check if HOST_PROJECT_PATH is set, otherwise default to WORKSPACE_ROOT_DIR_ABSOLUTE
+    if [[ -z "${HOST_PROJECT_PATH}" ]]; then
+        export HOST_PROJECT_PATH="$WORKSPACE_ROOT_DIR_ABSOLUTE"
+    fi
+
+    # echo "WORKSPACE_ROOT_DIR_ABSOLUTE=$WORKSPACE_ROOT_DIR_ABSOLUTE"
+    # echo "HOST_PROJECT_PATH=$HOST_PROJECT_PATH"
+}
+
+
+
+# # Example function to save environment variables to a file
+# save_env_variables() {
+#     echo "CARDANO_NETWORK=${CARDANO_NETWORK}" > .env.cardano
+#     echo "CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION}" >> .env.cardano
+#     # Add other variables as needed
+# }
+
+# # Example function to load environment variables from a file
+# load_env_variables() {
+#     if [[ -f ".env.cardano" ]]; then
+#         source .env.cardano
+#         export CARDANO_NETWORK  # Make sure this is exported
+#         echo "CARDANO_NETWORK=${CARDANO_NETWORK}"
+#         export CARDANO_NODE_VERSION
+#         echo "CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION}"
+#     else
+#         echo "No saved environment variables found. Please set up the Cardano Node first."
+#         exit 1
+#     fi
+# }

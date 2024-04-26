@@ -12,6 +12,9 @@ else
     CARDANO_NETWORK_ARG="--testnet /configs/cardano-node/${CARDANO_NETWORK}/byron-genesis.json"
 fi
 
+echo "--node-socket /ipc/node.socket"
+echo "--database /var/lib/cardano-wallet-db"
+echo "--listen-address 0.0.0.0"
 echo "Network argument: $CARDANO_NETWORK_ARG"
 
 # Start the cardano-wallet server with the appropriate network argument
@@ -21,4 +24,3 @@ cardano-wallet serve \
   --listen-address 0.0.0.0 \
   $CARDANO_NETWORK_ARG
 
-echo "Cardano Wallet has been started."

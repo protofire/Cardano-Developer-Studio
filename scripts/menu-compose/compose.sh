@@ -4,42 +4,9 @@
 set -e
 # set -x # Enables a mode of the shell where all executed commands are printed to the terminal
 
-source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/../utils/utils.sh"
 
-# Determine the directory where script resides
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-if [[ -z "${WORKSPACE_ROOT_DIR_ABSOLUTE}" ]]; then
-    WORKSPACE_ROOT_DIR_ABSOLUTE="$(dirname "$SCRIPT_DIR")"
-fi
-export WORKSPACE_ROOT_DIR_ABSOLUTE
-# Change to the script's directory
-cd "$WORKSPACE_ROOT_DIR_ABSOLUTE"
-
-# Check if HOST_PROJECT_PATH is set, otherwise default to WORKSPACE_ROOT_DIR_ABSOLUTE
-if [[ -z "${HOST_PROJECT_PATH}" ]]; then
-  export HOST_PROJECT_PATH="$WORKSPACE_ROOT_DIR_ABSOLUTE"
-fi
-
-# # Example function to save environment variables to a file
-# save_env_variables() {
-#     echo "CARDANO_NETWORK=${CARDANO_NETWORK}" > .env.cardano
-#     echo "CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION}" >> .env.cardano
-#     # Add other variables as needed
-# }
-
-# # Example function to load environment variables from a file
-# load_env_variables() {
-#     if [[ -f ".env.cardano" ]]; then
-#         source .env.cardano
-#         export CARDANO_NETWORK  # Make sure this is exported
-#         echo "CARDANO_NETWORK=${CARDANO_NETWORK}"
-#         export CARDANO_NODE_VERSION
-#         echo "CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION}"
-#     else
-#         echo "No saved environment variables found. Please set up the Cardano Node first."
-#         exit 1
-#     fi
-# }
+setWorkspaceDir
 
 # Function to prompt user to set environment variables
 set_node_env_variables() {
@@ -51,10 +18,10 @@ set_node_env_variables() {
     export CARDANO_NODE_VERSION
     
     while :; do
-        read -p "Enter CARDANO_NETWORK [options: preprod, mainnet] (default: preprod): " CARDANO_NETWORK
+        read -p "Enter CARDANO_NETWORK [options: preprod, mainnet, preview] (default: preprod): " CARDANO_NETWORK
         CARDANO_NETWORK=${CARDANO_NETWORK:-preprod}
         
-        if [[ "$CARDANO_NETWORK" == "preprod" || "$CARDANO_NETWORK" == "mainnet" ]]; then
+        if [[ "$CARDANO_NETWORK" == "preprod" || "$CARDANO_NETWORK" == "mainnet"  || "$CARDANO_NETWORK" == "preview" ]]; then
             export CARDANO_NETWORK
             break
         else
@@ -74,7 +41,7 @@ set_node_env_variables() {
     # CARDANO_NODE_DB_PATH=${CARDANO_NODE_DB_PATH:-"$WORKSPACE_ROOT_DIR_ABSOLUTE/configs/cardano-node-data/$CARDANO_NETWORK"}
     # echo "Cardano Node database will be located at: $CARDANO_NODE_DB_PATH"
     # export CARDANO_NODE_DB_PATH
-
+    
     CARDANO_NODE_DB_PATH="$WORKSPACE_ROOT_DIR_ABSOLUTE/data/cardano-node-data/$CARDANO_NETWORK"
     echo "Cardano Node database will be located at: $CARDANO_NODE_DB_PATH"
     
@@ -99,7 +66,7 @@ set_node_env_variables() {
             # SNAPSHOT_SAVE_PATH=${SNAPSHOT_SAVE_PATH:-"$WORKSPACE_ROOT_DIR_ABSOLUTE/configs/cardano-node-snapshot/$CARDANO_NETWORK"}
             # echo "Cardano Node snapshot will be saved to: $SNAPSHOT_SAVE_PATH"
             # export SNAPSHOT_SAVE_PATH
-
+            
             SNAPSHOT_SAVE_PATH="$WORKSPACE_ROOT_DIR_ABSOLUTE/data/cardano-node-snapshot/$CARDANO_NETWORK"
             echo "Cardano Node snapshot will be saved to: $SNAPSHOT_SAVE_PATH"
             
@@ -182,7 +149,7 @@ set_node_env_variables() {
                 # Define where to extract the snapshot (same as the snapshot save location)
                 SNAPSHOT_EXTRACT_PATH="$SNAPSHOT_SAVE_PATH"
                 echo "Extracting snapshot..."
-
+                
                 # Extract the snapshot
                 if lz4 -c -d "$USE_SNAPSHOT_PATH" | sudo tar -x -C "$SNAPSHOT_EXTRACT_PATH"; then
                     echo "Snapshot extracted successfully into $SNAPSHOT_EXTRACT_PATH."
@@ -285,6 +252,52 @@ set_dbsync_env_variables() {
 }
 
 
+set_ogmios_kupo_env_variables() {
+    echo "----"
+    echo "Setting up Ogmios environment..."
+    
+    read -p "Enter OGMIOS_VERSION [default: v6.2.0]: " OGMIOS_VERSION
+    OGMIOS_VERSION=${OGMIOS_VERSION:-v6.2.0}
+    export OGMIOS_VERSION
+    
+    # Ensure CARDANO_NETWORK is set; if not, load from saved environment variables
+    if [ -z "${CARDANO_NETWORK}" ]; then
+        echo "CARDANO_NETWORK could not be determined. Please ensure the Cardano Node setup has been completed."
+        exit 1
+    fi
+    
+    read -p "Enter OGMIOS_PORT [default: 1337]: " OGMIOS_PORT
+    OGMIOS_PORT=${OGMIOS_PORT:-1337}
+    export OGMIOS_PORT
+    
+    read -p "Enter KUPO_VERSION [default: v2.8.0]: " KUPO_VERSION
+    KUPO_VERSION=${KUPO_VERSION:-v2.8.0}
+    export KUPO_VERSION
+    
+    read -p "Enter KUPO_PORT [default: 1442]: " KUPO_PORT
+    KUPO_PORT=${KUPO_PORT:-1442}
+    export KUPO_PORT
+
+    if [[ "$CARDANO_NETWORK" == "preprod" || "$CARDANO_NETWORK" == "preview" ]]; then
+         DEFAULT_ADDRESS="addr_test1qz4ll7yrah8h5t3cv2qptn4mw22judsm9j9zychhmtuuzmszd3hm6w02uxx6h0s3qgd4hxgpvd0qzklnmahcx7v0mcysptyj8l"
+    else
+         DEFAULT_ADDRESS="addr1q8fkuht3erhuu5cxq25rt63ej94j0k0s4hj3qtrdkg69uavmzey8ec0xfr8nzl3dl2maswatavs3vu80mvwea7qjax6qryapfr"
+    fi
+
+    read -p "Enter KUPO_MATCH_PATTERN [default: ${DEFAULT_ADDRESS}]: " KUPO_MATCH_PATTERN
+    KUPO_MATCH_PATTERN=${KUPO_MATCH_PATTERN:-"${DEFAULT_ADDRESS}"}
+    export KUPO_MATCH_PATTERN
+
+    read -p "Enter KUPO_SINCE [default: origin]: " KUPO_SINCE
+    KUPO_SINCE=${KUPO_SINCE:-"origin"}
+    export KUPO_SINCE
+
+    echo "Checking for existing Docker volumes. If found, you'll have the option to delete them. Should you choose not to delete, ensure that your specified values (pattern) align with those of the existing setup."
+    
+    force_delete_docker_volume "kupo-data-${KUPO_VERSION:--v2.8.0}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}"
+
+}
+
 # Function to display menu and read user choice
 show_menu() {
     echo "----"
@@ -293,54 +306,64 @@ show_menu() {
     echo "1) Cardano Node"
     echo "2) Cardano Wallet"
     echo "3) Cardano DB Sync"
-    echo "4) Return Main Menu"
-    read -p "Enter choice [1-4]: " choice
+    echo "4) Ogmios and Kupo"
+    echo "0) Return Main Menu"
+    read -p "Enter your choice or 0 to exit: " choice
     main_choice=$choice
 }
 
-# Main script logic
-while true; do
-    show_menu
-
-    # Get the appropriate Docker Compose command
-    DOCKER_COMPOSE_CMD=$(get_docker_compose_command)
-    
-    case $main_choice in
-        1)
-            set_node_env_variables
-            # save_env_variables
-            PROJECT_NAME=$(echo "cardano-node-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}" | tr '.:' '_' | tr -d '[:upper:]')
-
-            # # Explicitly build the images without cache
-            # $DOCKER_COMPOSE_CMD -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-node/docker-compose.node.yml" -p $PROJECT_NAME build --no-cache
-            # # Then, bring up the containers. Since the images were just built, this step won't rebuild them.
-            # $DOCKER_COMPOSE_CMD -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-node/docker-compose.node.yml" -p $PROJECT_NAME --verbose up -d
-           
-            $DOCKER_COMPOSE_CMD  -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-node/docker-compose.node.yml" --verbose up -d
-            read -p "Press Enter to continue..."
-        ;;
-        2)
-            check_node_resources
-            set_wallet_env_variables
-            PROJECT_NAME=$(echo "cardano-wallet-${CARDANO_WALLET_VERSION:-2023.04.14}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}" | tr '.:' '_' | tr -d '[:upper:]')
-            $DOCKER_COMPOSE_CMD -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-wallet/docker-compose.wallet.yml" --verbose up -d
-            read -p "Press Enter to continue..."
-        ;;
-        3)
-            check_node_resources
-            set_dbsync_env_variables
-            PROJECT_NAME=$(echo "cardano-dbsync-${CARDANO_DBSYNC_VERSION:-"13.2.0.1"}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}" | tr '.:' '_' | tr -d '[:upper:]')
-            $DOCKER_COMPOSE_CMD -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-dbsync/docker-compose.dbsync.yml" --verbose up -d
-            read -p "Press Enter to continue..."
-        ;;
-        4)
-            echo "returning to Main Menu.."
-            exit 0
-        ;;
-        *)
-            echo "Invalid choice, please select a valid option."
-            read -p "Press Enter to continue..."
-        ;;
-    esac
-    
-done
+docker_compose_workflow() {
+    # Main script logic
+    while true; do
+        show_menu
+        
+        # Get the appropriate Docker Compose command
+        DOCKER_COMPOSE_CMD=$(get_docker_compose_command)
+        
+        case $main_choice in
+            1)
+                set_node_env_variables
+                # save_env_variables
+                PROJECT_NAME=$(echo "cardano-node-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}" | tr '.:' '_' | tr -d '[:upper:]')
+                
+                # # Explicitly build the images without cache
+                # $DOCKER_COMPOSE_CMD -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-node/docker-compose.node.yml" -p $PROJECT_NAME build --no-cache
+                # # Then, bring up the containers. Since the images were just built, this step won't rebuild them.
+                # $DOCKER_COMPOSE_CMD -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-node/docker-compose.node.yml" -p $PROJECT_NAME --verbose up -d
+                
+                $DOCKER_COMPOSE_CMD  -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-node/docker-compose.node.yml" --verbose up -d
+                read -p "Press Enter to continue..."
+            ;;
+            2)
+                check_node_resources
+                set_wallet_env_variables
+                PROJECT_NAME=$(echo "cardano-wallet-${CARDANO_WALLET_VERSION:-2023.04.14}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}" | tr '.:' '_' | tr -d '[:upper:]')
+                $DOCKER_COMPOSE_CMD -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-wallet/docker-compose.wallet.yml" --verbose up -d
+                read -p "Press Enter to continue..."
+            ;;
+            3)
+                check_node_resources
+                set_dbsync_env_variables
+                PROJECT_NAME=$(echo "cardano-dbsync-${CARDANO_DBSYNC_VERSION:-"13.2.0.1"}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}" | tr '.:' '_' | tr -d '[:upper:]')
+                $DOCKER_COMPOSE_CMD -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-dbsync/docker-compose.dbsync.yml" --verbose up -d
+                read -p "Press Enter to continue..."
+            ;;
+            4)
+                check_node_resources
+                set_ogmios_kupo_env_variables
+                PROJECT_NAME=$(echo "ogmios-kupo-${OGMIOS_VERSION:-"-v6.2.0"}-${KUPO_VERSION:-"-v2.8.0"}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}" | tr '.:' '_' | tr -d '[:upper:]')
+                $DOCKER_COMPOSE_CMD -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/ogmios-kupo/docker-compose.ogmios.kupo.yml" --verbose up -d
+                read -p "Press Enter to continue..."
+            ;;
+            0)
+                echo "returning to Main Menu.."
+                break 1
+            ;;
+            *)
+                echo "Invalid choice, please select a valid option."
+                read -p "Press Enter to continue..."
+            ;;
+        esac
+        
+    done
+}

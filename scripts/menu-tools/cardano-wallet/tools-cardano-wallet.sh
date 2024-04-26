@@ -1,6 +1,8 @@
 #!/bin/bash
 
-source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/../../utils/utils.sh"
+
+setWorkspaceDir
 
 # Function to select a Cardano Wallet container
 select_wallet_container() {
@@ -51,7 +53,7 @@ generate_and_create_wallet() {
         # echo "Running on the host."
         BASE_URL="http://localhost:${CARDANO_WALLET_PORT}"
     fi
-
+    
     response=$(curl -s -X POST ${BASE_URL}/v2/wallets \
         -H "Content-Type: application/json" \
         -d "{
@@ -81,6 +83,32 @@ list_wallets() {
     echo "Wallets: $response"
 }
 
+
+addresses_tools() {
+    local container=$1
+    local network=1 # Use 0 for testnet, 1 for mainnet
+    local pkh='5621527b37edd322fb06fcaffbf5f301ae41df907f87dfac9cd78c4c'
+    
+    # Convert hex to binary and save to file inside Docker container
+    echo "$pkh" | python3 -c "import sys; sys.stdout.buffer.write(bytes.fromhex(input()))" > payment_keyhash.bin
+    docker cp payment_keyhash.bin "$container":/payment_keyhash.bin
+    
+    # Generate private key from binary
+    docker exec -i "$container" cardano-address key from-bytes --without-chain-code < /payment_keyhash.bin > payment_keyhash.prv
+    docker cp "$container":/payment_keyhash.prv payment_keyhash.prv
+    
+    # Generate public key from private key
+    docker exec -i "$container" cardano-address key public --without-chain-code < payment_keyhash.prv > payment_keyhash.pub
+    docker cp "$container":/payment_keyhash.pub payment_keyhash.pub
+    
+    # Generate the address
+    docker cp payment_keyhash.pub "$container":/payment_keyhash.pub
+    address=$(docker exec -i "$container" bash -c "cardano-address address payment --network-tag $network < /payment_keyhash.pub | cardano-address address build --network-tag $network")
+    
+    echo "Generated Address: $address"
+}
+
+
 # Function to fetch network information
 fetch_network_information() {
     local container=$1
@@ -96,6 +124,7 @@ fetch_network_information() {
     response=$(curl -s "${BASE_URL}/v2/network/information")
     echo "Network Information: $response"
 }
+
 # Function to select a Cardano Wallet container and navigate between options
 cardano_wallet_tools() {
     while select_wallet_container; do
@@ -107,10 +136,12 @@ cardano_wallet_tools() {
             echo "1) Generate mnemonic"
             echo "2) Generate mnemonic and create wallet"
             echo "3) List wallets"
-            echo "4) Fetch network information"
-            echo "5) Delete this Container and Optionally Its Volumes"
-            echo "6) Return Main Menu"
-            read -p "Enter your choice or 6 to exit: " tool_choice
+            echo "4) Addresses"
+            echo "5) Fetch network information"
+            echo "6) Docker Logs"
+            echo "7) Delete this Container and Optionally Its Volumes"
+            echo "0) Return Main Menu"
+            read -p "Enter your choice or 0 to exit: " tool_choice
             echo "----"
             
             case $tool_choice in
@@ -123,16 +154,26 @@ cardano_wallet_tools() {
                 3) list_wallets "$selected_container"
                     read -p "Press Enter to continue..."
                 ;;
-                4) fetch_network_information "$selected_container"
+                4) addresses_tools "$selected_container"
                     read -p "Press Enter to continue..."
                 ;;
-                5)
+                5) fetch_network_information "$selected_container"
+                    read -p "Press Enter to continue..."
+                ;;
+                
+                6)
+                    monitor_logs "$selected_container"
+                    read -p "Press Enter to continue..."
+                ;;
+                7)
                     delete_wallet_container_and_associated_icarus "$selected_container"
                     read -p "Press Enter to continue..."
                     break 2 # Breaks out of the current loop and the container selection loop
                 ;;
-                6) break 2 # Breaks out of both the inner loop and the container selection loop
+                
+                0) break 2 # Breaks out of both the inner loop and the container selection loop
                 ;;
+                
                 *)
                     echo "Invalid choice, please select a valid option."
                     read -p "Press Enter to continue..."

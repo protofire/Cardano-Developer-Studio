@@ -15,7 +15,7 @@ services:
       - cardano-wallet-data:/var/lib/cardano-wallet-db
       - node-ipc:/ipc
       - ${HOST_PROJECT_PATH}/configs:/configs
-      - ${HOST_PROJECT_PATH}/scripts/init-cardano-wallet.sh:/init-cardano-wallet.sh # Mount the script into the container
+      - ${HOST_PROJECT_PATH}/scripts/init/init-cardano-wallet.sh:/init-cardano-wallet.sh # Mount the script into the container
     ports:
       - "${CARDANO_WALLET_PORT:-8090}:8090"
 
@@ -26,9 +26,12 @@ services:
         compress: "true"
         max-file: "10"
         max-size: "50m"
-    entrypoint: []
-    command: >
-      /bin/bash -c "chmod +x /init-cardano-wallet.sh && /init-cardano-wallet.sh"
+    entrypoint:
+      - /bin/bash
+      - -c
+      - "chmod +x /init-cardano-wallet.sh && /init-cardano-wallet.sh"
+    #command: >
+    #  /bin/bash -c "chmod +x /init-cardano-wallet.sh && /init-cardano-wallet.sh"
     # Ensure /init-cardano-wallet.sh includes the necessary logic to start the Cardano wallet correctly
 
   icarus:

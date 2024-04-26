@@ -1,0 +1,87 @@
+version: "3.5"
+
+services:
+  ogmios:
+    container_name: ogmios-container-${OGMIOS_VERSION:-v6.2.0}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
+    image: cardanosolutions/ogmios:${OGMIOS_VERSION:-v6.2.0}
+    environment:
+      - CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION:-"8.9.0"}
+      - CARDANO_NETWORK=${CARDANO_NETWORK:-mainnet}
+      - OGMIOS_PORT=${OGMIOS_PORT:-1337}
+      - KUPO_VERSION=${KUPO_VERSION:-v2.8.0}
+    networks:
+      - cardano-network
+    volumes:
+      - ogmios-data:/var/lib/ogmios-db
+      - node-ipc:/ipc
+      - ${HOST_PROJECT_PATH}/configs:/configs
+      - ${HOST_PROJECT_PATH}/scripts/init/init-ogmios.sh:/init-ogmios.sh # Mount the script into the container
+    ports:
+      - "${OGMIOS_PORT:-1337}:1337"
+
+    restart: on-failure
+    logging:
+      driver: "json-file"
+      options:
+        compress: "true"
+        max-file: "10"
+        max-size: "50m"
+    entrypoint:
+      - /bin/sh
+      - -c
+      - "chmod +x /init-ogmios.sh && /init-ogmios.sh"
+    # entrypoint: []
+    # # command: tail -f /dev/null  # Keep the container running indefinitely
+    # command: >
+    #   /bin/sh -c "chmod +x /init-ogmios.sh && /init-ogmios.sh"
+    # Ensure /init-ogmios.sh includes the necessary logic to start the Cardano wallet correctly
+
+  kupo:
+    container_name: kupo-container-${KUPO_VERSION:-v2.8.0}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
+    image: cardanosolutions/kupo:${KUPO_VERSION:-v2.8.0}
+    environment:
+      - CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION:-"8.9.0"}
+      - CARDANO_NETWORK=${CARDANO_NETWORK:-mainnet}
+      - KUPO_PORT=${KUPO_PORT:-1442}
+      - KUPO_MATCH_PATTERN=${KUPO_MATCH_PATTERN:-"*/*"}
+      - KUPO_SINCE=${KUPO_SINCE:-"origin"}
+    networks:
+      - cardano-network
+    volumes:
+      - kupo-data:/var/lib/kupo-db
+      - node-ipc:/ipc
+      - ${HOST_PROJECT_PATH}/configs:/configs
+      - ${HOST_PROJECT_PATH}/scripts/init/init-kupo.sh:/init-kupo.sh # Mount the script into the container
+    ports:
+      - "${KUPO_PORT:-1442}:1442"
+
+    restart: on-failure
+    logging:
+      driver: "json-file"
+      options:
+        compress: "true"
+        max-file: "10"
+        max-size: "50m"
+    entrypoint:
+      - /bin/sh
+      - -c
+      - "chmod +x /init-kupo.sh && /init-kupo.sh"
+    # entrypoint: []
+    # # command: tail -f /dev/null  # Keep the container running indefinitely
+    # command: >
+    #   /bin/sh -c "chmod +x /init-kupo.sh && /init-kupo.sh"
+    # # Ensure /init-kupo.sh includes the necessary logic to start the Cardano wallet correctly
+
+networks:
+  cardano-network:
+    name: cardano-node-network-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
+    external: true
+
+volumes:
+  ogmios-data:
+    name: ogmios-data-${OGMIOS_VERSION:-v6.2.0}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
+  kupo-data:
+    name: kupo-data-${KUPO_VERSION:--v2.8.0}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
+  node-ipc:
+    name: cardano-node-ipc-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}
+    external: true
