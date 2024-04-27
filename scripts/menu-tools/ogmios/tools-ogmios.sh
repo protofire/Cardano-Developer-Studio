@@ -82,12 +82,12 @@ cardano_ogmios_tools() {
                     read -p "Press Enter to continue..."
                 ;;
                 
-                3)
+                4)
                     monitor_logs "$selected_container"
                     read -p "Press Enter to continue..."
                 ;;
                 
-                4)
+                5)
                     delete_container_and_optionally_volumes "$selected_container"
                     break 2 # Breaks out of the current loop and the container selection loop
                     read -p "Press Enter to continue..."

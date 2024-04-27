@@ -33,6 +33,9 @@ RUN apt-get install -y docker-ce-cli
 # Install rsync
 RUN apt-get install -y rsync
 
+# Install git
+RUN apt-get install -y git
+ 
 # Cleanup
 RUN apt-get autoremove -y \
     && apt-get clean \
