@@ -4,6 +4,8 @@ source "$(dirname "${BASH_SOURCE[0]}")/../../utils/utils.sh"
 
 setWorkspaceDir
 
+source "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts/menu-tools/cardano-wallet/tools-addresses.sh"
+
 # Function to select a Cardano Wallet container
 select_wallet_container() {
     if ! select_container 'cardano-wallet-container'; then
@@ -96,32 +98,6 @@ list_wallets() {
     echo "Wallets: $response"
 }
 
-
-addresses_tools() {
-    local container=$1
-    local network=1 # Use 0 for testnet, 1 for mainnet
-    local pkh='5621527b37edd322fb06fcaffbf5f301ae41df907f87dfac9cd78c4c'
-    
-    # Convert hex to binary and save to file inside Docker container
-    echo "$pkh" | python3 -c "import sys; sys.stdout.buffer.write(bytes.fromhex(input()))" > payment_keyhash.bin
-    docker cp payment_keyhash.bin "$container":/payment_keyhash.bin
-    
-    # Generate private key from binary
-    docker exec -i "$container" cardano-address key from-bytes --without-chain-code < /payment_keyhash.bin > payment_keyhash.prv
-    docker cp "$container":/payment_keyhash.prv payment_keyhash.prv
-    
-    # Generate public key from private key
-    docker exec -i "$container" cardano-address key public --without-chain-code < payment_keyhash.prv > payment_keyhash.pub
-    docker cp "$container":/payment_keyhash.pub payment_keyhash.pub
-    
-    # Generate the address
-    docker cp payment_keyhash.pub "$container":/payment_keyhash.pub
-    address=$(docker exec -i "$container" bash -c "cardano-address address payment --network-tag $network < /payment_keyhash.pub | cardano-address address build --network-tag $network")
-    
-    echo "Generated Address: $address"
-}
-
-
 # Function to fetch network information
 fetch_network_information() {
     local container=$1
@@ -149,7 +125,7 @@ cardano_wallet_tools() {
             echo "1) Generate mnemonic"
             echo "2) Generate mnemonic and create wallet"
             echo "3) List wallets"
-            echo "4) Addresses"
+            echo "4) Addresses Tools"
             echo "5) Fetch network information"
             echo "6) Docker Logs"
             echo "7) Delete this Container and Optionally Its Volumes"
@@ -168,12 +144,10 @@ cardano_wallet_tools() {
                     read -p "Press Enter to continue..."
                 ;;
                 4) addresses_tools "$selected_container"
-                    read -p "Press Enter to continue..."
                 ;;
                 5) fetch_network_information "$selected_container"
                     read -p "Press Enter to continue..."
                 ;;
-                
                 6)
                     monitor_logs "$selected_container"
                     read -p "Press Enter to continue..."
