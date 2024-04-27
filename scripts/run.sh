@@ -32,8 +32,9 @@ check_bash_version "4.0" || exit 1
 check_docker_version "19.03" || exit 1
 check_docker_compose_version "1.25" || exit 1
 echo "----"
+echo "Setting permissions for all Bash scripts in $WORKSPACE_ROOT_DIR_ABSOLUTE/scripts..."
 find "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts" -type f -name "*.sh" -exec sudo chmod +x {} \;
-echo "Permissions set for all Bash scripts in $WORKSPACE_ROOT_DIR_ABSOLUTE/scripts"
+echo "Permissions set for all Bash scripts"
 
 #--------------------------------------------------------------------------------
 

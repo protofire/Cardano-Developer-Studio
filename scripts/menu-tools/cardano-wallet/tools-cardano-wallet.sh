@@ -31,6 +31,11 @@ generate_mnemonic_menu() {
 # Function to create a wallet
 generate_and_create_wallet() {
     local container=$1
+    CARDANO_WALLET_PORT=$(docker exec -it "$container" printenv CARDANO_WALLET_PORT | tr -d '\r')
+    
+    echo "Container: ${container}"
+    echo "CARDANO_WALLET_PORT: ${CARDANO_WALLET_PORT}"
+    
     echo "Generating a 15-word mnemonic..."
     # Call generate_mnemonic and capture its output
     mnemonic=$(generate_mnemonic "$container")
@@ -39,12 +44,13 @@ generate_and_create_wallet() {
     echo "Mnemonic generated. Please keep it safe."
     echo "$mnemonic"
     echo ""
+    echo "mnemonic json array:"
+    echo "$mnemonic_json_array"
+    echo ""
     
     read -p "Enter Wallet Name: " wallet_name
     read -sp "Enter Wallet Passphrase: " wallet_passphrase
     echo ""
-    
-    CARDANO_WALLET_PORT=$(docker exec -it "$container" printenv CARDANO_WALLET_PORT | tr -d '\r')
     
     if [ -f /.dockerenv ]; then
         # echo "Running inside a Docker container."
@@ -54,14 +60,21 @@ generate_and_create_wallet() {
         BASE_URL="http://localhost:${CARDANO_WALLET_PORT}"
     fi
     
-    response=$(curl -s -X POST ${BASE_URL}/v2/wallets \
+    response=$(curl -s -f -X POST ${BASE_URL}/v2/wallets \
         -H "Content-Type: application/json" \
         -d "{
-            \"name\": \"$wallet_name\",
-            \"mnemonic_sentence\":[$mnemonic_json_array],
-            \"passphrase\": \"$wallet_passphrase\"
-    }")
-    echo "Wallet creation response: $response"
+        \"name\": \"$wallet_name\",
+        \"mnemonic_sentence\":[$mnemonic_json_array],
+        \"passphrase\": \"$wallet_passphrase\"
+    }" 2>&1)
+    
+    status=$?
+    
+    if [ $status -ne 0 ]; then
+        echo "Error creating wallet: $response"
+    else
+        echo "Wallet creation response: $response"
+    fi
 }
 
 
