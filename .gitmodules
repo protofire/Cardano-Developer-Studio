@@ -1,0 +1,3 @@
+[submodule "submodules/cardano-address-tools"]
+	path = submodules/cardano-address-tools
+	url = https://github.com/manupadillaph/cardano-address-tools.git
