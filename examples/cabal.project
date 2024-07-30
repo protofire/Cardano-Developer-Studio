@@ -19,6 +19,7 @@ index-state:
 
 packages: 
     Policys/Free
+    Policys/Lock
 
 -- We never, ever, want this.
 write-ghc-environment-files: never
