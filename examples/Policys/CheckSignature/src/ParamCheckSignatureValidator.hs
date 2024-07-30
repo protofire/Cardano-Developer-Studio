@@ -22,7 +22,6 @@ mkParamCheckSignatureValidator signatureKey _ _ ctxRaw =
  if traceIfFalse "Beneficiary's signature missing" signedByBeneficiary
       then ()
       else error()
-    -- traceIfFalse "deadline not reached" deadlineReached
   where
     info :: LedgerApiV2.TxInfo
     info = LedgerContextsV2.scriptContextTxInfo ctx
@@ -31,11 +30,6 @@ mkParamCheckSignatureValidator signatureKey _ _ ctxRaw =
 
     signedByBeneficiary :: Bool
     signedByBeneficiary = LedgerContextsV2.txSignedBy info signatureKey
-
-
-    -- deadlineReached :: Bool
-    -- deadlineReached = contains (from $ deadline params) $ txInfoValidRange info
-
 --------------------------------------------------------------------------------
 
 {-# INLINEABLE paramCheckSignatureValidator #-}
