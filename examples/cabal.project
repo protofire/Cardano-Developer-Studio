@@ -22,6 +22,12 @@ packages:
     Validators/Lock
     Validators/CheckSignature
     Validators/CheckDate
+    Policys/Lock
+    Policys/Free
+    Policys/CheckSignature
+    Policys/CheckDate
+    Policys/RedeemerFT
+    Policys/RedeemerNFT
 -- We never, ever, want this.
 write-ghc-environment-files: never
 

@@ -2,8 +2,8 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE TemplateHaskell     #-}
-{-# LANGUAGE TypeApplications     #-}
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeApplications    #-}
+{-# LANGUAGE OverloadedStrings   #-}
 
 module ParamCheckSignaturePolicy where
 
