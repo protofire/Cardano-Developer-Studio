@@ -18,10 +18,10 @@ index-state:
   , cardano-haskell-packages 2022-11-17T04:56:26Z
 
 packages: 
-    Policys/Free
-    Policys/Lock
-    Policys/CheckSignature
-    Policys/CheckDate
+    Validators/Free
+    Validators/Lock
+    Validators/CheckSignature
+    Validators/CheckDate
 -- We never, ever, want this.
 write-ghc-environment-files: never
 
