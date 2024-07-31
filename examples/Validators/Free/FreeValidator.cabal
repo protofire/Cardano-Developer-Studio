@@ -1,8 +1,12 @@
 cabal-version:      3.4
-name:               CheckDateValidator
+name:               FreeValidator
 version:            0.1.0.0
 author:             Francisco Ciordia Cantarella
+maintainer:         francisco.ciordia.cantarella@gmail.com
 build-type:         Simple
+copyright:          © 2024 Francisco Ciordia Cantarella 
+license:            Apache-2.0
+
 
 common common-all
 
@@ -33,14 +37,11 @@ common common-all-tests
 library
     import:             common-all
     hs-source-dirs:     src
-    exposed-modules:    ParamCheckBeforeDeadlineValidator
-                        ParamCheckAfterDeadlineValidator
-                        DatumCheckBeforeDeadlineValidator
-                        DatumCheckAfterDeadlineValidator
+    exposed-modules:    FreeValidator
 
-test-suite CheckDateValidatorTest
+test-suite FreeValidatorTest
     import:             common-all-tests
     type:               exitcode-stdio-1.0
-    main-is:            CheckDateValidatorTest.hs
+    main-is:            FreeValidatorTest.hs
     hs-source-dirs:     test
-    build-depends:      CheckDateValidator
+    build-depends:      FreeValidator

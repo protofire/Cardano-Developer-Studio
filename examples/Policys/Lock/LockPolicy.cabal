@@ -1,8 +1,11 @@
 cabal-version:      3.4
-name:               LockValidator
+name:               LockPolicy
 version:            0.1.0.0
 author:             Francisco Ciordia Cantarella
+maintainer:         francisco.ciordia.cantarella@gmail.com
 build-type:         Simple
+copyright:          © 2024 Francisco Ciordia Cantarella 
+license:            Apache-2.0
 
 common common-all
 
@@ -33,11 +36,11 @@ common common-all-tests
 library
     import:             common-all
     hs-source-dirs:     src
-    exposed-modules:    LockValidator
+    exposed-modules:    LockPolicy
 
-test-suite LockValidatorTest
+test-suite LockPolicyTest
     import:             common-all-tests
     type:               exitcode-stdio-1.0
-    main-is:            LockValidatorTest.hs
+    main-is:            LockPolicyTest.hs
     hs-source-dirs:     test
-    build-depends:      LockValidator
+    build-depends:      LockPolicy

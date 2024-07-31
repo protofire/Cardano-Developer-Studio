@@ -1,8 +1,11 @@
 cabal-version:      3.4
-name:               CheckDatePolicy
+name:               CheckDateValidator
 version:            0.1.0.0
 author:             Francisco Ciordia Cantarella
+maintainer:         francisco.ciordia.cantarella@gmail.com
 build-type:         Simple
+copyright:          © 2024 Francisco Ciordia Cantarella 
+license:            Apache-2.0
 
 common common-all
 
@@ -33,12 +36,14 @@ common common-all-tests
 library
     import:             common-all
     hs-source-dirs:     src
-    exposed-modules:    ParamCheckBeforeDeadlinePolicy
-                        ParamCheckAfterDeadlinePolicy
+    exposed-modules:    ParamCheckBeforeDeadlineValidator
+                        ParamCheckAfterDeadlineValidator
+                        DatumCheckBeforeDeadlineValidator
+                        DatumCheckAfterDeadlineValidator
 
-test-suite CheckDatePolicyTest
+test-suite CheckDateValidatorTest
     import:             common-all-tests
     type:               exitcode-stdio-1.0
-    main-is:            CheckDatePolicyTest.hs
+    main-is:            CheckDateValidatorTest.hs
     hs-source-dirs:     test
-    build-depends:      CheckDatePolicy
+    build-depends:      CheckDateValidator

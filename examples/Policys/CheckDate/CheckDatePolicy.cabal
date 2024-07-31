@@ -1,8 +1,11 @@
 cabal-version:      3.4
-name:               CheckSignaturePolicy
+name:               CheckDatePolicy
 version:            0.1.0.0
 author:             Francisco Ciordia Cantarella
+maintainer:         francisco.ciordia.cantarella@gmail.com
 build-type:         Simple
+copyright:          © 2024 Francisco Ciordia Cantarella 
+license:            Apache-2.0
 
 common common-all
 
@@ -33,11 +36,12 @@ common common-all-tests
 library
     import:             common-all
     hs-source-dirs:     src
-    exposed-modules:    ParamCheckSignaturePolicy
+    exposed-modules:    ParamCheckBeforeDeadlinePolicy
+                        ParamCheckAfterDeadlinePolicy
 
-test-suite CheckSignaturePolicyTest
+test-suite CheckDatePolicyTest
     import:             common-all-tests
     type:               exitcode-stdio-1.0
-    main-is:            CheckSignaturePolicyTest.hs
+    main-is:            CheckDatePolicyTest.hs
     hs-source-dirs:     test
-    build-depends:      CheckSignaturePolicy
+    build-depends:      CheckDatePolicy

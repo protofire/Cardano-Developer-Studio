@@ -1,9 +1,10 @@
+
 {-# LANGUAGE DataKinds           #-}
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE TemplateHaskell     #-}
-{-# LANGUAGE TypeApplications     #-}
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeApplications    #-}
+{-# LANGUAGE OverloadedStrings   #-}
 
 module ParamCheckBeforeDeadlineValidator where
 
@@ -17,6 +18,20 @@ import           PlutusTx.Prelude     (($), Bool, traceIfFalse, error)
 
 type Parameter = LedgerApiV2.POSIXTime
 
+-- | Validator function that checks if the current time is before a specified deadline
+--
+-- This function validates that the current blockchain time is before a deadline specified in the parameters.
+-- The validator will only succeed if the deadline has not yet been reached.
+--
+-- Parameters:
+--   - `deadline`: The deadline as a `POSIXTime`.
+--   - `_`: Unused parameter.
+--   - `_`: Unused parameter.
+--   - `ctxRaw`: A `BuiltinData` representing the script context.
+--
+-- Returns:
+--   - `()`: If the deadline has not yet been reached.
+--   - Calls `error()` if the deadline has been reached.
 {-# INLINEABLE mkParamCheckBeforeDeadlineValidator #-}
 mkParamCheckBeforeDeadlineValidator :: Parameter -> PlutusTx.BuiltinData -> PlutusTx.BuiltinData -> PlutusTx.BuiltinData -> ()
 mkParamCheckBeforeDeadlineValidator deadline _ _ ctxRaw =
@@ -29,23 +44,41 @@ mkParamCheckBeforeDeadlineValidator deadline _ _ ctxRaw =
 
     ctx = PlutusTx.unsafeFromBuiltinData @LedgerContextsV2.ScriptContext ctxRaw
 
-    -- signedByBeneficiary :: Bool
-    -- signedByBeneficiary = LedgerContextsV2.txSignedBy info signatureKey
-
+    -- Check if the current time is before the deadline
     deadlineNotReached :: Bool
     deadlineNotReached = LedgerIntervalV1.contains (LedgerIntervalV1.to deadline) $ LedgerContextsV2.txInfoValidRange info
 
 --------------------------------------------------------------------------------
 
+-- | Creates the validator script for the parameter check before deadline
+--
+-- This function creates an optimized Plutus validator script for the `mkParamCheckBeforeDeadlineValidator` function.
+-- The validator script will only succeed if the current time is before the deadline specified in the parameters.
+--
+-- Parameters:
+--   - `deadline`: The deadline as a `POSIXTime`.
+--
+-- Returns:
+--   - A `Validator` that enforces the deadline check based on the parameter.
 {-# INLINEABLE paramCheckBeforeDeadlineValidator #-}
-paramCheckBeforeDeadlineValidator ::  LedgerApiV2.POSIXTime -> LedgerApiV2.Validator
+paramCheckBeforeDeadlineValidator :: LedgerApiV2.POSIXTime -> LedgerApiV2.Validator
 paramCheckBeforeDeadlineValidator deadline =
       Plutonomy.optimizeUPLC $ Plutonomy.validatorToPlutus $ plutonomyValidator deadline
 
+-- | Creates a Plutus validator script using Plutonomy
+--
+-- This function compiles the `mkParamCheckBeforeDeadlineValidator` function into a Plutus validator script,
+-- and applies the specified deadline as a parameter.
+--
+-- Parameters:
+--   - `deadline`: The deadline as a `POSIXTime`.
+--
+-- Returns:
+--   - A `Validator` that checks if a transaction is valid before the specified deadline.
 {-# INLINEABLE plutonomyValidator #-}
 plutonomyValidator :: LedgerApiV2.POSIXTime -> Plutonomy.Validator
 plutonomyValidator deadline =
     Plutonomy.mkValidatorScript $
         $$(PlutusTx.compile [|| mkParamCheckBeforeDeadlineValidator ||])
         `PlutusTx.applyCode` PlutusTx.liftCode deadline
---------------------------------------------------------------------------------
+

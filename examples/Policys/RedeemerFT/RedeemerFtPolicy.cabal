@@ -2,7 +2,10 @@ cabal-version:      3.4
 name:               RedeemerFtPolicy
 version:            0.1.0.0
 author:             Francisco Ciordia Cantarella
+maintainer:         francisco.ciordia.cantarella@gmail.com
 build-type:         Simple
+copyright:          © 2024 Francisco Ciordia Cantarella 
+license:            Apache-2.0
 
 common common-all
 

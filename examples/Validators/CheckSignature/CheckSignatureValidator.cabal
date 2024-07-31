@@ -1,8 +1,11 @@
 cabal-version:      3.4
-name:               FreePolicy
+name:               CheckSignatureValidator
 version:            0.1.0.0
 author:             Francisco Ciordia Cantarella
+maintainer:         francisco.ciordia.cantarella@gmail.com
 build-type:         Simple
+copyright:          © 2024 Francisco Ciordia Cantarella 
+license:            Apache-2.0
 
 common common-all
 
@@ -33,11 +36,12 @@ common common-all-tests
 library
     import:             common-all
     hs-source-dirs:     src
-    exposed-modules:    FreePolicy
+    exposed-modules:    ParamCheckSignatureValidator
+                        DatumCheckSignatureValidator
 
-test-suite FreePolicyTest
+test-suite CheckSignatureValidatorTest
     import:             common-all-tests
     type:               exitcode-stdio-1.0
-    main-is:            FreePolicyTest.hs
+    main-is:            CheckSignatureValidatorTest.hs
     hs-source-dirs:     test
-    build-depends:      FreePolicy
+    build-depends:      CheckSignatureValidator
