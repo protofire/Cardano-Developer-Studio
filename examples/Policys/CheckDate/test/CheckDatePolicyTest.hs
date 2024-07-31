@@ -6,6 +6,7 @@
 
 module Main where
 
+import Control.Monad (replicateM)
 import PlutusTx.Prelude ((.), ($)) 
 import Prelude (IO, mconcat)
 
@@ -26,14 +27,12 @@ main = Tasty.defaultMain $ do
     "Testing time checks"
     [ Tasty.testGroup
         "Test Claim Before the Deadline"
-        [ bad   "Deadline: 6000; TxValidRange (6900, 7100)" $ paramCheckBeforeDeadlineTest 6000 4900 5100 7000
-        , good  "Deadline: 6000; TxValidRange (4900, 5100)" $ paramCheckBeforeDeadlineTest 6000 4900 5100 5000
-        ],
+        [ bad   "Deadline: 6000; TxValidRange (6900, 7100)" $ paramCheckBeforeDeadlineTest 6000 (-100) 100 7000
+        , good  "Deadline: 6000; TxValidRange (4900, 5100)" $ paramCheckBeforeDeadlineTest 6000 (-100) 100 5000        ],
     Tasty.testGroup
         "Test Claim After the Deadline"
-        [ good  "Deadline: 6000; TxValidRange (6900, 7100)" $ paramCheckAfterDeadlineTest 6000 6900 7100 7000
-        , bad   "Deadline: 6000; TxValidRange (4900, 5100)" $ paramCheckAfterDeadlineTest 6000 4900 5100 5000
-        ]
+        [ good  "Deadline: 6000; TxValidRange (6900, 7100)" $ paramCheckAfterDeadlineTest 6000 (-100) 100 7000
+        , bad   "Deadline: 6000; TxValidRange (4900, 5100)" $ paramCheckAfterDeadlineTest 6000 (-100) 100 5000        ]
     ]
   where
     bad msg = good msg . Model.mustFail

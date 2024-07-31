@@ -7,7 +7,7 @@
 module Main where
 
 import Control.Monad (replicateM, unless)
-import PlutusTx.Prelude (Bool, (&&), (.), ($), (==))
+import PlutusTx.Prelude ((&&), (.), ($), (==))
 import Prelude (IO, mapM, mconcat)
 
 import qualified Plutus.Model as Model

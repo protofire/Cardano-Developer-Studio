@@ -8,7 +8,7 @@
 module Main where
 
 import Control.Monad (replicateM, unless)
-import PlutusTx.Prelude (Bool, (&&), (.), ($), (==))
+import PlutusTx.Prelude ((&&), ($), (==))
 import Prelude (IO, mapM, mconcat)
 
 import qualified Plutus.Model as Model
@@ -34,7 +34,6 @@ main = Tasty.defaultMain $ do
         ]
   where
     -- | Helper functions to define tests that must fail or succeed.
-    bad msg = good msg . Model.mustFail
     good = Model.testNoErrors (Model.adaValue 10_000_000_000) Model.defaultBabbage
 
 -- | 'FreeValidatorType' is a type alias for a typed validator with unit data types for datum and redeemer.
