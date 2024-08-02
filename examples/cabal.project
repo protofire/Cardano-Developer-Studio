@@ -6,8 +6,6 @@ benchmarks: false
 -- 'tasty' output.
 test-show-details: direct
 
-
-
 -- because of a limitation in haskell.nix index-state has to be repeated for
 -- hackage.
 index-state: 2022-12-22T00:00:00Z

@@ -1,12 +1,12 @@
 {
-  "name": "Developer Studio",
-  "dockerComposeFile": "docker-compose.yml",
-  "service": "studio",
+  "name": "Developer Studio Cabal-Haskell-Plutus",
+  "dockerComposeFile": "../../docker-enviroments/cardano-dev/docker-compose.dev.yml",
+  "service": "cardano-dev",
   "userEnvProbe": "loginShell",
-  "workspaceFolder": "/home/workspace",
+  "workspaceFolder": "/home/plutus/workspace",
   "shutdownAction": "stopCompose",
-  //   "postStartCommand": "/home/plutus/workspace/.devcontainer/scripts/on-start-container.sh",
-  "postCreateCommand": "echo 'Ready to launch your development environment!'",
+  "postStartCommand": "/home/plutus/workspace/.devcontainer/scripts/on-start-container.sh",
+  // "postCreateCommand": "echo 'Ready to launch your development environment!'",
   "containerEnv": {},
   "remoteEnv": {
     "HOST_PROJECT_PATH": "${localWorkspaceFolder}"
@@ -15,12 +15,27 @@
     "vscode": {
       "settings": {
         // Add any VS Code settings here
-        "terminal.integrated.shell.linux": "/bin/bash"
+        "terminal.integrated.shell.linux": "/bin/bash",
+        "haskell.formattingProvider": "stylish-haskell",
+        "haskell.trace.server": "messages",
+        "haskell.trace.client": "debug",
+        "haskell.manageHLS": "PATH",
+        "haskell.ghcupExecutablePath": "",
+        "nixEnvSelector.suggestion": true,
+        "haskell.hlint.logLevel": "log",
+        "haskell.hlint.executablePath": "hlint"
       },
-      "extensions": [
-        // List VS Code extensions that should be installed in the container
-          "ms-azuretools.vscode-docker",
-          "shakram02.bash-beautify"
+     "extensions": [
+        "haskell.haskell",
+        "justusadam.language-haskell",
+        "hoovercj.haskell-linter",
+        "vigoo.stylish-haskell",
+        "arrterian.nix-env-selector",
+        "visortelle.haskell-spotlight",
+        "GitHub.copilot",
+        "GitHub.copilot-labs",
+        "ms-azuretools.vscode-docker",
+        "shakram02.bash-beautify"
         ]
     }
   }

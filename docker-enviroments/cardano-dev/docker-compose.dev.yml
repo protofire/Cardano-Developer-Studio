@@ -1,0 +1,24 @@
+# docker-compose.yml
+version: "3.5"
+
+services:
+  cardano-dev:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        USER: plutus
+    volumes:
+      - ../../examples:/home/plutus/workspace
+    restart: on-failure
+    logging:
+      driver: "json-file"
+      options:
+        compress: "true"
+        max-file: "10"
+        max-size: "50m"
+    entrypoint: []
+    # command: tail -f /dev/null  # Keep the container running indefinitely
+    command: /bin/bash -c "chmod +x /home/plutus/workspace/.devcontainer/scripts/on-create-container.sh && /home/plutus/workspace/.devcontainer/scripts/on-create-container.sh && tail -f /dev/null"
+
+

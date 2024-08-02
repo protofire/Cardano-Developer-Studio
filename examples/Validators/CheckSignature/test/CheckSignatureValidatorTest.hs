@@ -4,6 +4,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 
+{- HLINT ignore "Reduce duplication"          -}
+
 module Main where
 
 import Control.Monad (replicateM, unless)

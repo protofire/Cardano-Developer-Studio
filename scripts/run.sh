@@ -42,6 +42,7 @@ source "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts/menu-compose/compose.sh"
 source "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts/menu-tools/cardano-node/tools-cardano-node.sh"
 source "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts/menu-tools/cardano-wallet/tools-cardano-wallet.sh"
 source "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts/menu-tools/cardano-dbsync/tools-cardano-dbsync.sh"
+source "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts/menu-tools/cardano-dev/tools-cardano-dev.sh"
 source "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts/menu-tools/ogmios/tools-ogmios.sh"
 source "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts/menu-tools/kupo/tools-kupo.sh"
 
@@ -59,6 +60,7 @@ show_main_menu() {
     echo "4) Cardano DB Sync Tools"
     echo "5) Ogmios Tools"
     echo "6) Kupo Tools"
+    echo "7) Smart Contract Plutus Development Tools"
     echo "0) Exit"
     read -p "Enter your choice or 0 to exit: " main_choice
 }
@@ -85,6 +87,9 @@ while true; do
         ;;
         6)
            cardano_kupo_tools
+        ;;
+        7)
+           cardano_dev_tools
         ;;
         0)
             echo "Exiting."

@@ -298,6 +298,14 @@ set_ogmios_kupo_env_variables() {
 
 }
 
+set_cardano_dev_env_variables() {
+    echo "----"
+    echo "Setting up Smart Contract Plutus environment..."
+    # echo "Checking for existing Docker volumes. If found, you'll have the option to delete them. Should you choose not to delete, ensure that your specified values (pattern) align with those of the existing setup."
+    # force_delete_docker_volume "cardano_dev"
+
+}
+
 # Function to display menu and read user choice
 show_menu() {
     echo "----"
@@ -307,6 +315,7 @@ show_menu() {
     echo "2) Cardano Wallet"
     echo "3) Cardano DB Sync"
     echo "4) Ogmios and Kupo"
+    echo "5) Smart Contract Plutus Development"
     echo "0) Return Main Menu"
     read -p "Enter your choice or 0 to exit: " choice
     main_choice=$choice
@@ -353,6 +362,12 @@ docker_compose_workflow() {
                 set_ogmios_kupo_env_variables
                 PROJECT_NAME=$(echo "ogmios-kupo-${OGMIOS_VERSION:-"-v6.2.0"}-${KUPO_VERSION:-"-v2.8.0"}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}" | tr '.:' '_' | tr -d '[:upper:]')
                 $DOCKER_COMPOSE_CMD -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-enviroments/ogmios-kupo/docker-compose.ogmios.kupo.yml" --verbose up -d
+                read -p "Press Enter to continue..."
+            ;;
+            5)
+                set_cardano_dev_env_variables
+                PROJECT_NAME=$(echo "cardano-dev" | tr '.:' '_' | tr -d '[:upper:]')
+                $DOCKER_COMPOSE_CMD -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-enviroments/cardano-dev/docker-compose.dev.yml" --verbose up -d
                 read -p "Press Enter to continue..."
             ;;
             0)
