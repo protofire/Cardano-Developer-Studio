@@ -1,0 +1,90 @@
+cabal-version:      3.4
+name:               Helpers
+version:            0.1.0.0
+author:             Francisco Ciordia Cantarella
+maintainer:         francisco.ciordia.cantarella@gmail.com
+build-type:         Simple
+copyright:          © 2024 Francisco Ciordia Cantarella 
+license:            Apache-2.0
+
+
+common common-all
+    build-depends:    base ^>=4.14.3.0
+                    , aeson
+                    , bytestring
+                    , containers
+                    , cardano-api
+                    , data-default
+                    , plutus-ledger-api
+                    , plutus-tx-plugin
+                    , plutus-tx
+                    , text
+                    , plutonomy
+                    , serialise
+                    
+
+    default-language: Haskell2010
+    ghc-options: -Wall -fobject-code -fno-ignore-interface-pragmas
+                 -fno-omit-interface-pragmas -fno-strictness 
+                 -fno-spec-constr -fno-specialise -fexpose-all-unfoldings
+                 -fplugin-opt PlutusTx.Plugin:defer-errors
+
+common common-all-tests
+    import:           common-all
+    build-depends:    QuickCheck
+                    , tasty
+                    , plutus-simple-model
+
+library
+    import:             common-all
+    hs-source-dirs:     src
+    exposed-modules:    
+                    Helpers.CLI,
+                    Helpers.Constants,
+                    Helpers.Deploy,
+                    Helpers.Emulator,
+                    Helpers.OffChain,
+                    Helpers.OffChainEval,
+                    Helpers.OnChain,
+                    Helpers.Types
+    default-extensions:
+        NoImplicitPrelude
+        BangPatterns
+        NumericUnderscores
+        OverloadedStrings
+    build-depends:
+        base16-bytestring
+        , bech32
+        , directory
+        , filepath
+        , freer-extras
+        , flat
+        , hex-text
+        , lens
+        , prettyprinter
+        , time
+        , utf8-string
+        , base64-bytestring
+    build-depends:
+        plutus-ledger
+        , cardano-addresses
+        , cardano-binary
+        , cardano-crypto-class
+        , cardano-ledger-alonzo
+        , cardano-ledger-babbage
+        , cardano-ledger-core
+        , cardano-node-emulator
+        , playground-common
+        , plutus-chain-index-core
+        , plutus-contract
+        , plutus-core
+        , plutus-ledger-constraints
+        , plutus-script-utils
+        , plutus-tx-constraints
+
+test-suite HelpersTest
+    import:             common-all-tests
+    type:               exitcode-stdio-1.0
+    main-is:            HelpersTest.hs
+    hs-source-dirs:     test
+    build-depends:      Helpers

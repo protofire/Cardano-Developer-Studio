@@ -327,32 +327,32 @@ docker_compose_workflow() {
                 PROJECT_NAME=$(echo "cardano-node-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}" | tr '.:' '_' | tr -d '[:upper:]')
                 
                 # # Explicitly build the images without cache
-                # $DOCKER_COMPOSE_CMD -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-node/docker-compose.node.yml" -p $PROJECT_NAME build --no-cache
+                # $DOCKER_COMPOSE_CMD -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-enviroments/cardano-node/docker-compose.node.yml" -p $PROJECT_NAME build --no-cache
                 # # Then, bring up the containers. Since the images were just built, this step won't rebuild them.
-                # $DOCKER_COMPOSE_CMD -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-node/docker-compose.node.yml" -p $PROJECT_NAME --verbose up -d
+                # $DOCKER_COMPOSE_CMD -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-enviroments/cardano-node/docker-compose.node.yml" -p $PROJECT_NAME --verbose up -d
                 
-                $DOCKER_COMPOSE_CMD  -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-node/docker-compose.node.yml" --verbose up -d
+                $DOCKER_COMPOSE_CMD  -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-enviroments/cardano-node/docker-compose.node.yml" --verbose up -d
                 read -p "Press Enter to continue..."
             ;;
             2)
                 check_node_resources
                 set_wallet_env_variables
                 PROJECT_NAME=$(echo "cardano-wallet-${CARDANO_WALLET_VERSION:-2023.04.14}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}" | tr '.:' '_' | tr -d '[:upper:]')
-                $DOCKER_COMPOSE_CMD -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-wallet/docker-compose.wallet.yml" --verbose up -d
+                $DOCKER_COMPOSE_CMD -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-enviroments/cardano-wallet/docker-compose.wallet.yml" --verbose up -d
                 read -p "Press Enter to continue..."
             ;;
             3)
                 check_node_resources
                 set_dbsync_env_variables
                 PROJECT_NAME=$(echo "cardano-dbsync-${CARDANO_DBSYNC_VERSION:-"13.2.0.1"}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}" | tr '.:' '_' | tr -d '[:upper:]')
-                $DOCKER_COMPOSE_CMD -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/cardano-dbsync/docker-compose.dbsync.yml" --verbose up -d
+                $DOCKER_COMPOSE_CMD -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-enviroments/cardano-dbsync/docker-compose.dbsync.yml" --verbose up -d
                 read -p "Press Enter to continue..."
             ;;
             4)
                 check_node_resources
                 set_ogmios_kupo_env_variables
                 PROJECT_NAME=$(echo "ogmios-kupo-${OGMIOS_VERSION:-"-v6.2.0"}-${KUPO_VERSION:-"-v2.8.0"}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}" | tr '.:' '_' | tr -d '[:upper:]')
-                $DOCKER_COMPOSE_CMD -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-compose/ogmios-kupo/docker-compose.ogmios.kupo.yml" --verbose up -d
+                $DOCKER_COMPOSE_CMD -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-enviroments/ogmios-kupo/docker-compose.ogmios.kupo.yml" --verbose up -d
                 read -p "Press Enter to continue..."
             ;;
             0)

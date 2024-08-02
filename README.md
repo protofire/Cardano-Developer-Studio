@@ -6,6 +6,7 @@ This repository is the home of the Cardano Developer Studio, an all-in-one suite
 - [Welcome to Cardano Developer Studio](#welcome-to-cardano-developer-studio)
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
+  - [Documentation](#documentation)
   - [What is included](#what-is-included)
     - [Cardano Node](#cardano-node)
     - [Cardano Wallet](#cardano-wallet)
@@ -59,6 +60,15 @@ This repository is the home of the Cardano Developer Studio, an all-in-one suite
 
 - Docker Compose configurations for easy setup and integration
 - Script tool with menus to navigate and configure and run different tools
+- TODO: Helpers haskell
+- TODO: example fodler
+- TODO: enviroment to deploy, test and run smart contracts (con dev container y con docker especifico)
+
+## Documentation
+
+**Gitbook**
+
+https://protofire-docs.gitbook.io/developer-studio/
 
 ## What is included
 
@@ -93,7 +103,6 @@ We've streamlined this process by introducing a `Development Container for Visua
 For those interested in taking advantage of this option, please refer to the section on Using the Development Container in VS Code for detailed instructions on how to get started. [Using the Development Container in VS Code](#using-the-development-container-in-vs-code)
 
 This DevContainer approach is entirely optional. If you prefer to set up your environment manually or are not using VS Code, the following sections will guide you through the traditional setup process. However, we highly recommend trying out the DevContainer for a seamless development experience.
-
 
 ### Why Choose the DevContainer Method?
 

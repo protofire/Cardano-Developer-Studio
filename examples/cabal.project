@@ -1,23 +1,22 @@
-repository cardano-haskell-packages
-  url: https://input-output-hk.github.io/cardano-haskell-packages
-  secure: True
-  root-keys:
-    3e0cce471cf09815f930210f7827266fd09045445d65923e6d0238a6cd15126f
-    443abb7fb497a134c343faf52f0b659bd7999bc06b7f63fa76dc99d631f9bea1
-    a86a1f6ce86c449c46666bda44268677abf29b5b2d2eb5ec7af903ec2f117a82
-    bcec67e8e99cabfa7764d75ad9b158d72bfacf70ca1d0ec8bc6b4406d1bf8413
-    c00aae8461a256275598500ea0e187588c35a5d5d7454fb57eac18d9edb86a56
-    d4a35cd3121aa00d18544bb0ac01c3e1691d618f462c46129271bccf39f7e8ee
+-- Always build tests and benchmarks.
+tests: true
+benchmarks: false
 
--- See CONTRIBUTING.adoc for how to update index-state
-index-state: 2022-11-14T00:20:02Z
+-- The only sensible test display option, since it allows us to have colourized
+-- 'tasty' output.
+test-show-details: direct
 
--- See CONTRIBUTING.adoc for how to update index-state
+
+
+-- because of a limitation in haskell.nix index-state has to be repeated for
+-- hackage.
+index-state: 2022-12-22T00:00:00Z
 index-state:
-  , hackage.haskell.org 2022-11-14T00:20:02Z
-  , cardano-haskell-packages 2022-11-17T04:56:26Z
+  , hackage.haskell.org 2022-12-22T00:00:00Z
+  , cardano-haskell-packages 2022-12-22T00:00:00Z
 
 packages: 
+    Helpers
     Validators/Free
     Validators/Lock
     Validators/CheckSignature
@@ -28,16 +27,20 @@ packages:
     Policys/CheckDate
     Policys/RedeemerFT
     Policys/RedeemerNFT
+
 -- We never, ever, want this.
 write-ghc-environment-files: never
 
--- Always build tests and benchmarks.
-tests: true
-benchmarks: false
-
--- The only sensible test display option, since it allows us to have colourized
--- 'tasty' output.
-test-show-details: direct
+repository cardano-haskell-packages
+  url: https://input-output-hk.github.io/cardano-haskell-packages
+  secure: True
+  root-keys:
+    3e0cce471cf09815f930210f7827266fd09045445d65923e6d0238a6cd15126f
+    443abb7fb497a134c343faf52f0b659bd7999bc06b7f63fa76dc99d631f9bea1
+    a86a1f6ce86c449c46666bda44268677abf29b5b2d2eb5ec7af903ec2f117a82
+    bcec67e8e99cabfa7764d75ad9b158d72bfacf70ca1d0ec8bc6b4406d1bf8413
+    c00aae8461a256275598500ea0e187588c35a5d5d7454fb57eac18d9edb86a56
+    d4a35cd3121aa00d18544bb0ac01c3e1691d618f462c46129271bccf39f7e8ee
 
 allow-newer:
   -- cardano-ledger packages need aeson >2, the following packages have a
@@ -114,6 +117,44 @@ source-repository-package
 package plutonomy
   flags: +plutus-f680ac697
  
+-- plutus apps release
+source-repository-package
+  type: git
+  location: https://github.com/input-output-hk/plutus-apps.git
+  tag: v1.1.0
+  subdir: cardano-node-emulator
+          cardano-streaming
+          doc
+          freer-extras
+          marconi
+          marconi-mamba
+          playground-common
+          pab-blockfrost
+          plutus-chain-index
+          plutus-chain-index-core
+          plutus-contract
+          plutus-contract-certification
+          plutus-example
+          plutus-ledger
+          plutus-ledger-constraints
+          plutus-pab
+          plutus-pab-executables
+          plutus-script-utils
+          plutus-tx-constraints
+          plutus-use-cases
+          rewindable-index
+  --sha256: 0x0v5gpkj5f6gy0ivh1f8ky445bb1aplhhjm8s93sxx9asib835f
+
+-- Direct dependency.
+source-repository-package
+  type: git
+  location: https://github.com/Quviq/quickcheck-contractmodel
+  tag: 462f8c25bea15f88e179e12ebf4e3a4ffcc92d18
+  subdir:
+    contractmodel
+  --sha256: 0ml3avnydsw40yf48hbakcbpimp446rchgzhrzl92by6c9lw3mfh
+
+
 -- Direct dependency.
 -- Compared to others, cardano-wallet doesn't bump dependencies very often.
 -- Making it a good place to start when bumping dependencies.
@@ -149,12 +190,6 @@ source-repository-package
     type: git
     location: https://github.com/input-output-hk/purescript-bridge
     tag: 47a1f11825a0f9445e0f98792f79172efef66c00
-
--- Direct dependency.
-source-repository-package
-    type: git
-    location: https://github.com/input-output-hk/quickcheck-dynamic
-    tag: c272906361471d684440f76c297e29ab760f6a1e
 
 -- Should follow cardano-wallet.
 source-repository-package

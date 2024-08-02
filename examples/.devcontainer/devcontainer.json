@@ -1,0 +1,27 @@
+{
+  "name": "Developer Studio",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "studio",
+  "userEnvProbe": "loginShell",
+  "workspaceFolder": "/home/workspace",
+  "shutdownAction": "stopCompose",
+  //   "postStartCommand": "/home/plutus/workspace/.devcontainer/scripts/on-start-container.sh",
+  "postCreateCommand": "echo 'Ready to launch your development environment!'",
+  "containerEnv": {},
+  "remoteEnv": {
+    "HOST_PROJECT_PATH": "${localWorkspaceFolder}"
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        // Add any VS Code settings here
+        "terminal.integrated.shell.linux": "/bin/bash"
+      },
+      "extensions": [
+        // List VS Code extensions that should be installed in the container
+          "ms-azuretools.vscode-docker",
+          "shakram02.bash-beautify"
+        ]
+    }
+  }
+}
