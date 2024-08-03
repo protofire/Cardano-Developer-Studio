@@ -1,55 +1,89 @@
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE DataKinds          #-}
+{-# LANGUAGE FlexibleInstances  #-}
+{-# LANGUAGE NoImplicitPrelude  #-}
 {-# LANGUAGE NumericUnderscores #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings  #-}
 
 module Main where
 
-import Control.Monad (replicateM)
-import PlutusTx.Prelude ((.), ($)) 
-import Prelude (IO, mconcat)
+import           Control.Monad                     (replicateM)
+import           PlutusTx.Prelude                  (Maybe (Just, Nothing), ($),
+                                                    (.))
+import           Prelude                           (IO, mconcat)
 
-import qualified Plutus.Model as Model
-import qualified Plutus.V2.Ledger.Api as LedgerApiV2
-import qualified Test.Tasty as Tasty
+import qualified Ledger.Ada                        as LedgerAda
+import qualified Plutus.Model                      as Model
+import qualified Plutus.V2.Ledger.Api              as LedgerApiV2
+import qualified PlutusTx
+import qualified Test.Tasty                        as Tasty
+import qualified Test.Tasty.HUnit                  as Tasty
 
-import ParamCheckBeforeDeadlineValidator (paramCheckBeforeDeadlineValidator)
-import ParamCheckAfterDeadlineValidator (paramCheckAfterDeadlineValidator)
-import DatumCheckBeforeDeadlineValidator (datumCheckBeforeDeadlineValidator)
-import DatumCheckAfterDeadlineValidator (datumCheckAfterDeadlineValidator)
+import qualified Helpers.OffChain                  as OffChainHelpers
+import qualified Helpers.OffChainEval              as OffChainEval
+
+import           DatumCheckAfterDeadlineValidator  (datumCheckAfterDeadlineValidator)
+import           DatumCheckBeforeDeadlineValidator (datumCheckBeforeDeadlineValidator)
+import           ParamCheckAfterDeadlineValidator  (paramCheckAfterDeadlineValidator)
+import           ParamCheckBeforeDeadlineValidator (paramCheckBeforeDeadlineValidator)
 
 ---------------------------------------------------------------------------------------------------
 ------------------------------------------ TESTING ------------------------------------------------
 
 -- | Main function to run the test cases
 --
--- This function sets up test groups for different validators to check their behavior 
+-- This function sets up test groups for different validators to check their behavior
 -- before and after deadlines using both parameters and datums.
 main :: IO ()
 main = Tasty.defaultMain $ do
-  Tasty.testGroup
-    "Testing time checks"
-    [ Tasty.testGroup
-        "Test Claim Before the deadline using parameters"
-        [ bad   "Deadline: 6000; TxValidRange (6900, 7100)" $ datumCheckBeforeDeadlineTest 6000 (-100) 100 7000
-        , good  "Deadline: 6000; TxValidRange (4900, 5100)" $ datumCheckBeforeDeadlineTest 6000 (-100) 100 5000
-        ],
-    Tasty.testGroup
-        "Test claim after the deadline using parameters"
-        [ good  "Deadline: 6000; TxValidRange (6900, 7100)" $ datumCheckAfterDeadlineTest 6000 (-100) 100 7000
-        , bad   "Deadline: 6000; TxValidRange (4900, 5100)" $ datumCheckAfterDeadlineTest 6000 (-100) 100 5000
-        ],
-    Tasty.testGroup
-        "Test Claim Before the deadline using datums"
-        [ bad   "Deadline: 6000; TxValidRange (6900, 7100)" $ paramCheckBeforeDeadlineTest 6000 (-100) 100 7000
-        , good  "Deadline: 6000; TxValidRange (4900, 5100)" $ paramCheckBeforeDeadlineTest  6000 (-100) 100 5000
-        ],
-    Tasty.testGroup
-        "Test claim after the deadline using datums"
-        [ good  "Deadline: 6000; TxValidRange (6900, 7100)" $ paramCheckAfterDeadlineTest 6000 (-100) 100 7000
-        , bad   "Deadline: 6000; TxValidRange (4900, 5100)" $ paramCheckAfterDeadlineTest 6000 (-100) 100 5000
+   Tasty.testGroup
+    "Testing validator" [
+      Tasty.testGroup
+        "Testing size and resources"
+        [
+          Tasty.testGroup
+            "Test size and resources of the valid claiming tx of the validator"
+            [
+              Tasty.testCase "Deadline: 6000; TxValidRange (4900, 5100); TxValidSize < 14Mb" $
+              let
+                  validator = datumCheckAfterDeadlineValidator
+                  ctx = claimingTxWithDatumContext validator 6000 6100
+
+                  getValidator :: LedgerApiV2.Address -> Maybe LedgerApiV2.Validator
+                  getValidator _ = Just validator
+
+                  getMintingPolicy :: LedgerApiV2.CurrencySymbol -> Maybe LedgerApiV2.MintingPolicy
+                  getMintingPolicy _ = Nothing
+
+                  (eval_log, eval_err, eval_size) = OffChainEval.testContext getValidator getMintingPolicy ctx
+              in do
+                  eval_log `OffChainEval.assertContainsAnyOf` [] 
+                  OffChainEval.assertBudgetAndSize eval_err eval_size OffChainEval.maxMemory OffChainEval.maxCPU OffChainEval.maxTxSize 
+            ]
         ]
+       ,
+       Tasty.testGroup
+         "Testing time checks"
+         [ Tasty.testGroup
+             "Test Claim Before the deadline using parameters"
+             [ bad   "Deadline: 6000; TxValidRange (6900, 7100)" $ datumCheckBeforeDeadlineTest 6000 (-100) 100 7000
+             , good  "Deadline: 6000; TxValidRange (4900, 5100)" $ datumCheckBeforeDeadlineTest 6000 (-100) 100 5000
+             ],
+         Tasty.testGroup
+             "Test claim after the deadline using parameters"
+             [ good  "Deadline: 6000; TxValidRange (6900, 7100)" $ datumCheckAfterDeadlineTest 6000 (-100) 100 7000
+             , bad   "Deadline: 6000; TxValidRange (4900, 5100)" $ datumCheckAfterDeadlineTest 6000 (-100) 100 5000
+             ],
+         Tasty.testGroup
+             "Test Claim Before the deadline using datums"
+             [ bad   "Deadline: 6000; TxValidRange (6900, 7100)" $ paramCheckBeforeDeadlineTest 6000 (-100) 100 7000
+             , good  "Deadline: 6000; TxValidRange (4900, 5100)" $ paramCheckBeforeDeadlineTest  6000 (-100) 100 5000
+             ],
+         Tasty.testGroup
+             "Test claim after the deadline using datums"
+             [ good  "Deadline: 6000; TxValidRange (6900, 7100)" $ paramCheckAfterDeadlineTest 6000 (-100) 100 7000
+             , bad   "Deadline: 6000; TxValidRange (4900, 5100)" $ paramCheckAfterDeadlineTest 6000 (-100) 100 5000
+             ]
+         ]
     ]
   where
     -- | Marks the test as bad (expected to fail)
@@ -70,7 +104,7 @@ datumCheckAfterDeadlineValidatorScript = Model.TypedValidator $ Model.toV2 datum
 
 -- | Creates a validator script for checking after the deadline using parameters
 paramCheckAfterDeadlineValidatorScript :: LedgerApiV2.POSIXTime -> ParamCheckDateValidatorType
-paramCheckAfterDeadlineValidatorScript deadline = Model.TypedValidator $ Model.toV2 
+paramCheckAfterDeadlineValidatorScript deadline = Model.TypedValidator $ Model.toV2
                                         $ paramCheckAfterDeadlineValidator deadline
 
 -- | Creates a validator script for checking before the deadline using datum
@@ -79,7 +113,7 @@ datumCheckBeforeDeadlineValidatorScript = Model.TypedValidator $ Model.toV2 datu
 
 -- | Creates a validator script for checking before the deadline using parameters
 paramCheckBeforeDeadlineValidatorScript :: LedgerApiV2.POSIXTime -> ParamCheckDateValidatorType
-paramCheckBeforeDeadlineValidatorScript deadline = Model.TypedValidator $ Model.toV2 
+paramCheckBeforeDeadlineValidatorScript deadline = Model.TypedValidator $ Model.toV2
                                         $ paramCheckBeforeDeadlineValidator deadline
 
 --------------------------------------------------------------------------------
@@ -157,7 +191,7 @@ datumCheckBeforeDeadlineTest :: LedgerApiV2.POSIXTime -> LedgerApiV2.POSIXTime -
 datumCheckBeforeDeadlineTest deadline curMinT curMaxT wSlot = do
   users <- setupUsers
   let [u1, u2] = users
-      datumCheckBeforeDeadlineScript = datumCheckBeforeDeadlineValidatorScript 
+      datumCheckBeforeDeadlineScript = datumCheckBeforeDeadlineValidatorScript
   makeDatumCheckDate u1 u2 datumCheckBeforeDeadlineScript deadline curMinT curMaxT wSlot
 
 -- | Makes a transaction to test a datum check date validator
@@ -191,3 +225,20 @@ claimingTxWithDatum pkh datumCheckDateScript deadline contractRef vestVal =
     , Model.payToKey pkh vestVal
     ]
 
+
+-----------------------------------------------------------------------------------------
+
+claimingTxWithDatumContext :: LedgerApiV2.Validator -> LedgerApiV2.POSIXTime -> LedgerApiV2.POSIXTime ->  LedgerApiV2.ScriptContext
+claimingTxWithDatumContext validator datumDate date =
+  let
+    uTxO :: LedgerApiV2.TxOut
+    uTxO = LedgerApiV2.TxOut
+              (OffChainHelpers.addressValidator $ OffChainHelpers.hashValidator validator)
+              ( LedgerAda.lovelaceValueOf 100
+              )
+              (LedgerApiV2.OutputDatum $ LedgerApiV2.Datum $ PlutusTx.toBuiltinData datumDate)
+              Nothing
+    in
+      OffChainEval.mkBaseValidatorContext [] [] 0
+        OffChainEval.|> OffChainEval.setInputsAndAddRedeemers [(uTxO,  LedgerApiV2.Redeemer $ PlutusTx.toBuiltinData ())]
+        OffChainEval.|> OffChainEval.setValidRange (OffChainEval.createValidRange date)

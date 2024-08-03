@@ -1,0 +1,14 @@
+{
+	"Workspace_Formatter.includePattern": [
+		"*.hs"
+	],
+	"Workspace_Formatter.closeAfterSave": true,
+	"fourmolu.args": [
+		// "--respectful=true"
+	],
+	"[haskell]": {
+		"editor.defaultFormatter": "vigoo.stylish-haskell"
+	},
+	"haskell.manageHLS": "GHCup",
+	"haskell.formattingProvider": "fourmolu",
+}

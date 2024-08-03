@@ -15,6 +15,8 @@ import qualified PlutusTx
 
 import           PlutusTx.Prelude     (($), Bool, traceIfFalse, error)
 
+import qualified Helpers.OnChain as OnChainHelpers
+
 -- | Validator function that checks if the current time is past a specified deadline
 --
 -- This function validates that the current blockchain time is after a deadline specified in the datum.
@@ -43,7 +45,7 @@ mkDatumCheckAfterDeadlineValidator datumRaw _ ctxRaw =
 
     -- Check if the current time is after the deadline
     deadlineReached :: Bool
-    deadlineReached = LedgerIntervalV1.contains (LedgerIntervalV1.from deadline) $ LedgerContextsV2.txInfoValidRange info
+    deadlineReached = OnChainHelpers.isDateReached deadline info
 
 --------------------------------------------------------------------------------
 

@@ -70,7 +70,7 @@ import           PlutusCore.Evaluation.Machine.ExBudget          (ExBudget (..))
 import qualified PlutusCore.Evaluation.Machine.ExBudget          as PLC
 import           PlutusCore.Evaluation.Machine.ExMemory          (ExCPU (..), ExMemory (..))
 import           PlutusCore.Pretty                               (prettyPlcClassicDebug)
-import           PlutusTx                                        (compile, getPlc)
+import           PlutusTx                                        (compile, getPlc, Data)
 import qualified PlutusTx.Code                                   as PlutusTxCode
 import           PlutusTx.Prelude                                hiding (unless)
 import qualified PlutusTx.Prelude                                as PlutusTxPrelude
@@ -89,6 +89,11 @@ import qualified Plutus.V1.Ledger.ProtocolVersions as LedgerProtocolVersionsV1
 import qualified PlutusCore
 import qualified Plutus.V1.Ledger.Interval as LedgerInterval
 import qualified GHC.Stack as GHC
+import qualified Plutus.V1.Ledger.Scripts                        as LedgerScriptsV1
+import qualified Test.Tasty.HUnit as Tasty
+import qualified Test.QuickCheck as QC
+import qualified Debug.Trace                       as DebugTrace
+import qualified Text.Read as TextRead (readMaybe)
 
 --------------------------------------------------------------------------------2
 -- Import Internos
@@ -97,9 +102,134 @@ import qualified GHC.Stack as GHC
 import qualified Helpers.OffChain                         as OffChainHelpers
 import qualified Helpers.OnChain                          as OnChainHelpers
 import qualified Helpers.Constants as T
+import qualified Plutus.V2.Ledger.EvaluationContext as LedgerEvaluationContextV2
 
 --------------------------------------------------------------------------------2
 -- Modulo
+--------------------------------------------------------------------------------2
+
+maxMemory :: Integer
+maxMemory = 14_000_000
+
+maxCPU :: Integer
+maxCPU = 10_000_000_000
+
+maxTxSize :: Integer
+maxTxSize = 16_384
+
+--------------------------------------------------------------------------------
+
+evaluateScriptValidator :: LedgerApiV2.Validator -> [PlutusTx.Data] -> PlutusTx.Data -> PlutusTx.Data -> PlutusTx.Data -> (LedgerApiV2.LogOutput, P.Either LedgerApiV2.EvaluationError LedgerApiV2.ExBudget, Integer)
+evaluateScriptValidator validator params datum redeemer ctx =
+    let datas :: [PlutusTx.Data]
+        datas = params ++ [datum, redeemer, ctx]
+        ----------------------
+        !pv = LedgerProtocolVersionsV1.vasilPV
+        !scriptUnValidatorV2 = OffChainHelpers.getScriptUnValidator validator
+        !scriptShortBsV2 = OffChainHelpers.getScriptShortBs scriptUnValidatorV2
+        ----------------------
+        exBudget :: LedgerApiV2.ExBudget
+        exBudget = LedgerApiV2.ExBudget 10000000000 14000000
+        ----------------------
+        -- !(logout, e) = LedgerApiV2.evaluateScriptCounting pv LedgerApiV2.Verbose LedgerEvaluationContextV2.evalCtxForTesting scriptShortBsV2 datas
+        !(logout, e) = LedgerApiV2.evaluateScriptRestricting pv LedgerApiV2.Verbose LedgerEvaluationContextV2.evalCtxForTesting exBudget scriptShortBsV2 datas
+        ----------------------
+        !size = LedgerScriptsV1.scriptSize scriptUnValidatorV2
+    in  (logout, e, size)
+
+{- | Compiles a validator and executes it with the given parameters.
+
+-}
+testValidator :: LedgerApiV2.Validator -> LedgerApiV2.Datum -> LedgerApiV2.Redeemer -> LedgerApiV2.ScriptContext -> (LedgerApiV2.LogOutput, P.Either LedgerApiV2.EvaluationError LedgerApiV2.ExBudget, P.Either Integer Integer)
+testValidator validator datum redeemer context = 
+    let scriptSBS = contractSBS validator
+        scriptUnValidatorV2 = OffChainHelpers.getScriptUnValidator validator
+        size = LedgerScriptsV1.scriptSize scriptUnValidatorV2
+    in
+        case PlutusCore.defaultCostModelParams of
+        Just costModelParams ->
+            let
+            
+                arguments =
+                    [ LedgerApiV2.toData datum
+                    , LedgerApiV2.toData redeemer
+                    , LedgerApiV2.toData context
+                    ]
+                mcontext :: Either LedgerApiV2.CostModelApplyError LedgerApiV2.EvaluationContext
+                mcontext = LedgerApiV2.mkEvaluationContext costModelParams
+                (logout, ev) = 
+                    case mcontext of
+                        Right evalContext ->
+                            LedgerApiV2.evaluateScriptCounting
+                                LedgerProtocolVersionsV1.vasilPV
+                                LedgerApiV2.Verbose
+                                evalContext
+                                scriptSBS
+                                arguments
+                        Left _ -> (["ERROR GETTING EVALUATION CONTEXT"], Left P.undefined)
+            in
+                case ev of
+                    Right _ -> (logout, ev, Right size)
+                    Left _ -> 
+                        case logout of
+                            [] -> (["ERROR EVALUATING SCRIPT"], Left P.undefined, Right size)
+                            _  -> (logout, Left P.undefined, Right size)
+        Nothing -> (["COST MODEL NOT FOUND"], Left P.undefined, Right size)
+
+--------------------------------------------------------------------------------2
+
+evaluateScriptMint :: LedgerApiV2.MintingPolicy -> [PlutusTx.Data] -> PlutusTx.Data -> PlutusTx.Data -> (LedgerApiV2.LogOutput, P.Either LedgerApiV2.EvaluationError LedgerApiV2.ExBudget,  Integer)
+evaluateScriptMint policy params redeemer ctx =
+    let datas :: [PlutusTx.Data]
+        datas = params ++ [redeemer, ctx]
+        ----------------------
+        !pv = LedgerProtocolVersionsV1.vasilPV
+        !scriptMintingPolicyV2 = OffChainHelpers.getScriptMintingPolicy policy
+        !scriptShortBsV2 = OffChainHelpers.getScriptShortBs scriptMintingPolicyV2
+        ----------------------
+        exBudget :: LedgerApiV2.ExBudget
+        exBudget = LedgerApiV2.ExBudget 10000000000 14000000
+        ----------------------
+        -- !(logout, e) = Ledge rApiV2.evaluateScriptCounting pv LedgerApiV2.Verbose LedgerEvaluationContextV2.evalCtxForTesting scriptShortBsV2 datas
+        !(logout, e) = LedgerApiV2.evaluateScriptRestricting pv LedgerApiV2.Verbose LedgerEvaluationContextV2.evalCtxForTesting exBudget scriptShortBsV2 datas
+        ----------------------
+        !size = LedgerScriptsV1.scriptSize scriptMintingPolicyV2
+    in  (logout, e, size)
+
+testMintingPolicy :: LedgerApiV2.MintingPolicy -> LedgerApiV2.Redeemer -> LedgerApiV2.ScriptContext -> (LedgerApiV2.LogOutput, P.Either LedgerApiV2.EvaluationError LedgerApiV2.ExBudget, P.Either Integer Integer)
+testMintingPolicy mp redeemer context = 
+    let scriptSBS = (SBS.toShort $ LBS.toStrict $ CodecSerialise.serialise mp)
+        scriptMintingPolicyV2 = OffChainHelpers.getScriptMintingPolicy mp
+        size = LedgerScriptsV1.scriptSize scriptMintingPolicyV2
+    in
+        case PlutusCore.defaultCostModelParams of
+        Just costModelParams ->
+            let
+                arguments =
+                    [ LedgerApiV2.toData redeemer
+                    , LedgerApiV2.toData context
+                    ]
+                mcontext :: Either LedgerApiV2.CostModelApplyError LedgerApiV2.EvaluationContext
+                mcontext = LedgerApiV2.mkEvaluationContext costModelParams
+                (logout, ev) = 
+                    case mcontext of
+                        Right evalContext ->
+                            LedgerApiV2.evaluateScriptCounting
+                                LedgerProtocolVersionsV1.vasilPV
+                                LedgerApiV2.Verbose
+                                evalContext
+                                scriptSBS
+                                arguments
+                        Left _ -> (["ERROR GETTING EVALUATION CONTEXT"], Left P.undefined)
+            in
+                case ev of
+                    Right _ -> (logout, ev, Right size)
+                    Left _ -> 
+                        case logout of
+                            [] -> (["ERROR EVALUATING SCRIPT"], Left P.undefined, Right size)
+                            _  -> (logout, Left P.undefined, Right size)
+        Nothing -> ( ["COST MODEL NOT FOUND"], Left P.undefined, Right size)
+
 --------------------------------------------------------------------------------2
 
 evalAndSubmitTx ::
@@ -484,7 +614,7 @@ evalAndSubmitTx nameEndPoint listOfMintingScripts listOfValidators showDatum loo
                                 !paramsData = [] :: [LedgerApiV2.Data]
                                 !redeemerData = LedgerApiV2.toData redeemer
                                 !ctxData = LedgerApiV2.toData mockCtx
-                                (eval_log, eval_err, eval_size) = OffChainHelpers.evaluateScriptMint policy paramsData redeemerData ctxData
+                                (eval_log, eval_err, eval_size) = evaluateScriptMint policy paramsData redeemerData ctxData
                             --------------------------------
                             PlutusContract.logInfo @P.String $ "ScriptPurpose: " ++ P.show scriptPurpose
                             PlutusContract.logInfo @P.String $ "--------------------------------"
@@ -523,7 +653,7 @@ evalAndSubmitTx nameEndPoint listOfMintingScripts listOfValidators showDatum loo
                                 !datumData = LedgerApiV2.toData datum
                                 !redeemerData = LedgerApiV2.toData redeemer
                                 !ctxData = LedgerApiV2.toData mockCtx
-                                (eval_log, eval_err, eval_size) = OffChainHelpers.evaluateScriptValidator validator paramsData datumData redeemerData ctxData
+                                (eval_log, eval_err, eval_size) = evaluateScriptValidator validator paramsData datumData redeemerData ctxData
                             --------------------------------
                             PlutusContract.logInfo @P.String $ "ScriptPurpose: " ++ P.show scriptPurpose
                             PlutusContract.logInfo @P.String $ "--------------------------------"
@@ -733,7 +863,7 @@ evaluatePolicy_With_StringParams paramsJsonStr = do
                         redeemerData = OffChainHelpers.getDataFromEncodedJson (OffChainHelpers.stringToLazyByteString epRedeemer)
                         ctxData = OffChainHelpers.getDataFromEncodedJson (OffChainHelpers.stringToLazyByteString epCtx)
                     P.putStrLn $ "RedeemerData: " ++ P.show redeemerData
-                    let (eval_log, eval_err, eval_size) = OffChainHelpers.evaluateScriptMint policy paramsData redeemerData ctxData
+                    let (eval_log, eval_err, eval_size) = evaluateScriptMint policy paramsData redeemerData ctxData
                     return (eval_log, eval_err, eval_size)
 
 --------------------------------------------------------------------------------2
@@ -758,22 +888,54 @@ evaluateValidator_With_StringParams paramsJsonStr = do
                         ctxData = OffChainHelpers.getDataFromEncodedJson (OffChainHelpers.stringToLazyByteString evCtx)
                     P.putStrLn $ "datumData: " ++ P.show datumData
                     P.putStrLn $ "redeemerData: " ++ P.show redeemerData
-                    let (eval_log, eval_err, eval_size) = OffChainHelpers.evaluateScriptValidator validator paramsData datumData redeemerData ctxData
+                    let (eval_log, eval_err, eval_size) = evaluateScriptValidator validator paramsData datumData redeemerData ctxData
                     return (eval_log, eval_err, eval_size)
 
 --------------------------------------------------------------------------------2
 
 -- Define the testContext function to validate all redeemers using the needed scripts, validators or policies
-testContext :: (LedgerApiV2.Address -> Maybe LedgerApiV2.Validator) -> (LedgerApiV2.CurrencySymbol -> Maybe LedgerApiV2.MintingPolicy )-> LedgerApiV2.ScriptContext -> LedgerApiV2.LogOutput
+testContext :: (LedgerApiV2.Address -> Maybe LedgerApiV2.Validator) -> (LedgerApiV2.CurrencySymbol -> Maybe LedgerApiV2.MintingPolicy )-> LedgerApiV2.ScriptContext -> (LedgerApiV2.LogOutput, P.Either LedgerApiV2.EvaluationError LedgerApiV2.ExBudget, P.Either Integer Integer)
 testContext getValidator getPolicy ctx =
+    --     concatMap (testRedeemer getValidator getPolicy ctx) redeemers
     let
-        !redeemers = TxAssocMap.toList $ LedgerApiV2.txInfoRedeemers $ LedgerApiV2.scriptContextTxInfo ctx
+        redeemers = TxAssocMap.toList $ LedgerApiV2.txInfoRedeemers $ LedgerApiV2.scriptContextTxInfo ctx
         -- !_ = DebugTrace.trace ("Redeemers: " ++ show redeemers) ()
+
+        testRedeemerFor (purpose, redeemer) = testRedeemer getValidator getPolicy ctx (purpose, redeemer)
+
+        results = map testRedeemerFor redeemers
+        combineLogs = foldMap (\(logOutput, _, _) -> logOutput) results
+        
+        combineExBudgets exs =
+            let
+                lefts = [e | P.Left e <- exs]
+                rights = [b | P.Right b <- exs]
+                sumExBudget = foldr (\(LedgerApiV2.ExBudget mem cpu) (LedgerApiV2.ExBudget accMem accCpu) -> LedgerApiV2.ExBudget (accMem P.+ mem) (accCpu P.+ cpu)) (LedgerApiV2.ExBudget 0 0)
+            in
+                if not (null lefts)
+                then P.Left (head lefts)
+                else P.Right (sumExBudget rights)
+
+        combineIntegers ints =
+            let
+                lefts = [e | P.Left e <- ints]
+                rights = [i | P.Right i <- ints]
+            in
+                if not (null lefts)
+                then P.Left (head lefts)
+                else P.Right (sum rights)
+
+        combinedExBudget = combineExBudgets [ex | (_, ex, _) <- results]
+        combinedInteger = combineIntegers [int | (_, _, int) <- results]
+
     in
-        concatMap (testRedeemer getValidator getPolicy ctx) redeemers
+        -- results ++ 
+        (combineLogs, combinedExBudget, combinedInteger)
+
+--------------------------------------------------------------------------------2
 
 -- test a redeemer with validator or minting policy
-testRedeemer :: (LedgerApiV2.Address -> Maybe LedgerApiV2.Validator) -> (LedgerApiV2.CurrencySymbol -> Maybe LedgerApiV2.MintingPolicy ) -> LedgerApiV2.ScriptContext -> (LedgerApiV2.ScriptPurpose, LedgerApiV2.Redeemer) -> LedgerApiV2.LogOutput
+testRedeemer :: (LedgerApiV2.Address -> Maybe LedgerApiV2.Validator) -> (LedgerApiV2.CurrencySymbol -> Maybe LedgerApiV2.MintingPolicy ) -> LedgerApiV2.ScriptContext -> (LedgerApiV2.ScriptPurpose, LedgerApiV2.Redeemer) -> (LedgerApiV2.LogOutput, P.Either LedgerApiV2.EvaluationError LedgerApiV2.ExBudget, P.Either Integer Integer)
 testRedeemer  getValidator _ ctx (LedgerApiV2.Spending txOutRef, redeemer) =
     let
         !txInfoInputs = LedgerApiV2.txInfoInputs $ LedgerApiV2.scriptContextTxInfo ctx
@@ -794,8 +956,8 @@ testRedeemer  getValidator _ ctx (LedgerApiV2.Spending txOutRef, redeemer) =
                 !purpose = LedgerApiV2.Spending txOutRef
             in case validator of
                 Just !v -> testValidator v datum redeemer (ctx { LedgerApiV2.scriptContextPurpose = purpose })
-                Nothing -> ["NO VALIDATOR FOUND"]
-        Nothing -> ["NO TxOut FOUND"]
+                Nothing -> (["NO VALIDATOR FOUND"], Left P.undefined, Left 0)
+        Nothing -> (["NO TxOut FOUND"], Left P.undefined, Left 0)
 testRedeemer  _ getPolicy ctx (LedgerApiV2.Minting cs, redeemer) =
     let
         -- !_ = DebugTrace.trace ("Finding MintingPolicy for: " ++ show cs) ()
@@ -807,69 +969,9 @@ testRedeemer  _ getPolicy ctx (LedgerApiV2.Minting cs, redeemer) =
     in
         case policy of
             Just !mp -> testMintingPolicy mp redeemer (ctx { LedgerApiV2.scriptContextPurpose = purpose })
-            Nothing -> ["NO MINTING POLICY FOUND"]
-testRedeemer _ _ _ _ = ["UNKNOWN SCRIPT PURPOSE"]
+            Nothing -> (["NO MINTING POLICY FOUND"], Left P.undefined, Left 0)
+testRedeemer _ _ _ _ = (["UNKNOWN SCRIPT PURPOSE"], Left P.undefined, Left 0)
 
-{- | Compiles a validator and executes it with the given parameters.
- Returns an empty list on success, and the list of trace errors on failure.
--}
-testValidator :: LedgerApiV2.Validator -> LedgerApiV2.Datum -> LedgerApiV2.Redeemer -> LedgerApiV2.ScriptContext -> LedgerApiV2.LogOutput
-testValidator validator datum redeemer context = case PlutusCore.defaultCostModelParams of
-    Just costModelParams ->
-        let
-            scriptSBS = contractSBS validator
-            arguments =
-                [ LedgerApiV2.toData datum
-                , LedgerApiV2.toData redeemer
-                , LedgerApiV2.toData context
-                ]
-            mcontext :: Either LedgerApiV2.CostModelApplyError LedgerApiV2.EvaluationContext
-            mcontext = LedgerApiV2.mkEvaluationContext costModelParams
-            (result, ev) = case mcontext of
-                Right evalContext ->
-                    LedgerApiV2.evaluateScriptCounting
-                        LedgerProtocolVersionsV1.vasilPV
-                        LedgerApiV2.Verbose
-                        evalContext
-                        scriptSBS
-                        arguments
-                Left _ -> (["ERROR GETTING EVALUATION CONTEXT"], Left P.undefined)
-        in
-            case ev of
-                Right _ -> result
-                Left _ -> case result of
-                    [] -> ["ERROR EVALUATING SCRIPT"]
-                    _  -> result
-    Nothing -> ["COST MODEL NOT FOUND"]
-
-
-testMintingPolicy :: LedgerApiV2.MintingPolicy -> LedgerApiV2.Redeemer -> LedgerApiV2.ScriptContext -> LedgerApiV2.LogOutput
-testMintingPolicy mp redeemer context = case PlutusCore.defaultCostModelParams of
-    Just costModelParams ->
-        let
-            scriptSBS = (SBS.toShort $ LBS.toStrict $ CodecSerialise.serialise mp)
-            arguments =
-                [ LedgerApiV2.toData redeemer
-                , LedgerApiV2.toData context
-                ]
-            mcontext :: Either LedgerApiV2.CostModelApplyError LedgerApiV2.EvaluationContext
-            mcontext = LedgerApiV2.mkEvaluationContext costModelParams
-            (result, ev) = case mcontext of
-                Right evalContext ->
-                    LedgerApiV2.evaluateScriptCounting
-                        LedgerProtocolVersionsV1.vasilPV
-                        LedgerApiV2.Verbose
-                        evalContext
-                        scriptSBS
-                        arguments
-                Left _ -> (["ERROR GETTING EVALUATION CONTEXT"], Left P.undefined)
-        in
-            case ev of
-                Right _ -> result
-                Left _ -> case result of
-                    [] -> ["ERROR EVALUATING SCRIPT"]
-                    _  -> result
-    Nothing -> ["COST MODEL NOT FOUND"]
 
 ------------------------------------------------------------------------------
 -- HELPERS
@@ -1261,3 +1363,54 @@ setSpendPurpose consumeInputIndex ctx =
 
 
 --------------------------------------------------------------------------------
+
+-- Custom function to check if the expected error is in the list of errors
+assertContainsAnyOf :: (P.Eq a, P.Show a, GHC.HasCallStack) => [a] -> [a] -> Tasty.Assertion
+assertContainsAnyOf xs searchAny =
+    case searchAny of
+        [] -> Tasty.assertBool
+            ("Unexpected errors found. Expected none. Found: " ++ P.show xs)
+            (null xs)
+        _ ->
+            Tasty.assertBool
+                ("None of the expected errors found. Expected one of: " ++ P.show searchAny ++ ". Found: " ++ P.show xs)
+                -- ++ ".\nLocation: " ++ GHC.prettyCallStack GHC.callStack
+                (any (`P.elem` xs) searchAny)
+
+resultContainsAnyOf :: (P.Eq a, P.Show a, GHC.HasCallStack) => [a] -> [a] -> QC.Property
+resultContainsAnyOf xs searchAny =
+    case searchAny of
+        [] -> QC.property $ null xs || DebugTrace.trace ("Unexpected errors found. Expected none. Found: " ++ P.show xs ++ ".\nLocation: " ++ GHC.prettyCallStack GHC.callStack) False
+        _ -> QC.property $ any (`P.elem` xs) searchAny || DebugTrace.trace ("None2 of the expected errors found. Expected one of: " ++ P.show searchAny ++ ". Found: " ++ P.show xs ++ ".\nLocation: " ++ GHC.prettyCallStack GHC.callStack) False
+
+resultContainsAnyOfIfCondition :: (P.Eq a, P.Show a, GHC.HasCallStack) => [a] -> [a] -> Bool -> QC.Property
+resultContainsAnyOfIfCondition xs searchAny ifCondition =
+    if ifCondition
+    then 
+        case searchAny of
+            [] -> QC.property $ null xs || DebugTrace.trace ("Unexpected errors found. Expected none. Found: " ++ P.show xs ++ ".\nLocation: " ++ GHC.prettyCallStack GHC.callStack) False
+            _ -> QC.property $ any (`P.elem` xs) searchAny || DebugTrace.trace ("None3 of the expected errors found. Expected one of: " ++ P.show searchAny ++ ". Found: " ++ P.show xs ++ ".\nLocation: " ++ GHC.prettyCallStack GHC.callStack) False
+    else QC.property $ null xs || DebugTrace.trace ("Unexpected errors found. Expected none. Found: " ++ P.show xs ++ ".\nLocation: " ++ GHC.prettyCallStack GHC.callStack) False
+
+
+-- Custom function to check budget and size conditions
+assertBudgetAndSize :: P.Either LedgerApiV2.EvaluationError LedgerApiV2.ExBudget
+                    -> P.Either Integer Integer
+                    -> Integer -- Max memory
+                    -> Integer -- Max CPU
+                    -> Integer -- Max size
+                    -> Tasty.Assertion
+assertBudgetAndSize eval_err eval_size maxMem' maxCPU' maxSize' = do
+    case eval_err of
+        P.Left err -> Tasty.assertFailure $ "Unexpected EvaluationError: " ++ P.show err
+        P.Right (LedgerApiV2.ExBudget (LedgerApiV2.ExCPU cpu) (LedgerApiV2.ExMemory mem)) -> do
+            case TextRead.readMaybe (P.show mem) of
+                Just memInt -> Tasty.assertBool ("Memory usage exceeds limit: " ++ P.show memInt) (memInt < maxMem')
+                Nothing -> Tasty.assertFailure $ "Failed to parse ExMemory: " ++ P.show mem
+            case TextRead.readMaybe (P.show cpu) of
+                Just cpuInt -> Tasty.assertBool ("CPU usage exceeds limit: " ++ P.show cpuInt) (cpuInt < maxCPU')
+                Nothing -> Tasty.assertFailure $ "Failed to parse ExCPU: " ++ P.show cpu
+    
+    case eval_size of
+        P.Left err -> Tasty.assertFailure $ "Unexpected error for size: " ++ P.show err
+        P.Right size -> Tasty.assertBool ("Size exceeds limit: " ++ P.show size) (size < maxSize')

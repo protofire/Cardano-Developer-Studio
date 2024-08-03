@@ -1,5 +1,5 @@
 cabal-version:      3.4
-name:               Helpers
+name:               cardano-helpers
 version:            0.1.0.0
 author:             Francisco Ciordia Cantarella
 maintainer:         francisco.ciordia.cantarella@gmail.com
@@ -18,6 +18,9 @@ common common-all
                     , plutus-ledger-api
                     , plutus-tx-plugin
                     , plutus-tx
+                    , tasty
+                    , tasty-hunit
+                    , QuickCheck
                     , text
                     , plutonomy
                     , serialise
@@ -87,4 +90,4 @@ test-suite HelpersTest
     type:               exitcode-stdio-1.0
     main-is:            HelpersTest.hs
     hs-source-dirs:     test
-    build-depends:      Helpers
+    build-depends:      cardano-helpers

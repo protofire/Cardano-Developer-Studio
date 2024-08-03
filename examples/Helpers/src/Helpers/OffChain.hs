@@ -847,46 +847,6 @@ validatorAddrToAddrBech32Mainnet addr = do
 
 --------------------------------------------------------------------------------2
 
-evaluateScriptValidator :: LedgerApiV2.Validator -> [PlutusTx.Data] -> PlutusTx.Data -> PlutusTx.Data -> PlutusTx.Data -> (LedgerApiV2.LogOutput, P.Either LedgerApiV2.EvaluationError LedgerApiV2.ExBudget, Integer)
-evaluateScriptValidator validator params datum redeemer ctx =
-    let datas :: [PlutusTx.Data]
-        datas = params ++ [datum, redeemer, ctx]
-        ----------------------
-        !pv = LedgerProtocolVersionsV1.vasilPV
-        !scriptUnValidatorV2 = getScriptUnValidator validator
-        !scriptShortBsV2 = getScriptShortBs scriptUnValidatorV2
-        ----------------------
-        exBudget :: LedgerApiV2.ExBudget
-        exBudget = LedgerApiV2.ExBudget 10000000000 14000000
-        ----------------------
-        -- !(logout, e) = LedgerApiV2.evaluateScriptCounting pv LedgerApiV2.Verbose LedgerEvaluationContextV2.evalCtxForTesting scriptShortBsV2 datas
-        !(logout, e) = LedgerApiV2.evaluateScriptRestricting pv LedgerApiV2.Verbose LedgerEvaluationContextV2.evalCtxForTesting exBudget scriptShortBsV2 datas
-        ----------------------
-        !size = LedgerScriptsV1.scriptSize scriptUnValidatorV2
-    in  (logout, e, size)
-
---------------------------------------------------------------------------------2
-
-evaluateScriptMint :: LedgerApiV2.MintingPolicy -> [PlutusTx.Data] -> PlutusTx.Data -> PlutusTx.Data -> (LedgerApiV2.LogOutput, P.Either LedgerApiV2.EvaluationError LedgerApiV2.ExBudget, Integer)
-evaluateScriptMint policy params redeemer ctx =
-    let datas :: [PlutusTx.Data]
-        datas = params ++ [redeemer, ctx]
-        ----------------------
-        !pv = LedgerProtocolVersionsV1.vasilPV
-        !scriptMintingPolicyV2 = getScriptMintingPolicy policy
-        !scriptShortBsV2 = getScriptShortBs scriptMintingPolicyV2
-        ----------------------
-        exBudget :: LedgerApiV2.ExBudget
-        exBudget = LedgerApiV2.ExBudget 10000000000 14000000
-        ----------------------
-        -- !(logout, e) = Ledge rApiV2.evaluateScriptCounting pv LedgerApiV2.Verbose LedgerEvaluationContextV2.evalCtxForTesting scriptShortBsV2 datas
-        !(logout, e) = LedgerApiV2.evaluateScriptRestricting pv LedgerApiV2.Verbose LedgerEvaluationContextV2.evalCtxForTesting exBudget scriptShortBsV2 datas
-        ----------------------
-        !size = LedgerScriptsV1.scriptSize scriptMintingPolicyV2
-    in  (logout, e, size)
-
---------------------------------------------------------------------------------2
-
 -- | Try to get the Type from a DecoratedTxOut.
 getDatumFromDecoratedTxOut :: forall datum. PlutusTx.FromData datum => LedgerTx.DecoratedTxOut -> Maybe datum
 getDatumFromDecoratedTxOut decoratedTxOut =
