@@ -997,8 +997,6 @@ calculateMinADAOfValue !value !isHash =
         !minADA = calculateMinADA numAssets sumAssetNameLengths numPIDs isHash
     in  minADA
 
-
-
 --------------------------------------------------------------------------------2
 
 {-# INLINEABLE getTxOut_In_TxOut_And_Datum #-}
@@ -1058,7 +1056,6 @@ isMintingNFTOwnCSAnyTN ctx = case getUnsafeOwnMintingTokenNameAndAmt ctx of
     x  -> all (\(_, amt) -> amt == 1) x
 --------------------------------------------------------------------------------2
 
--- OK helper function for others methods
 -- | Gets the Input TxInInfo corresponding to the TxOutRef. Its unsafe because it assumes that the TxOutRef is in the list
 {-# INLINEABLE getUnsafe_TxInInfo_By_TxOutRef #-}
 getUnsafe_TxInInfo_By_TxOutRef :: [LedgerApiV2.TxInInfo] -> LedgerApiV2.TxOutRef -> LedgerApiV2.TxInInfo
@@ -1072,27 +1069,6 @@ getUnsafe_TxInInfo_By_TxOutRef ((LedgerApiV2.TxInInfo tref ot) : tl) o_ref
 getUnsafe_Own_Input_TxOut :: LedgerContextsV2.ScriptContext -> LedgerApiV2.TxOut
 getUnsafe_Own_Input_TxOut (LedgerContextsV2.ScriptContext t_info (LedgerContextsV2.Spending o_ref)) = LedgerApiV2.txInInfoResolved (getUnsafe_TxInInfo_By_TxOutRef (LedgerApiV2.txInfoInputs t_info) o_ref)
 getUnsafe_Own_Input_TxOut _                                                                         = traceError "getUnsafe_Own_Input_TxOut"
-
--- OK
--- | Gets the Inputs TxOut from the same address that the Input being validated by the script. Its unsafe becasue is using getUnsafe_TxInInfo_By_TxOutRef
--- {-# INLINEABLE getUnsafe_Own_Inputs_TxOuts #-}
--- getUnsafe_Own_Inputs_TxOuts :: LedgerContextsV2.ScriptContext -> [LedgerApiV2.TxOut]
--- getUnsafe_Own_Inputs_TxOuts (LedgerContextsV2.ScriptContext t_info (LedgerContextsV2.Spending o_ref)) =
---     let !txOutBeingValidated = LedgerApiV2.txInInfoResolved (getUnsafe_TxInInfo_By_TxOutRef (LedgerApiV2.txInfoInputs t_info) o_ref)
---         !addressBeingValidated = LedgerApiV2.txOutAddress txOutBeingValidated
---         !inputsTxOutsFromSameAddress = [txInfoInput | txInfoInput <- LedgerApiV2.txInfoInputs t_info, LedgerApiV2.txOutAddress (LedgerApiV2.txInInfoResolved txInfoInput) == addressBeingValidated]
---     in  LedgerApiV2.txInInfoResolved <$> inputsTxOutsFromSameAddress
--- getUnsafe_Own_Inputs_TxOuts _ = traceError "getUnsafe_Own_Inputs_TxOuts"
-
--- -- | Gets the Outputs from the same address that the Input being validated by the script. Its unsafe becasue is using getUnsafe_TxInInfo_By_TxOutRef
--- {-# INLINEABLE getUnsafe_Own_Outputs_TxOuts #-}
--- getUnsafe_Own_Outputs_TxOuts :: LedgerContextsV2.ScriptContext -> [LedgerApiV2.TxOut]
--- getUnsafe_Own_Outputs_TxOuts (LedgerContextsV2.ScriptContext t_info (LedgerContextsV2.Spending o_ref)) =
---     let !txOutBeingValidated = LedgerApiV2.txInInfoResolved (getUnsafe_TxInInfo_By_TxOutRef (LedgerApiV2.txInfoInputs t_info) o_ref)
---         !addressBeingValidated = LedgerApiV2.txOutAddress txOutBeingValidated
---         !outputsTxOutsFromSameAddress = [txOut | txOut <- LedgerApiV2.txInfoOutputs t_info, LedgerApiV2.txOutAddress txOut == addressBeingValidated]
---     in  outputsTxOutsFromSameAddress
--- getUnsafe_Own_Outputs_TxOuts _ = traceError "getUnsafe_Own_Outputs_TxOuts"
 
 -- --------------------------------------------------------------------------------2
 

@@ -57,7 +57,6 @@ import qualified Ledger.Address                                  as LedgerAddres
 import qualified Ledger.Bytes                                    as LedgerBytes
 import qualified Ledger.Constraints                              as LedgerConstraints
 import qualified Ledger.Constraints.TxConstraints                as LedgerTxConstraints
-import qualified Ledger.Constraints.ValidityInterval             as LedgerValidityInterval
 import qualified Ledger.Crypto                                   as Crypto
 import qualified Ledger.Tx                                       as LedgerTx
 import qualified Ledger.Tx.CardanoAPI                            as LedgerTxCardanoAPI
@@ -68,11 +67,9 @@ import qualified Plutus.Script.Utils.V1.Typed.Scripts.Validators as UtilsTypedSc
 import qualified Plutus.Script.Utils.V2.Scripts                  as UtilsScriptsV2
 import qualified Plutus.V1.Ledger.Api                            as LedgerApiV1
 import qualified Plutus.V1.Ledger.Credential                     as LedgerCredentialV1
-import qualified Plutus.V1.Ledger.ProtocolVersions               as LedgerProtocolVersionsV1
 import qualified Plutus.V1.Ledger.Scripts                        as LedgerScriptsV1
 import qualified Plutus.V1.Ledger.Value                          as LedgerValueV1 (TokenName (..))
 import qualified Plutus.V2.Ledger.Api                            as LedgerApiV2
-import qualified Plutus.V2.Ledger.EvaluationContext              as LedgerEvaluationContextV2
 import qualified PlutusTx
 import qualified PlutusTx.Builtins                               as TxBuiltins (toBuiltin)
 import qualified PlutusTx.Builtins.Class                         as TxBuiltinsClass
@@ -746,30 +743,6 @@ readMintingPolicy path file = do
                 return $ Right des
             Left message -> return $ Left message
 
--- let types = --CardanoApiSerialiseTextEnvelope.FromSomeType (ApiShelley.AsVerificationKey ApiShelley.AsByronKey) (VerificationKey ByronKey)
---         [ CardanoApiSerialiseTextEnvelope.FromSomeType ApiShelley.AsPlutusScriptV2 Right]
-
--- --scriptSerialisedV2 <- CardanoApi.readFileTextEnvelopeAnyOf types (path SystemFilePathPosix.</> file)
--- textEnv <- CardanoApi.readFileTextEnvelope (CardanoApiSerialiseTextEnvelope.FromSomeType ApiShelley.PlutusScript ApiShelley.PlutusScriptV2) (path SystemFilePathPosix.</> file)
-
--- return ()
--- case scriptSerialisedV2 of
---     -- Left err -> P.return $ Left err
---     Right (Right (LedgerScriptsV1.Script l)) -> do
---         let !scriptMintingPolicyV2 = CodecSerialise.deserialise s
---         --     !scriptSerialisedV2 = DataByteStringLazy.fromStrict $ DataByteStringShort.fromShort scriptShortBsV2
---         --     !scriptMintingPolicyV2 = CodecSerialise.deserialise scriptSerialisedV2
---         -- P.return $ Right scriptMintingPolicyV2
---         P.return scriptMintingPolicyV2
---     -- Right _ -> P.return $ Left $ ApiShelley.TextEnvelopeAesonDecodeError  "Not a Plutus Script V2"
-
--- return scriptSerialisedV2
--- let ApiShelley.PlutusScript ApiShelley.PlutusScriptV2   [ApiShelley.FromSomeType ApiShelley.PlutusScriptV2]
---     !scriptMintingPolicyV2 = getScriptMintingPolicy policy
---     !scriptShortBsV2 = getScriptShortBs scriptMintingPolicyV2
---     !scriptSerialisedV2 = getScriptSerialised scriptShortBsV2
--- SystemDirectory.createDirectoryIfMissing True path --SystemFilePathPosix.</> v1dir
-
 --------------------------------------------------------------------------------2
 -- Create Script Address
 --------------------------------------------------------------------------------2
@@ -874,8 +847,6 @@ getUnsafeDatumFromDecoratedTxOut decoratedTxOut =
         datum = (mdatum ControlLens.^?! LedgerTx.datumInDatumFromQuery)
         LedgerApiV2.Datum datumBuiltinData = datum
     in  LedgerApiV2.unsafeFromBuiltinData @datum datumBuiltinData
-
-
 
 --------------------------------------------------------------------------------2
 
@@ -1174,3 +1145,5 @@ checkCollateral uTxOsAtUser = do
     if swCheckCollateral
         then return ()
         else PlutusContract.throwError "There is NOT UTxO free for Collateral"
+
+--------------------------------------------------------------------------------2

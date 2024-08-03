@@ -56,8 +56,8 @@ main = Tasty.defaultMain $ do
 
                   (eval_log, eval_err, eval_size) = OffChainEval.testContext getValidator getMintingPolicy ctx
               in do
-                  eval_log `OffChainEval.assertContainsAnyOf` [] 
-                  OffChainEval.assertBudgetAndSize eval_err eval_size OffChainEval.maxMemory OffChainEval.maxCPU OffChainEval.maxTxSize 
+                  eval_log `OffChainEval.assertContainsAnyOf` []
+                  OffChainEval.assertBudgetAndSize eval_err eval_size OffChainEval.maxMemory OffChainEval.maxCPU OffChainEval.maxTxSize
             ]
         ]
        ,
@@ -225,20 +225,20 @@ claimingTxWithDatum pkh datumCheckDateScript deadline contractRef vestVal =
     , Model.payToKey pkh vestVal
     ]
 
-
 -----------------------------------------------------------------------------------------
 
 claimingTxWithDatumContext :: LedgerApiV2.Validator -> LedgerApiV2.POSIXTime -> LedgerApiV2.POSIXTime ->  LedgerApiV2.ScriptContext
-claimingTxWithDatumContext validator datumDate date =
+claimingTxWithDatumContext validator datumDate txDate =
   let
     uTxO :: LedgerApiV2.TxOut
     uTxO = LedgerApiV2.TxOut
               (OffChainHelpers.addressValidator $ OffChainHelpers.hashValidator validator)
-              ( LedgerAda.lovelaceValueOf 100
-              )
+              (LedgerAda.lovelaceValueOf 100)
               (LedgerApiV2.OutputDatum $ LedgerApiV2.Datum $ PlutusTx.toBuiltinData datumDate)
               Nothing
     in
       OffChainEval.mkBaseValidatorContext [] [] 0
         OffChainEval.|> OffChainEval.setInputsAndAddRedeemers [(uTxO,  LedgerApiV2.Redeemer $ PlutusTx.toBuiltinData ())]
-        OffChainEval.|> OffChainEval.setValidRange (OffChainEval.createValidRange date)
+        OffChainEval.|> OffChainEval.setValidRange (OffChainEval.createValidRange txDate)
+
+-----------------------------------------------------------------------------------------

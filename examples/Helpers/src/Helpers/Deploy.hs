@@ -23,42 +23,30 @@ module Helpers.Deploy where
 
 import qualified Cardano.Api                              as CardanoApi
 import qualified Cardano.Api.Shelley                      as CardanoApiShelley
-import qualified Codec.Serialise                          as CodecSerialise (DeserialiseFailure, Serialise, deserialise, deserialiseOrFail, serialise)
-import qualified Control.Lens                             as Lens
+import qualified Codec.Serialise                          as CodecSerialise 
 import qualified Data.Aeson                               as Aeson
 import qualified Data.ByteString                          as BS
-import qualified Data.ByteString.Base16.Lazy              as B16
-import qualified Data.ByteString.Char8                    as BS8
 import qualified Data.ByteString.Lazy                     as BSL
 import qualified Data.ByteString.Lazy.Char8               as BL8
 import qualified Data.ByteString.Short                    as BSS
 import qualified Data.Map                                 as Map
-import qualified Flat                                     (DecodeException, Flat (..), flat, unflat)
-import qualified Ledger                                   as LedgerValue
+import qualified Flat                                     
 import qualified Ledger.Address                           as LedgerAddress (Address)
 import qualified Ledger.Scripts                           as LedgerScripts
-import qualified Ledger.Typed.Scripts                     as Scripts
-import qualified Ledger.Value                             as LedgerValue
 import qualified Plutonomy
 import qualified Plutus.V2.Ledger.Api                     as LedgerApiV2
-import qualified PlutusCore
 import qualified PlutusCore                               as PLC
 import qualified PlutusCore.DeBruijn                      as PLC
-import           PlutusCore.Default                       (DefaultFun, DefaultUni)
-import qualified PlutusCore.Pretty                        as PrettyConst
 import qualified PlutusTx
 import qualified PlutusTx.Builtins                        as TxBuiltins
 import qualified PlutusTx.Code                            as PlutusTx
 import qualified PlutusTx.Code                            as PlutusTxCode
 import qualified PlutusTx.Coverage                        as Coverage
 import           PlutusTx.Prelude                         hiding (unless)
-import qualified PlutusTx.TH                              as PlutusTx
 import qualified Prelude                                  as P
 import qualified System.FilePath                          as SystemFilePath
 import qualified System.FilePath.Posix                    as SystemFilePathPosix
 import qualified UntypedPlutusCore                        as UPLC
-import qualified UntypedPlutusCore.Core.Type              as UPLC
-import qualified UntypedPlutusCore.Evaluation.Machine.Cek as UPLC
 
 --------------------------------------------------------------------------------2
 -- Import Internos
@@ -218,7 +206,7 @@ readCompiledCodeFromBinaryFile filePath = do
 
 --------------------------------------------------------------------------------2
 
-compiledCodeToProgramTerm :: PlutusTxCode.CompiledCode a -> UPLC.Term UPLC.NamedDeBruijn DefaultUni  DefaultFun ()
+compiledCodeToProgramTerm :: PlutusTxCode.CompiledCode a -> UPLC.Term UPLC.NamedDeBruijn PLC.DefaultUni PLC.DefaultFun ()
 compiledCodeToProgramTerm = UPLC._progTerm . PlutusTxCode.getPlc
 
 --------------------------------------------------------------------------------2
