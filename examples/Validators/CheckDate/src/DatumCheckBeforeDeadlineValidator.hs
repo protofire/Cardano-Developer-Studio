@@ -10,10 +10,10 @@ module DatumCheckBeforeDeadlineValidator where
 import qualified Plutonomy
 import qualified Plutus.V2.Ledger.Api as LedgerApiV2
 import qualified Plutus.V2.Ledger.Contexts as LedgerContextsV2
-import qualified Plutus.V1.Ledger.Interval as LedgerIntervalV1
 import qualified PlutusTx
 
 import           PlutusTx.Prelude     (($), Bool, traceIfFalse, error)
+import qualified Helpers.OnChain as OnChainHelpers
 
 -- | Validator function that checks if the current time is before a specified deadline
 --
@@ -43,7 +43,7 @@ mkDatumCheckBeforeDeadlineValidator datumRaw _ ctxRaw =
 
     -- Check if the current time is before the deadline
     deadlineNotReached :: Bool
-    deadlineNotReached = LedgerIntervalV1.contains (LedgerIntervalV1.to deadline) $ LedgerContextsV2.txInfoValidRange info
+    deadlineNotReached = OnChainHelpers.isDateNotReached deadline info
 
 --------------------------------------------------------------------------------
 

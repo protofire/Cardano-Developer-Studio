@@ -11,9 +11,9 @@ import qualified Plutonomy
 import qualified Plutus.V2.Ledger.Api as LedgerApiV2
 import qualified PlutusTx
 
-import           PlutusTx.Prelude     (($), traceIfFalse, (==), (&&), error, all, any)
+import           PlutusTx.Prelude     (($), traceIfFalse, (&&), error)
 import qualified Plutus.V2.Ledger.Contexts as LedgerContextsV2
-import qualified Plutus.V1.Ledger.Value as LedgerValue
+import qualified Helpers.OnChain as OnChainHelpers
 
 -- | Data type for redeemer
 data RedeemerNFT = Mint | Burn
@@ -41,19 +41,13 @@ mkRedeemerNftPolicy oref redRaw ctxRaw =
         currencySymbol = LedgerContextsV2.ownCurrencySymbol ctx
 
         -- Check if the UTxO reference is present in the inputs
-        hasInputUTxO = any (\i -> LedgerApiV2.txInInfoOutRef i == oref) $ LedgerApiV2.txInfoInputs info
+        hasInputUTxO = OnChainHelpers.isTxOutAnInput oref info
 
         -- Check if minted amount is correct
-        checkMintedAmount = allOnes (LedgerValue.flattenValue (LedgerApiV2.txInfoMint info))
+        checkMintedAmount = OnChainHelpers.isNFT_Minting_With_CS currencySymbol info 
 
         -- Check if burned amount is correct
-        checkBurnAmount = allOnesNegatives (LedgerValue.flattenValue (LedgerApiV2.txInfoMint info))
-
-        -- Helper function to check if all amounts are 1
-        allOnes lst = all (\(cs', _, amt) -> cs' == currencySymbol && amt == 1) lst
-
-        -- Helper function to check if all amounts are -1
-        allOnesNegatives lst = all (\(cs', _, amt) -> cs' == currencySymbol && amt == (-1)) lst
+        checkBurnAmount = OnChainHelpers.isNFT_Burning_With_CS currencySymbol info 
 
 --------------------------------------------------------------------------------
 
