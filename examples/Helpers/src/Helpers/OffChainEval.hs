@@ -103,6 +103,8 @@ maxCPU = 10_000_000_000
 maxTxSize :: Integer
 maxTxSize = 16_384
 
+--------------------------------------------------------------------------------
+
 someTxId :: LedgerApiV2.TxId
 someTxId = LedgerApiV2.TxId "dd"
 
