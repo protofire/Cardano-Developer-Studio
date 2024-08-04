@@ -18,9 +18,21 @@ check_bash_version() {
 
 check_docker_version() {
     local MIN_DOCKER_VERSION="$1" # Specify the minimum Docker version required
+    
     if ! command -v docker &> /dev/null; then
         echo "Docker is not installed."
-        return 1 # Return failure
+
+        if [[ "$(uname -s)" == "Linux" ]]; then
+            read -p "Would you like to install Docker now? (y/n): " install_choice
+            if [[ "$install_choice" == "y" ]]; then
+                install_docker_ubuntu
+            else
+                return 1 # Return failure if the user opts not to install
+            fi
+        else
+            echo "Please install Docker manually."
+            return 1 # Return failure for non-Linux systems
+        fi
     fi
     
     # Extract the version string. This adjustment accounts for various version formats.
@@ -102,6 +114,28 @@ compare_versions() {
     
     return 0
 }
+
+install_docker_ubuntu() {
+    echo "Installing Docker on Ubuntu..."
+    sudo apt-get update
+    sudo apt-get install -y \
+        apt-transport-https \
+        ca-certificates \
+        curl \
+        gnupg-agent \
+        software-properties-common
+
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    sudo add-apt-repository \
+        "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+    sudo apt-get update
+    sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+
+    sudo usermod -aG docker $USER
+    echo "Docker installed successfully. You may need to log out and back in to apply group changes."
+}
+
 
 check_package_manager() {
     if command -v brew &> /dev/null; then

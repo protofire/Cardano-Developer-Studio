@@ -1,13 +1,3 @@
-- TODO: 
-- 
-- Helpers haskell library: mejorar codigo, agregar comentarios, agregar readme
-- Example smart contracts: usar libreria helpers, agregar readmes en cada example, agregar test de recursos
-- Agregar en readme principal todo acerda del Enviroment to deploy, test and run smart contracts
-  - con dev container abriendo la carpeta example en vscode 'code ./example'
-  - con docker compose desde menu para crear el container, y con tools para usarlo
-  - con instrucciones para instalar en ubuntu el entorno, ghcup, etc, siguiendo pasos del readme
-
-
 # Welcome to Cardano Developer Studio
 
 This repository is the home of the Cardano Developer Studio, an all-in-one suite designed to streamline the development process for Cardano blockchain developers. Our goal is to provide an accessible, comprehensive set of tools and resources to support developers in building dApps and smart contracts efficiently on the Cardano platform.

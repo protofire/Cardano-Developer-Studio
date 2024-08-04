@@ -48,3 +48,5 @@ files/config/blockfrost/blockfrost-mainnet.key
 
 /data/cardano-node-data/**
 /data/cardano-node-data*/**
+
+/**/export/**

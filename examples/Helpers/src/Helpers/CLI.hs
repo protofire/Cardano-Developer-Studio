@@ -1,10 +1,10 @@
-{-# LANGUAGE AllowAmbiguousTypes   #-}
-{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE AllowAmbiguousTypes #-}
+{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE RankNTypes            #-}
-{-# LANGUAGE ScopedTypeVariables   #-}
-{-# LANGUAGE TypeApplications      #-}
-{-# LANGUAGE UndecidableInstances  #-}
+{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE UndecidableInstances #-}
 
 --------------------------------------------------------------------------------2
 {- HLINT ignore "Use camelCase"          -}
@@ -17,34 +17,35 @@ module Helpers.CLI where
 -- External Imports
 --------------------------------------------------------------------------------2
 
-import qualified Data.Fixed                as DataFixed (Fixed (MkFixed), Pico)
-import qualified Data.List                 as DataList
-import qualified Data.Maybe                as DataMaybe
-import qualified Data.String               as DataString (IsString (fromString))
-import qualified Data.Text                 as DataText
+import qualified Data.Fixed as DataFixed (Fixed (MkFixed), Pico)
+import qualified Data.Functor as DataFunctor
+import qualified Data.List as DataList
+import qualified Data.Maybe as DataMaybe
+import qualified Data.String as DataString (IsString (fromString))
+import qualified Data.Text as DataText
 import qualified Data.Text.Internal.Search as DataTextSearch
-import qualified Data.Time.Clock           as DataTime
-import qualified Data.Time.Clock           as DataTimeClock (secondsToNominalDiffTime)
-import qualified Data.Time.Clock.POSIX     as DataTimeClockPOSIX (posixSecondsToUTCTime)
-import qualified Data.Time.Clock.POSIX     as DataTimePOSIX
-import qualified Data.Time.Format          as DataTimeFormat (defaultTimeLocale, formatTime)
+import qualified Data.Time.Clock as DataTime
+import qualified Data.Time.Clock as DataTimeClock (secondsToNominalDiffTime)
+import qualified Data.Time.Clock.POSIX as DataTimeClockPOSIX (posixSecondsToUTCTime)
+import qualified Data.Time.Clock.POSIX as DataTimePOSIX
+import qualified Data.Time.Clock.POSIX as POSIX (utcTimeToPOSIXSeconds)
+import qualified Data.Time.Format as DataTimeFormat (defaultTimeLocale, formatTime)
 import qualified Ledger
-import qualified Plutus.V2.Ledger.Api      as LedgerApiV2
-import qualified PlutusTx.Builtins.Class   as TxBuiltinsClass
-import           PlutusTx.Prelude          hiding (unless)
-import qualified Prelude                   as P
-import qualified System.Directory          as SystemDirectory
-import qualified System.FilePath.Posix     as SystemFilePathPosix
-import qualified Text.Hex                  as TextHex
-import qualified Text.Read                 as TextRead (readMaybe)
-import qualified Data.Functor              as DataFunctor
+import qualified Plutus.V2.Ledger.Api as LedgerApiV2
+import qualified PlutusTx.Builtins.Class as TxBuiltinsClass
+import PlutusTx.Prelude hiding (unless)
+import qualified System.Directory as SystemDirectory
+import qualified System.FilePath.Posix as SystemFilePathPosix
+import qualified Text.Hex as TextHex
+import qualified Text.Read as TextRead (readMaybe)
+import qualified Prelude as P
 
 --------------------------------------------------------------------------------2
 -- Import Internos
 --------------------------------------------------------------------------------2
 
-import qualified Helpers.OffChain   as OffChainHelpers
-import qualified Helpers.OnChain    as OnChainHelpers
+import qualified Helpers.OffChain as OffChainHelpers
+import qualified Helpers.OnChain as OnChainHelpers
 
 --------------------------------------------------------------------------------2
 -- Modulo
@@ -55,7 +56,14 @@ formatTime posixTime =
     let milisegundosFixedPico :: DataFixed.Pico
         !milisegundosFixedPico = DataFixed.MkFixed (LedgerApiV2.getPOSIXTime posixTime * 1000000000)
         !seconds = DataTimeClock.secondsToNominalDiffTime milisegundosFixedPico
-    in  DataTimeFormat.formatTime DataTimeFormat.defaultTimeLocale "%c" $ DataTimeClockPOSIX.posixSecondsToUTCTime seconds
+     in DataTimeFormat.formatTime DataTimeFormat.defaultTimeLocale "%c" $ DataTimeClockPOSIX.posixSecondsToUTCTime seconds
+
+-- Convert UTCTime to POSIXTime
+uTCTimeToPosixTime :: DataTime.UTCTime -> DataTimePOSIX.POSIXTime
+uTCTimeToPosixTime = POSIX.utcTimeToPOSIXSeconds
+
+uTCTimeToLedgerPosixTime :: DataTime.UTCTime -> LedgerApiV2.POSIXTime
+uTCTimeToLedgerPosixTime utcTime = LedgerApiV2.POSIXTime $ P.floor $ uTCTimeToPosixTime utcTime
 
 --------------------------------------------------------------------------------2
 
@@ -284,25 +292,25 @@ getUnitName = do
 
 getCurrencySymbol :: P.String -> P.IO LedgerApiV2.CurrencySymbol
 getCurrencySymbol defCS_Str = do
-    P.putStrLn $ "Enter Currency Symbol (Enter ADA to use lovelace - default="++defCS_Str++"):"
+    P.putStrLn $ "Enter Currency Symbol (Enter ADA to use lovelace - default=" ++ defCS_Str ++ "):"
     cS_Str <- P.getLine
     P.putStrLn "--------------------------------"
 
     let isADA = case cS_Str of
-                        "ADA" -> True
-                        _     -> False
+            "ADA" -> True
+            _ -> False
         hex = TextHex.decodeHex $ OffChainHelpers.stringToStrictText cS_Str
         isHexOk hex' = case hex' of
-                        Nothing -> False
-                        _       -> True
-        isCS_56HEX_OK = length cS_Str P.== 56  && isHexOk hex
+            Nothing -> False
+            _ -> True
+        isCS_56HEX_OK = length cS_Str P.== 56 && isHexOk hex
 
         getCS :: P.IO LedgerApiV2.CurrencySymbol
         getCS
             | P.null cS_Str = do
                 let hexDef = TextHex.decodeHex $ OffChainHelpers.stringToStrictText defCS_Str
                     hexDef_Str = DataMaybe.fromJust hexDef
-                return $ LedgerApiV2.CurrencySymbol $ TxBuiltinsClass.toBuiltin hexDef_Str 
+                return $ LedgerApiV2.CurrencySymbol $ TxBuiltinsClass.toBuiltin hexDef_Str
             | isADA = return LedgerApiV2.adaSymbol
             | isCS_56HEX_OK = do
                 let hex_Str = DataMaybe.fromJust hex
@@ -316,27 +324,26 @@ getCurrencySymbol defCS_Str = do
 
 --------------------------------------------------------------------------------2
 
-getTokenName ::  P.String -> Bool -> P.IO LedgerApiV2.TokenName
+getTokenName :: P.String -> Bool -> P.IO LedgerApiV2.TokenName
 getTokenName defCS_Str canBeEmpty = do
     if canBeEmpty
         then do
-            P.putStrLn $ "Enter TokenName (Enter ADA to use lovelace-default="++defCS_Str++"):"
+            P.putStrLn $ "Enter TokenName (Enter ADA to use lovelace-default=" ++ defCS_Str ++ "):"
             tN_Str <- P.getLine
             P.putStrLn "--------------------------------"
             if P.null tN_Str
-                then return  $ LedgerApiV2.TokenName $ OffChainHelpers.stringToBuiltinByteString defCS_Str
+                then return $ LedgerApiV2.TokenName $ OffChainHelpers.stringToBuiltinByteString defCS_Str
                 else
                     if tN_Str P.== "ADA"
                         then return LedgerApiV2.adaToken
-                        else
-                            return $ LedgerApiV2.TokenName $ OffChainHelpers.stringToBuiltinByteString tN_Str
+                        else return $ LedgerApiV2.TokenName $ OffChainHelpers.stringToBuiltinByteString tN_Str
         else do
-            P.putStrLn $ "Enter TokenName (default="++defCS_Str++"):"
+            P.putStrLn $ "Enter TokenName (default=" ++ defCS_Str ++ "):"
             tN_Str <- P.getLine
             P.putStrLn "--------------------------------"
             if P.null tN_Str
                 then do
-                    return  $ LedgerApiV2.TokenName $ OffChainHelpers.stringToBuiltinByteString defCS_Str
+                    return $ LedgerApiV2.TokenName $ OffChainHelpers.stringToBuiltinByteString defCS_Str
                 else do
                     return $ LedgerApiV2.TokenName $ OffChainHelpers.stringToBuiltinByteString tN_Str
 
@@ -353,14 +360,14 @@ selectFolder path filterFileName = do
                     filter
                         ( \n -> case DataTextSearch.indices (DataString.fromString filterFileName) (DataString.fromString n) of
                             (_ : _) -> True
-                            []      -> False
+                            [] -> False
                         )
                         files
         ----------------
         formatList list =
             concat
                 [ [P.show (n + 1 :: Integer) ++ ": " ++ P.show item]
-                  | (n, item) <- OnChainHelpers.enumerate list
+                | (n, item) <- OnChainHelpers.enumerate list
                 ]
     ----------------
     mapM_ P.putStrLn (formatList filterFiles)
@@ -406,10 +413,9 @@ printTitle variable = do
     let line = OffChainHelpers.strictTextToString $ DataText.replicate (P.fromIntegral len) "-"
     let variableLine' = DataText.replicate (P.fromIntegral ((len `divide` 2) - 2 - (P.fromIntegral (P.length variable) `divide` 2))) "-"
     let variableLine =
-            if P.null $ OffChainHelpers.strictTextToString variableLine' then
-                variable
-            else
-                OffChainHelpers.strictTextToString variableLine' ++ " " ++ variable ++ " " ++ OffChainHelpers.strictTextToString variableLine'
+            if P.null $ OffChainHelpers.strictTextToString variableLine'
+                then variable
+                else OffChainHelpers.strictTextToString variableLine' ++ " " ++ variable ++ " " ++ OffChainHelpers.strictTextToString variableLine'
     P.putStrLn ""
     P.putStrLn line
     P.putStrLn variableLine
@@ -441,7 +447,7 @@ printSubSubTitle variable = do
 nominalDiffTimeToSeconds :: DataTime.NominalDiffTime -> Integer
 nominalDiffTimeToSeconds myNominalDiffTime =
     let (myNominalDiffTimeInSeconds, _) = P.properFraction myNominalDiffTime
-    in  myNominalDiffTimeInSeconds
+     in myNominalDiffTimeInSeconds
 
 --------------------------------------------------------------------------------2
 
@@ -462,11 +468,11 @@ selectFromList list' = do
             let formatList :: [P.String]
                 formatList =
                     concat
-                        [ ["-----"
-                            , P.show (1 P.+ OnChainHelpers.fromJust (DataList.elemIndex element list))
-                            , P.show element
-                        ]
-                          | element <- list
+                        [ [ "-----"
+                          , P.show (1 P.+ OnChainHelpers.fromJust (DataList.elemIndex element list))
+                          , P.show element
+                          ]
+                        | element <- list
                         ]
             ----------------
             P.putStrLn "List:"

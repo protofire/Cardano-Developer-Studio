@@ -10,6 +10,7 @@ services:
         USER: plutus
     volumes:
       - ../../examples:/home/plutus/workspace
+      - ../../scripts:/home/plutus/workspace/scripts
     restart: on-failure
     logging:
       driver: "json-file"

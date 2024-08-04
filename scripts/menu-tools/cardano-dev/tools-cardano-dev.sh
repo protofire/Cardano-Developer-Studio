@@ -2,6 +2,7 @@
 
 source "$(dirname "${BASH_SOURCE[0]}")/../../utils/utils.sh"
 
+
 setWorkspaceDir
 
 # Specific function for container selection
@@ -20,7 +21,7 @@ cardano_dev_tools() {
             echo "----"
             echo "1) Cabal Build All"
             echo "2) Cabal Test All"
-            echo "3) Cabal Deploy All"
+            echo "3) Run example CLI"
             echo "4) Docker Logs"
             echo "5) Delete this Container and Optionally Its Volumes"
             echo "0) Return Main Menu"
@@ -38,7 +39,8 @@ cardano_dev_tools() {
                 ;;
 
                 3)
-                    docker exec -it "$selected_container" cabal run deployAll
+                    # source "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Validators/CheckDate/scripts/cli.sh"
+                    docker exec -it "$selected_container" bash -c "cd ~/workspace && bash ./Validators/CheckDate/scripts/cli.sh"
                     read -p "Press Enter to continue..."
                 ;;
                 
