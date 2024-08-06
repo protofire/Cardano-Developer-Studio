@@ -34,11 +34,11 @@ test_smart_contract() {
 
 # Function to deploy the smart contract
 deploy_smart_contract() {
+    local params=$1
     echo "Deploying smart contract... $WORKSPACE_ROOT_DIR_ABSOLUTE"
-    cabal run "${PROJECT_NAME}Deploy" "$WORKSPACE_ROOT_DIR_ABSOLUTE"
+    cabal run "${PROJECT_NAME}Deploy" "$WORKSPACE_ROOT_DIR_ABSOLUTE" $params
     read -p "Press Enter to continue..."
 }
-
 
 # Specific function for node container selection
 select_node_container() {
@@ -176,7 +176,7 @@ select_utxos() {
     local total_lovelace_in_list=0
     local tx_in_list=""
 
-    echo "Select UTXOs to use as inputs:" >&2
+    echo "Select UTXOs" >&2
 
     # Prepare the numbered list of UTXOs
     local utxo_list=()
@@ -203,6 +203,7 @@ select_utxos() {
             local tx_hash=$(echo "$utxo" | awk '{print $1}')
             local tx_ix=$(echo "$utxo" | awk '{print $2}')
             local tx_amount=$(echo "$utxo" | awk '{print $3}')
+
             local utxo_id="$tx_hash#$tx_ix"
             
             # Check if the UTXO is already selected
@@ -228,24 +229,139 @@ select_utxos() {
     echo "$tx_in_list|$total_lovelace_in_list"
 }
 
+select_single_utxo() {
+    local container=$1
+    local address=$2
+    
+    local utxos
+
+    echo "Querying UTXOs for address $address in container $container" >&2
+    utxos=$(docker exec -i "$container" cardano-cli query utxo --socket-path /ipc/node.socket --address "$address" --$CARDANO_NETWORK_WITH_MAGIC)
+
+    local selected_utxo=""
+    local tx_in_list=""
+
+    echo "Select a UTXO:" >&2
+
+    # Prepare the numbered list of UTXOs
+    local utxo_list=()
+    local count=1
+    while IFS= read -r line; do
+        if [ $count -gt 2 ]; then
+            utxo_list+=("$line")
+            echo "$((count-2))) $line" >&2
+        fi
+        count=$((count+1))
+    done <<< "$utxos"
+
+    # Check if there are no UTXOs available
+    if [ ${#utxo_list[@]} -eq 0 ]; then
+        echo "No UTXOs available for address $address" >&2
+        return 1
+    fi
+
+    while true; do
+        read -p "Enter UTXO number: " utxo_number
+        if [[ $utxo_number -gt 0 && $utxo_number -le ${#utxo_list[@]} ]]; then
+            local utxo="${utxo_list[$((utxo_number-1))]}"
+            local tx_hash=$(echo "$utxo" | awk '{print $1}')
+            local tx_ix=$(echo "$utxo" | awk '{print $2}')
+            local utxo_id="$tx_hash#$tx_ix"
+            
+            tx_in_list="$utxo_id"
+            selected_utxo="$utxo_id"
+            echo "Selected UTXO: $utxo_id" >&2
+            break
+        else
+            echo "Invalid UTXO number, please try again." >&2
+        fi
+    done
+
+    echo "Selected UTXO:" >&2
+    echo "$selected_utxo" >&2
+
+    echo "$tx_in_list"
+}
+
+select_collateral_utxo() {
+    local container=$1
+    local address=$2
+
+    # echo "Querying UTXOs for address $address in container $container" >&2
+    utxos=$(docker exec -i "$container" cardano-cli query utxo --socket-path /ipc/node.socket --address "$address" --$CARDANO_NETWORK_WITH_MAGIC)
+
+    local collateral_utxo=""
+    local tx_in_list=""
+
+    echo "Selecting a UTXO with more than 5 ADA and no other tokens for collateral:" >&2
+
+    # Prepare the list of UTXOs
+    local utxo_list=()
+    local count=1
+    while IFS= read -r line; do
+        if [ $count -gt 2 ]; then
+            utxo_list+=("$line")
+        fi
+        count=$((count+1))
+    done <<< "$utxos"
+
+    # Find a suitable UTXO for collateral
+    for utxo in "${utxo_list[@]}"; do
+        local tx_hash=$(echo "$utxo" | awk '{print $1}')
+        local tx_ix=$(echo "$utxo" | awk '{print $2}')
+        local tx_amount=$(echo "$utxo" | awk '{print $3}')  # Get tx_amount directly
+        local rest=$(echo "$utxo" | awk '{for (i=4; i<=NF; i++) printf $i " "; print ""}')
+
+        # echo "tx_hash: $tx_hash" >&2
+        # echo "tx_ix: $tx_ix" >&2
+        # echo "tx_amount: $tx_amount" >&2
+        # echo "rest: $rest" >&2
+        
+        if [[ $tx_amount -gt 4999999 ]]; then  # Check amount first
+            # Improved token check
+            if [[ ! "$rest" =~ [0-9]+\ [0-9a-fA-F]+\.[0-9a-zA-Z]+ ]]; then 
+                local utxo_id="$tx_hash#$tx_ix"
+                collateral_utxo="$utxo_id"
+                echo "Selected UTXO for collateral: $utxo_id with $tx_amount lovelace" >&2
+                break
+            fi
+        fi
+    done
+
+    if [[ -z "$collateral_utxo" ]]; then
+        echo "No suitable UTXO found for collateral. Please ensure there is a UTXO with more than 5 ADA and no other tokens." >&2
+        return 1
+    fi
+
+    echo "$collateral_utxo"
+}
+
+
 build_and_submit_transaction() {
     local container=$1
     local walletPath=$2
     local tx_in_list=$3
     local tx_out_list=$4
     local change_address=$5
+    local mint_params=$6
 
     echo "Creating the transaction..."
-    if ! docker exec -i "$container" cardano-cli transaction build \
+    # echo  $tx_in_list $tx_out_list $mint_params
+
+    cmd="docker exec -i \"$container\" cardano-cli transaction build \
             --babbage-era \
             --socket-path /ipc/node.socket \
             --$CARDANO_NETWORK_WITH_MAGIC \
-            $tx_in_list $tx_out_list \
-            --change-address "$change_address" \
-            --out-file "/tmp/tx.body"; then
+            $tx_in_list $tx_out_list $mint_params \
+            --change-address \"$change_address\" \
+            --out-file \"/tmp/tx.body\""
+    if ! eval $cmd; then
         echo "Error: Failed to build the transaction. Check the input parameters and script." >&2
         return 0  # Indicate failure
     fi
+
+    # docker cp "$container:/tmp/tx.body" "/tmp/tx.body" 
+    # cat /tmp/tx.body
 
     echo "Signing the transaction..."
     wallet_skey_path="$walletPath/$(basename $walletPath).skey"
@@ -260,6 +376,9 @@ build_and_submit_transaction() {
         return 0
     fi
 
+    docker cp "$container:/tmp/tx.signed" "/tmp/tx.signed" 
+    cat /tmp/tx.signed
+
     docker exec -i "$container" rm /tmp/wallet.skey
 
     echo "Submitting the transaction..."
@@ -272,4 +391,28 @@ build_and_submit_transaction() {
     fi
 
     echo "Transaction submitted successfully!"
+}
+
+
+create_collateral_tx() {
+    echo "Creating collateral transaction..."
+
+    wallet_address=$(cat "$selected_wallet/$(basename $selected_wallet).addr")
+    echo "Choosing UTXOs from wallet to use as inputs..."
+    select_utxos_output=$(select_utxos "$selected_node_container" "$wallet_address")
+    IFS='|' read -r wallet_tx_in_list total_lovelace_in_list <<< "$select_utxos_output"
+
+    tx_in_list=""
+    if [[ -n "$wallet_tx_in_list" ]]; then
+        IFS=' ' read -ra wallet_tx_ins <<< "$wallet_tx_in_list"
+        for wallet_tx_in in "${wallet_tx_ins[@]}"; do
+            tx_in_list+=" --tx-in $wallet_tx_in"
+        done
+    fi
+    tx_out_list=" --tx-out $wallet_address+5000000 --tx-out $wallet_address+5000000 --tx-out $wallet_address+5000000 --tx-out $wallet_address+5000000" 
+
+    build_and_submit_transaction "$selected_node_container" "$selected_wallet" "$tx_in_list" "$tx_out_list" "$wallet_address" 
+
+    read -p "Press Enter to continue..."
+
 }

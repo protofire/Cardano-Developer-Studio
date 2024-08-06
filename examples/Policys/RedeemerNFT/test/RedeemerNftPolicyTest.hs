@@ -4,18 +4,32 @@
 {-# LANGUAGE NumericUnderscores #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+--------------------------------------------------------------------------------2
+{- HLINT ignore "Use camelCase"          -}
+{- HLINT ignore "Reduce duplication"          -}
+--------------------------------------------------------------------------------2
 
 module Main where
 
 import Control.Monad (replicateM, unless)
-import PlutusTx.Prelude ((.), ($), (==), (<>))
+import PlutusTx.Prelude ((.), ($), (==), (<>), Maybe (Just, Nothing))
+
 import Prelude (IO, mapM, mconcat)
 
 import qualified Plutus.Model as Model
-import qualified Plutus.V2.Ledger.Api as LedgerApiV2
-import qualified Test.Tasty as Tasty
+import qualified Plutus.V2.Ledger.Api              as LedgerApiV2
+import qualified Test.Tasty                        as Tasty
+import qualified Test.Tasty.HUnit                  as Tasty
+import qualified Ledger
+import qualified Ledger.Ada as LedgerAda
+
+import qualified Helpers.OffChain                  as OffChainHelpers
+import qualified Helpers.OffChainEval              as OffChainEval
 
 import RedeemerNftPolicy (redeemerNftPolicy, RedeemerNFT(..))
+import qualified PlutusTx
+
+
 ---------------------------------------------------------------------------------------------------
 ------------------------------------------ TESTING ------------------------------------------------
 main :: IO ()
@@ -23,11 +37,38 @@ main = Tasty.defaultMain $ do
     Tasty.testGroup
         "Testing redeemerNft policy"
         [ Tasty.testGroup
-            "Test the Policy of a NFT"
-            [ 
-              good "Minting and burning NFT with respectly redeemer" redeemerNftTest,
-              bad "Try mint the nfts twice" redeemerNftMintingTwice
+            "Testing size and resources"
+            [
+              Tasty.testCase
+                "Valid minting tx of the policy"   $
+                  let
+                      ref =
+                        LedgerApiV2.TxOutRef
+                            { LedgerApiV2.txOutRefId = "ed485b083eb5816c10c35a9d091d8af4cfdceef40c96578cae2b2266a8d976c9",
+                              LedgerApiV2.txOutRefIdx = 1
+                            }
+
+                      policy = redeemerNftPolicy ref
+                      ctx = mintingTxContext policy ref 1000
+
+                      getValidator :: LedgerApiV2.Address -> Maybe LedgerApiV2.Validator
+                      getValidator _ = Nothing
+
+                      getMintingPolicy :: LedgerApiV2.CurrencySymbol -> Maybe LedgerApiV2.MintingPolicy
+                      getMintingPolicy _ = Just policy
+
+                      (eval_log, eval_err, eval_size) = OffChainEval.testContext getValidator getMintingPolicy ctx
+                  in do
+                      eval_log `OffChainEval.assertContainsAnyOf` []
+                      OffChainEval.assertBudgetAndSize eval_err eval_size OffChainEval.maxMemory 1 OffChainEval.maxTxSize
             ]
+          ,
+          Tasty.testGroup
+                "Test the Policy of a NFT"
+                [ 
+                  good "Minting and burning NFT with respectly redeemer" redeemerNftTest,
+                  bad "Try mint the nfts twice" redeemerNftMintingTwice
+                ]
         ]
   where
     bad msg = good msg . Model.mustFail
@@ -111,3 +152,25 @@ mintTwiceTx ref out val pkh =
         , Model.spendPubKey ref
         ]
 
+-----------------------------------------------------------------------------------------
+
+mintingTxContext :: LedgerApiV2.MintingPolicy -> LedgerApiV2.TxOutRef ->  LedgerApiV2.POSIXTime ->   LedgerApiV2.ScriptContext
+mintingTxContext policy ref txDate =
+  let
+    cSymbol = OffChainHelpers.getCurSymbolOfPolicy policy
+
+    uTxO :: (LedgerApiV2.TxOut, LedgerApiV2.TxOutRef)
+    uTxO = (LedgerApiV2.TxOut
+              (Ledger.pubKeyHashAddress (Ledger.PaymentPubKeyHash "a2") Nothing)
+              (LedgerAda.lovelaceValueOf 100)
+              LedgerApiV2.NoOutputDatum
+              Nothing, 
+              ref
+          )
+    in
+      OffChainEval.mkBaseValidMintingPolicyContext [] [] cSymbol
+        OffChainEval.|> OffChainEval.setInputWithRef uTxO
+        OffChainEval.|> OffChainEval.setMintAndRedeemers [(LedgerApiV2.singleton cSymbol "Token" 1, LedgerApiV2.Redeemer $ PlutusTx.toBuiltinData Mint)]
+        OffChainEval.|> OffChainEval.setValidRange (OffChainEval.createValidRange txDate)
+
+-----------------------------------------------------------------------------------------

@@ -117,7 +117,7 @@ create_vesting_tx() {
     amount_ada=$(select_amount_ada)
 
     wallet_address=$(cat "$selected_wallet/$(basename $selected_wallet).addr")
-    echo "Choosing UTXOs from wallet..."
+    echo "Choosing UTXOs from wallet to use as inputs..."
     select_utxos_output=$(select_utxos "$selected_node_container" "$wallet_address" $amount_ada)
     IFS='|' read -r wallet_tx_in_list total_lovelace_in_list <<< "$select_utxos_output"
 
@@ -129,7 +129,6 @@ create_vesting_tx() {
     fi
     
     tx_out_list="--tx-out $script_address+$amount_ada --tx-out-inline-datum-file /tmp/datum.json"
-    echo "$tx_out_list" 
 
     build_and_submit_transaction "$selected_node_container" "$selected_wallet" "$tx_in_list" "$tx_out_list" "$wallet_address"
 
@@ -141,11 +140,11 @@ create_claiming_tx() {
     select_contract
 
     wallet_address=$(cat "$selected_wallet/$(basename $selected_wallet).addr")
-    echo "Choosing UTXOs from wallet..."
+    echo "Choosing UTXOs from wallet to use as inputs..."
     select_utxos_output=$(select_utxos "$selected_node_container" "$wallet_address")
     IFS='|' read -r wallet_tx_in_list total_lovelace_in_list <<< "$select_utxos_output"
 
-    echo "Choosing UTXOs from script address..."
+    echo "Choosing UTXOs from script address to consume..."
     select_utxos_output=$(select_utxos "$selected_node_container" "$script_address")
     IFS='|' read -r script_tx_in_list total_lovelace_in_script <<< "$select_utxos_output"
     
@@ -170,8 +169,6 @@ create_claiming_tx() {
         done
     fi
     
-    echo "$tx_in_list" 
-
     build_and_submit_transaction "$selected_node_container" "$selected_wallet" "$tx_in_list" "" "$wallet_address"
     
     read -p "Press Enter to continue..."

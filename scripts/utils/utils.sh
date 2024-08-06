@@ -281,7 +281,11 @@ select_container() {
     done < <(docker ps $container_status_filter --format "{{.Names}} {{.Status}}" | grep "$container_type")
     
     if [ ${#containers[@]} -eq 0 ]; then
-        echo "No $container_type containers found. Please ensure they are deployed."
+        if [[ "$include_stopped" -eq 1 ]]; then
+            echo "No $container_type containers found. Please ensure they are deployed."
+        else
+            echo "No running $container_type containers found. Please ensure they are deployed and running."
+        fi
         read -p "Press Enter to continue..."
         return 1  # Return with error status to signal no containers found
     fi

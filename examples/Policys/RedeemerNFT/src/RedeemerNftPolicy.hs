@@ -17,7 +17,13 @@ import qualified Helpers.OnChain as OnChainHelpers
 
 -- | Data type for redeemer
 data RedeemerNFT = Mint | Burn
-PlutusTx.unstableMakeIsData ''RedeemerNFT
+-- PlutusTx.unstableMakeIsData ''RedeemerNFT
+
+PlutusTx.makeIsDataIndexed
+    ''RedeemerNFT
+    [ ('Mint, 0)
+    , ('Burn, 1)
+    ]
 
 {-# INLINEABLE mkRedeemerNftPolicy #-}
 -- | The minting policy function that determines if a transaction is valid

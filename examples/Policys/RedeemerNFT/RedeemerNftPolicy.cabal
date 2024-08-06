@@ -32,7 +32,9 @@ common common-all-tests
     import:           common-all
     build-depends:    QuickCheck
                     , tasty
+                    , tasty-hunit
                     , plutus-simple-model
+                    , plutus-ledger
 
 library
     import:             common-all
@@ -45,3 +47,10 @@ test-suite RedeemerNftPolicyTest
     main-is:            RedeemerNftPolicyTest.hs
     hs-source-dirs:     test
     build-depends:      RedeemerNftPolicy
+
+executable RedeemerNftPolicyDeploy
+  import:         common-all
+  main-is:        deploy.hs
+  hs-source-dirs: app
+  build-depends:  RedeemerNftPolicy
+  build-depends:  time, playground-common, openapi3, plutus-ledger, filepath, directory, plutus-ledger, process

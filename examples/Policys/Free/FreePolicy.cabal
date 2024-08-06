@@ -21,6 +21,7 @@ common common-all
                     , text
                     , plutonomy
                     , serialise
+    build-depends:      cardano-helpers
     default-language: Haskell2010
     ghc-options: -Wall -fobject-code -fno-ignore-interface-pragmas
                  -fno-omit-interface-pragmas -fno-strictness 
@@ -44,3 +45,10 @@ test-suite FreePolicyTest
     main-is:            FreePolicyTest.hs
     hs-source-dirs:     test
     build-depends:      FreePolicy
+
+executable FreePolicyDeploy
+  import:         common-all
+  main-is:        deploy.hs
+  hs-source-dirs: app
+  build-depends:  FreePolicy
+  build-depends:  time, playground-common, openapi3, plutus-ledger, filepath, directory, plutus-ledger, process

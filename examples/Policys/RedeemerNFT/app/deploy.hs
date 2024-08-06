@@ -26,7 +26,7 @@ import qualified System.Environment  as SystemEnvironment (getArgs, getProgName)
 import qualified Helpers.CLI            as CLIHelpers
 import qualified Helpers.Deploy         as DeployHelpers
 import qualified Helpers.OffChain       as OffChainHelpers
-import qualified FreePolicy  as OnChain 
+import qualified RedeemerNftPolicy  as OnChain 
 
 --------------------------------------------------------------------------------2
 
@@ -39,14 +39,12 @@ deploy = do
     args <- SystemEnvironment.getArgs
     ------------------------------
     case args of
-        [baseFolder] -> runDeploy baseFolder
-        [] -> runDeploy ""
-        _ -> P.putStrLn "Error: Expected 1 argument: baseFolder"
-
+        [baseFolder, uTxOutRefStr] -> runDeploy baseFolder uTxOutRefStr 
+        _ -> P.putStrLn "Error: Expected 2 arguments: baseFolder uTxOutRefStr"
     ------------------------------
 
-runDeploy :: P.String -> P.IO ()
-runDeploy baseFolder = do
+runDeploy :: P.String -> P.String -> P.IO ()
+runDeploy baseFolder uTxOutRefStr = do
     ------------------------------
     progName <- SystemEnvironment.getProgName
     ------------------------------
@@ -73,10 +71,11 @@ runDeploy baseFolder = do
     P.putStrLn $ "Path: " ++ path SystemFilePathPosix.</> folderName
     ------------------------------
     do 
-        P.putStrLn "Generating 'freePolicy' Script..."
+        P.putStrLn "Generating 'redeemerNftPolicy' Script..."
         let 
-            policy = OnChain.freePolicy
+            txOutRef = OffChainHelpers.unsafeReadTxOutRef uTxOutRefStr
+            policy = OnChain.redeemerNftPolicy txOutRef
             policy_CS = OffChainHelpers.getCurSymbolOfPolicy policy
-        DeployHelpers.deployMintingPolicy (path SystemFilePathPosix.</> folderName) "freePolicy" policy policy_CS
+        DeployHelpers.deployMintingPolicy (path SystemFilePathPosix.</> folderName) "redeemerNftPolicy" policy policy_CS
     ------------------------------
     return ()

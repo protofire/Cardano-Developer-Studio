@@ -117,7 +117,7 @@ deploy = do
     ------------------------------
     do
         P.putStrLn "Generating 'paramCheckBeforeDeadlineValidator' Script..."
-         ------------------------------
+        ------------------------------
         let currentTimeLedger = CLIHelpers.uTCTimeToLedgerPosixTime currentTime
             currentTimePlus15Minuts = currentTimeLedger P.+ (15 P.* 60 P.* 1000)
         deadline <- CLIHelpers.getTime "Deadline POSIXTime " currentTimePlus15Minuts currentTimeLedger
