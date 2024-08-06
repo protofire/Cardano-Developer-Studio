@@ -60,7 +60,7 @@ main = Tasty.defaultMain $ do
                       (eval_log, eval_err, eval_size) = OffChainEval.testContext getValidator getMintingPolicy ctx
                   in do
                       eval_log `OffChainEval.assertContainsAnyOf` []
-                      OffChainEval.assertBudgetAndSize eval_err eval_size OffChainEval.maxMemory 1 OffChainEval.maxTxSize
+                      OffChainEval.assertBudgetAndSize eval_err eval_size OffChainEval.maxMemory OffChainEval.maxCPU OffChainEval.maxTxSize
             ]
           ,
           Tasty.testGroup
