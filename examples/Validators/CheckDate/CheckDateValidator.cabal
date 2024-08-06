@@ -52,14 +52,6 @@ test-suite CheckDateValidatorTest
     build-depends:      CheckDateValidator
 
 
-executable CheckDateValidatorCLI
-  import:         common-all
-  main-is:        cli.hs
-  hs-source-dirs: app
-  build-depends:  CheckDateValidator
-  build-depends:  time, playground-common, openapi3, plutus-ledger, filepath, directory, plutus-ledger, process
-
-
 executable CheckDateValidatorDeploy
   import:         common-all
   main-is:        deploy.hs
