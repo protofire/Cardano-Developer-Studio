@@ -24,7 +24,8 @@ cardano_dev_tools() {
             echo "----"
             echo "1) Cabal Build All"
             echo "2) Cabal Test All"
-            echo "3) Run example CLI"
+            # TODO: add all the rest of the CLI
+            echo "3) Run Validators/CheckDate/CheckDateValidator CLI"
             echo "4) Docker Logs"
             echo "5) Delete this Container and Optionally Its Volumes"
             echo "0) Return Main Menu"
