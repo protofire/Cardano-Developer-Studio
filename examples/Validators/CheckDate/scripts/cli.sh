@@ -1,11 +1,16 @@
 #!/bin/bash
 
-if [[ -f "$(dirname "${BASH_SOURCE[0]}")/../../../../scripts/utils.sh" ]]; then
+CURRENT_SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+# echo "Current script directory: $CURRENT_SCRIPT_DIR"
+
+if [[ -f "$CURRENT_SCRIPT_DIR/../../../scripts/utils/utils.sh" ]]; then
     # cuando el script se ejecuta en container
-    source "$(dirname "${BASH_SOURCE[0]}")/../../../../scripts/utils.sh"
-elif [[ -f "$(dirname "${BASH_SOURCE[0]}")/../../../../../scripts/utils.sh" ]]; then
+    source "$CURRENT_SCRIPT_DIR/../../../scripts/utils/utils.sh"
+    source "$CURRENT_SCRIPT_DIR/../../../scripts/utils/utils-transactions.sh"
+elif [[ -f "$CURRENT_SCRIPT_DIR/../../../../scripts/utils/utils.sh" ]]; then
     # cuando el script se ejecuta en host
-    source "$(dirname "${BASH_SOURCE[0]}")/../../../../../scripts/utils.sh"
+    source "$CURRENT_SCRIPT_DIR/../../../../scripts/utils/utils.sh"
+    source "$CURRENT_SCRIPT_DIR/../../../../scripts/utils/utils-transactions.sh"
 else
     echo "Error: utils.sh not found in either path."
     exit 1
@@ -13,102 +18,164 @@ fi
 
 setWorkspaceDir
 
-# Function to get the project name from the .cabal file
-get_project_name() {
-    local cabal_file=$(find "$(dirname "${BASH_SOURCE[0]}")/../" -maxdepth 1 -name "*.cabal" | head -n 1)
-    if [[ -f "$cabal_file" ]]; then
-        grep -i '^name:' "$cabal_file" | awk '{print $2}'
-    else
-        echo "Error: .cabal file ($cabal_file) not found!" >&2
-        exit 1
-    fi
-}
-
 PROJECT_NAME=$(get_project_name)
-
-# Function to show the main menu
-show_main_menu() {
-    echo "----"
-    echo "Main Menu - Choose an option:"
-    echo "----"
-    echo "1) Test"
-    echo "2) Deploy"
-    echo "3) Create Transactions"
-    echo "0) Exit"
-    read -p "Enter your choice or 0 to exit: " main_choice
-}
-
-# Function to test the smart contract
-test_smart_contract() {
-    echo "Running tests..."
-    cabal test "${PROJECT_NAME}Test"
-    read -p "Press Enter to continue..."
-}
-
-# Function to deploy the smart contract
-deploy_smart_contract() {
-    echo "Deploying smart contract..."
-    cabal run "${PROJECT_NAME}Deploy"
-    read -p "Press Enter to continue..."
-}
 
 # Function to show the transaction menu
 show_transaction_menu() {
     echo "----"
-    echo "Transaction Menu - Choose an option:"
+    echo "Transaction Menu - $PROJECT_NAME - Choose an option:"
     echo "----"
-    echo "1) Select Container with Node"
-    echo "2) Select Smart Contract Files"
-    echo "3) Select Wallet Files"
-    echo "4) Balance in Wallet"
-    echo "5) Balance in Smart Contract"
+    echo "1) Select Container with Node - Selected: $selected_node_container"
+    echo "2) Select Smart Contract Files - Selected: $(basename "$selected_scripts")"
+    echo "3) Select Wallet Files - Selected: $(basename "$selected_wallet")"
+    echo "4) UTXOs in Wallet"
+    echo "5) UTXOs in Smart Contracts"
     echo "6) Create Vesting Transaction"
     echo "7) Create Claiming Transaction"
     echo "0) Return to Main Menu"
     read -p "Enter your choice or 0 to return: " tx_choice
 }
 
-# Placeholder functions for transaction menu options
-select_container_with_node() {
-    echo "Selecting container with node..."
-    # Implementation needed
+select_contract() {
+    echo "Select the contract:"
+    echo "1) Datum Check After Deadline Validator"
+    echo "2) Datum Check Before Deadline Validator"
+    echo "3) Param Check After Deadline Validator"
+    echo "4) Param Check Before Deadline Validator"
+    local contract_choice
+    while true; do
+        read -p "Enter your choice [1-4]: " contract_choice
+        case $contract_choice in
+            1) selected_validator="datumCheckAfterDeadlineValidator"; break;;
+            2) selected_validator="datumCheckBeforeDeadlineValidator"; break;;
+            3) selected_validator="paramCheckAfterDeadlineValidator"; break;;
+            4) selected_validator="paramCheckBeforeDeadlineValidator"; break;;
+            *) echo "Invalid choice, please select a valid option.";;
+        esac
+    done
+    script_address=$(cat "$selected_scripts/$selected_validator-$CARDANO_NETWORK_SUFIX.addr")
+    echo "Selected address: $script_address"
+}
+
+utxos_in_smart_contracts() {
+    echo "Checking UTXOs in Smart Contracts..."
+    echo ""
+
+    echo "Checking balance in Datum Check After Deadline Validator..."
+    script_address=$(cat "$selected_scripts/datumCheckAfterDeadlineValidator-$CARDANO_NETWORK_SUFIX.addr")
+    utxos_in_address "$script_address"
+    echo ""
+
+    echo "Checking balance in Datum Check Before Deadline Validator..."
+    script_address=$(cat "$selected_scripts/datumCheckBeforeDeadlineValidator-$CARDANO_NETWORK_SUFIX.addr")
+    utxos_in_address "$script_address"
+    echo ""
+
+    echo "Checking balance in Param Check After Deadline Validator..."
+    script_address=$(cat "$selected_scripts/paramCheckAfterDeadlineValidator-$CARDANO_NETWORK_SUFIX.addr")
+    utxos_in_address "$script_address"
+    echo ""
+
+    echo "Checking balance in Param Check Before Deadline Validator..."
+    script_address=$(cat "$selected_scripts/paramCheckBeforeDeadlineValidator-$CARDANO_NETWORK_SUFIX.addr")
+    utxos_in_address "$script_address"
+    echo ""
+
     read -p "Press Enter to continue..."
 }
 
-select_smart_contract_files() {
-    echo "Selecting smart contract files..."
-    # Implementation needed
-    read -p "Press Enter to continue..."
-}
-
-select_wallet_files() {
-    echo "Selecting wallet files..."
-    # Implementation needed
-    read -p "Press Enter to continue..."
-}
-
-balance_in_wallet() {
-    echo "Checking balance in wallet..."
-    # Implementation needed
-    read -p "Press Enter to continue..."
-}
-
-balance_in_smart_contract() {
-    echo "Checking balance in smart contract..."
-    # Implementation needed
-    read -p "Press Enter to continue..."
+# Function to generate datum JSON
+generate_datum_json() {
+    local validator=$1
+    case $validator in
+        paramCheckAfterDeadlineValidator | paramCheckBeforeDeadlineValidator)
+            echo "{}"
+            ;;
+        datumCheckAfterDeadlineValidator | datumCheckBeforeDeadlineValidator)
+            local posix_time=$(get_posix_time)
+            echo "{\"int\": $posix_time}"
+            ;;
+    esac
 }
 
 create_vesting_tx() {
     echo "Creating vesting transaction..."
-    # Implementation needed
+    select_contract
+
+    datum_json=$(generate_datum_json "$selected_validator")
+    if [[ $? -ne 0 ]]; then
+        echo "Failed to generate datum JSON."
+        read -p "Press Enter to continue..."
+        return
+    fi
+
+    # Save datum JSON to a file
+    datum_json_file="/tmp/datum.json"
+    echo "$datum_json" > "$datum_json_file"
+    docker cp "$datum_json_file" "$selected_node_container:$datum_json_file"
+
+    amount_ada=$(select_amount_ada)
+
+    wallet_address=$(cat "$selected_wallet/$(basename $selected_wallet).addr")
+    echo "Choosing UTXOs from wallet..."
+    select_utxos_output=$(select_utxos "$selected_node_container" "$wallet_address" $amount_ada)
+    IFS='|' read -r wallet_tx_in_list total_lovelace_in_list <<< "$select_utxos_output"
+
+    if [[ -n "$wallet_tx_in_list" ]]; then
+        IFS=' ' read -ra wallet_tx_ins <<< "$wallet_tx_in_list"
+        for wallet_tx_in in "${wallet_tx_ins[@]}"; do
+            tx_in_list+=" --tx-in $wallet_tx_in"
+        done
+    fi
+    
+    tx_out_list="--tx-out $script_address+$amount_ada --tx-out-inline-datum-file /tmp/datum.json"
+    echo "$tx_out_list" 
+
+    build_and_submit_transaction "$selected_node_container" "$selected_wallet" "$tx_in_list" "$tx_out_list" "$wallet_address"
+
     read -p "Press Enter to continue..."
 }
 
 create_claiming_tx() {
     echo "Creating claiming transaction..."
-    # Implementation needed
+    select_contract
+
+    wallet_address=$(cat "$selected_wallet/$(basename $selected_wallet).addr")
+    echo "Choosing UTXOs from wallet..."
+    select_utxos_output=$(select_utxos "$selected_node_container" "$wallet_address")
+    IFS='|' read -r wallet_tx_in_list total_lovelace_in_list <<< "$select_utxos_output"
+
+    echo "Choosing UTXOs from script address..."
+    select_utxos_output=$(select_utxos "$selected_node_container" "$script_address")
+    IFS='|' read -r script_tx_in_list total_lovelace_in_script <<< "$select_utxos_output"
+    
+    tx_in_script_file="$selected_scripts/$selected_validator.plutus"
+    docker cp "$tx_in_script_file" "$selected_node_container:/tmp/validator.plutus"
+
+    tx_in_list=""
+    
+    if [[ -n "$wallet_tx_in_list" ]]; then
+        IFS=' ' read -ra wallet_tx_ins <<< "$wallet_tx_in_list"
+        for wallet_tx_in in "${wallet_tx_ins[@]}"; do
+            tx_in_list+=" --tx-in $wallet_tx_in"
+            tx_in_collateral=" --tx-in-collateral $wallet_tx_in"
+        done
+    fi
+
+    # Handle script tx-in list
+    if [[ -n "$script_tx_in_list" ]]; then
+        IFS=' ' read -ra script_tx_ins <<< "$script_tx_in_list"
+        for script_tx_in in "${script_tx_ins[@]}"; do
+            tx_in_list+=" --tx-in $script_tx_in --tx-in-script-file /tmp/validator.plutus --tx-in-inline-datum-present --tx-in-redeemer-value {} $tx_in_collateral"
+        done
+    fi
+    
+    echo "$tx_in_list" 
+
+    build_and_submit_transaction "$selected_node_container" "$selected_wallet" "$tx_in_list" "" "$wallet_address"
+    
     read -p "Press Enter to continue..."
+
 }
 
 # Main script logic
@@ -127,7 +194,7 @@ main() {
                     show_transaction_menu
                     case $tx_choice in
                         1)
-                            select_container_with_node
+                            select_node_container
                         ;;
                         2)
                             select_smart_contract_files
@@ -136,16 +203,36 @@ main() {
                             select_wallet_files
                         ;;
                         4)
-                            balance_in_wallet
+                            if [[ -z "$selected_node_container" || -z "$selected_scripts" || -z "$selected_wallet" ]]; then
+                                echo "Please select the container, smart contract files, and wallet files first."
+                                read -p "Press Enter to continue..."
+                            else
+                                utxos_in_wallet
+                            fi
                         ;;
                         5)
-                            balance_in_smart_contract
+                            if [[ -z "$selected_node_container" || -z "$selected_scripts" || -z "$selected_wallet" ]]; then
+                                echo "Please select the container, smart contract files, and wallet files first."
+                                read -p "Press Enter to continue..."
+                            else
+                                utxos_in_smart_contracts
+                            fi
                         ;;
                         6)
-                            create_vesting_tx
+                            if [[ -z "$selected_node_container" || -z "$selected_scripts" || -z "$selected_wallet" ]]; then
+                                echo "Please select the container, smart contract files, and wallet files first."
+                                read -p "Press Enter to continue..."
+                            else
+                                create_vesting_tx
+                            fi
                         ;;
                         7)
-                            create_claiming_tx
+                            if [[ -z "$selected_node_container" || -z "$selected_scripts" || -z "$selected_wallet" ]]; then
+                                echo "Please select the container, smart contract files, and wallet files first."
+                                read -p "Press Enter to continue..."
+                            else
+                                create_claiming_tx
+                            fi
                         ;;
                         0)
                             break
@@ -158,7 +245,7 @@ main() {
                 done
             ;;
             0)
-                echo "Exiting."
+                echo "Exiting $PROJECT_NAME"
                 exit 0
             ;;
             *)

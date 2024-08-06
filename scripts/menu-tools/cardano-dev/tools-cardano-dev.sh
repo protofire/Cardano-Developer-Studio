@@ -2,13 +2,16 @@
 
 source "$(dirname "${BASH_SOURCE[0]}")/../../utils/utils.sh"
 
-
 setWorkspaceDir
 
 # Specific function for container selection
 select_dev_container() {
-    if ! select_container 'cardano-dev'; then
-        return 1
+    if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+        if ! select_container 'cardano-dev'; then
+            return 1
+        fi
+    else
+        selected_container='cardano-dev'
     fi
 }
 
@@ -29,18 +32,30 @@ cardano_dev_tools() {
             
             case $tool_choice in
                 1)
-                    docker exec -it "$selected_container" cabal build all
+                    if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+                        docker exec -it "$selected_container" cabal build all
+                    else
+                        cabal build all
+                    fi
                     read -p "Press Enter to continue..."
                 ;;
                 
                 2)
-                    docker exec -it "$selected_container" cabal test all
+                    if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+                        docker exec -it "$selected_container" cabal test all
+                    else
+                        cabal test all
+                    fi
                     read -p "Press Enter to continue..."
                 ;;
 
                 3)
-                    # source "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Validators/CheckDate/scripts/cli.sh"
-                    docker exec -it "$selected_container" bash -c "cd ~/workspace && bash ./Validators/CheckDate/scripts/cli.sh"
+                    if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+                        docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/CheckDate/scripts/cli.sh"
+                    else
+                        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckDate/scripts/cli.sh"
+                    fi
+                    
                     read -p "Press Enter to continue..."
                 ;;
                 

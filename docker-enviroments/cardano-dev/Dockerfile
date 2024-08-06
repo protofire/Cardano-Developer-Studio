@@ -62,7 +62,14 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=var.cache.apt \
     liblzma-dev \
     lsof \
     grep \
-    coreutils && \
+    coreutils \
+    lz4 \
+    sed \
+    gawk \
+    apt-transport-https \
+    ca-certificates \
+    gnupg-agent \
+    && \
     add-apt-repository ppa:rmescandon/yq -y && apt update && apt-get install -y \
     yq 
 
@@ -237,8 +244,24 @@ COPY --chown=${USER}:${USER} --from=system_deps_download_stylish_haskell ${TEMPD
 
 ####################################################################################
 
-FROM system_deps_with_ghcup_and_cabal as system_ready
-ARG TEMPDir
+FROM system_deps_with_ghcup_and_cabal as system_with_docker
+USER root
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+RUN add-apt-repository \
+    "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+RUN apt-get update
+RUN apt-get install -y docker-ce docker-ce-cli containerd.io
+# Add user to the docker group
+ARG DOCKER_GID
+RUN groupmod -g ${DOCKER_GID} docker || groupadd -g ${DOCKER_GID} docker && usermod -aG docker ${USER}
+USER ${USER}
+RUN newgrp docker
+ENV INSIDE_DEV_CONTAINER=1
+
+####################################################################################
+
+FROM system_with_docker as system_ready
+ARG TEMdPDir
 USER ${USER}
 RUN sudo rm -rf ${TEMPDir}/*
 WORKDIR ${WORK}

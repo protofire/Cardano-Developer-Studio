@@ -262,15 +262,23 @@ check_node_resources() {
 # Centralized function to fetch and select a container
 select_container() {
     local container_type="$1"  # e.g., 'cardano-wallet-container'
-    
+    local include_stopped="${2:-1}"  # Default to 1 (include stopped) if not provided
+
     echo "----"
-    echo "Fetching list of $container_type containers (including stopped)..."
+    if [[ "$include_stopped" -eq 1 ]]; then
+        echo "Fetching list of $container_type containers (including stopped)..."
+        container_status_filter="-a"  # Include all containers
+    else
+        echo "Fetching list of $container_type containers (running only)..."
+        container_status_filter=""  # Include only running containers
+    fi
+
     containers=()
     statuses=()
     while IFS= read -r line; do
         containers+=("${line%% *}")
         statuses+=("${line#* }")
-    done < <(docker ps -a --format "{{.Names}} {{.Status}}" | grep "$container_type")
+    done < <(docker ps $container_status_filter --format "{{.Names}} {{.Status}}" | grep "$container_type")
     
     if [ ${#containers[@]} -eq 0 ]; then
         echo "No $container_type containers found. Please ensure they are deployed."
@@ -279,7 +287,6 @@ select_container() {
     fi
     
     while true; do
-        
         echo "----"
         echo "Available $container_type Containers (0 to Return Main Menu):"
         for i in "${!containers[@]}"; do
@@ -291,12 +298,12 @@ select_container() {
         if [[ -z "$container_choice" ]] || ! [[ "$container_choice" =~ ^[0-9]+$ ]]; then
             echo "Invalid selection. Please try again."
             read -p "Press Enter to continue..."
-            elif [ "$container_choice" -eq 0 ]; then
-            return 1  # Return with error status to signal user requested exit
-            elif [ "$container_choice" -ge 1 ] && [ "$container_choice" -le ${#containers[@]} ]; then
+        elif [ "$container_choice" -eq 0 ]; then
+            return 2  # Return with specific status to signal user requested exit
+        elif [ "$container_choice" -ge 1 ] && [ "$container_choice" -le ${#containers[@]} ]; then
             selected_container="${containers[$container_choice-1]}"
             echo "Selected container: $selected_container"
-            if [[ "${statuses[$container_choice-1]}" != *"Up"* ]]; then
+            if [[ "${statuses[$container_choice-1]}" != *"Up"* ]] && [[ "$include_stopped" -eq 1 ]]; then
                 echo "Container is stopped, starting it..."
                 docker start "$selected_container"
             fi
@@ -305,10 +312,8 @@ select_container() {
             echo "Invalid selection. Please try again."
             read -p "Press Enter to continue..."
         fi
-        
     done
 }
-
 
 # Function to delete container and ask about deleting its volumes
 delete_container_and_optionally_volumes() {
@@ -356,17 +361,17 @@ delete_wallet_container_and_associated_icarus() {
     local wallet_container="$1"
     
     # Extract the POSTGRES_HOST environment variable value from the Cardano DB Sync container
-    local ICARUS_VERSION=$(docker inspect --format='{{range .Config.Env}}{{println .}}{{end}}' "$wallet_container" | grep ICARUS_VERSION= | cut -d'=' -f2)
+    # local ICARUS_VERSION=$(docker inspect --format='{{range .Config.Env}}{{println .}}{{end}}' "$wallet_container" | grep ICARUS_VERSION= | cut -d'=' -f2)
     local CARDANO_NODE_VERSION=$(docker inspect --format='{{range .Config.Env}}{{println .}}{{end}}' "$wallet_container" | grep CARDANO_NODE_VERSION= | cut -d'=' -f2)
     local CARDANO_NETWORK=$(docker inspect --format='{{range .Config.Env}}{{println .}}{{end}}' "$wallet_container" | grep CARDANO_NETWORK= | cut -d'=' -f2)
     
-    local icarus_container="icarus-container-${ICARUS_VERSION:-v2023-04-14}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}"
+    # local icarus_container="icarus-container-${ICARUS_VERSION:-v2023-04-14}-${CARDANO_NODE_VERSION:-"8.9.0"}-${CARDANO_NETWORK:-mainnet}"
     
     echo "Cardano Wallet container: $wallet_container"
-    echo "Icarus container: $icarus_container"
+    # echo "Icarus container: $icarus_container"
     
     delete_container_and_optionally_volumes "$wallet_container"
-    delete_container_and_optionally_volumes "$icarus_container"
+    # delete_container_and_optionally_volumes "$icarus_container"
 }
 
 
@@ -452,12 +457,12 @@ monitor_logs() {
 
 setWorkspaceDir() {
     # Determine the directory where script resides
-    CURRENT_SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-    # echo $CURRENT_SCRIPT_DIR
+    CURRENT_SCRIPT_DIR_TMP="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+    # echo $CURRENT_SCRIPT_DIR_TMP
     
     # Search for the 'scripts' directory by moving up the directory tree
     FOUND_SCRIPTS_DIR=""
-    CHECK_DIR="$CURRENT_SCRIPT_DIR"
+    CHECK_DIR="$CURRENT_SCRIPT_DIR_TMP"
     while [[ "$CHECK_DIR" != "/" && -z "$FOUND_SCRIPTS_DIR" ]]; do
         # echo "Checking: $CHECK_DIR"
         if [[ -d "$CHECK_DIR/scripts" ]]; then
@@ -513,3 +518,60 @@ setWorkspaceDir() {
 #         exit 1
 #     fi
 # }
+
+
+
+
+# Function to select a folder within a specific folder
+select_folder() {
+    local parent_folder="$1"  # The folder within which to select a subfolder
+
+    # Ensure the parent folder exists
+    if [ ! -d "$parent_folder" ]; then
+        echo "Error: Parent folder '$parent_folder' does not exist."
+        return 1
+    fi
+
+    while true; do
+        echo "----"
+        echo "Folders in '$parent_folder':"
+        echo "----"
+        
+        folders=()
+        while IFS= read -r line; do
+            folders+=("$line")
+        done < <(find "$parent_folder" -mindepth 1 -maxdepth 1 -type d | sort)
+        
+        if [ ${#folders[@]} -eq 0 ]; then
+            echo "No subfolders found in '$parent_folder'."
+            read -p "Press Enter to continue..."
+            return 1
+        fi
+
+        for i in "${!folders[@]}"; do
+            folder_name=$(basename "${folders[$i]}")
+            echo "$((i+1))) $folder_name"
+        done
+        echo "0) None (Exit)"
+
+        read -p "Select a folder [1-${#folders[@]}] or 0 to exit: " folder_choice
+        echo "----"
+        
+        if [[ -z "$folder_choice" ]] || ! [[ "$folder_choice" =~ ^[0-9]+$ ]]; then
+            echo "Invalid selection. Please try again."
+            read -p "Press Enter to continue..."
+        elif [ "$folder_choice" -eq 0 ]; then
+            echo "No folder selected."
+            return 2  # Return 2 to indicate user chose to exit without selecting
+        elif [ "$folder_choice" -ge 1 ] && [ "$folder_choice" -le ${#folders[@]} ]; then
+            selected_folder=$(realpath "${folders[$folder_choice-1]}")
+            echo "Selected folder: $selected_folder"
+            return 0  # Return 0 to indicate success
+        else
+            echo "Invalid selection. Please try again."
+            read -p "Press Enter to continue..."
+        fi
+    done
+}
+
+

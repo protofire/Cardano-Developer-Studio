@@ -8,9 +8,13 @@ services:
       dockerfile: ./Dockerfile
       args:
         USER: plutus
+        DOCKER_GID: ${DOCKER_GID}
     volumes:
       - ../../examples:/home/plutus/workspace
       - ../../scripts:/home/plutus/workspace/scripts
+      - ../../.priv:/home/plutus/workspace/.priv
+      - ../../configs:/home/plutus/workspace/configs
+      - /var/run/docker.sock:/var/run/docker.sock
     restart: on-failure
     logging:
       driver: "json-file"

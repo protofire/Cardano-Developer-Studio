@@ -3,6 +3,9 @@
 # Exit on any error
 set -e
 
+echo ${BASH_SOURCE[0]}
+echo $(dirname "${BASH_SOURCE[0]}")
+
 source "$(dirname "${BASH_SOURCE[0]}")/utils/utils.sh"
 
 setWorkspaceDir

@@ -56,14 +56,19 @@ main = deploy
 deploy :: P.IO ()
 deploy = do
     ------------------------------
+    args <- SystemEnvironment.getArgs
+    ------------------------------
     progName <- SystemEnvironment.getProgName
+    ------------------------------
     let 
         stripSuffix suffix str = 
             if suffix `DataList.isSuffixOf` str
             then P.take (P.length str P.- P.length suffix) str
             else str
         projectName = stripSuffix "Deploy" progName
-    let path =  "export" SystemFilePathPosix.</> projectName 
+    ------------------------------
+    let baseFolder = if not (P.null args) then P.head args else ""
+        path = baseFolder SystemFilePathPosix.</> "export" SystemFilePathPosix.</> projectName
     ------------------------------
     currentTime <- DataTime.getCurrentTime
     let defaultName = DataTime.formatTime DataTime.defaultTimeLocale "%Y-%m-%d-%H-%M" currentTime

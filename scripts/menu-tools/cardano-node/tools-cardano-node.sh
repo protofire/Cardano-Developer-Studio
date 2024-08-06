@@ -7,7 +7,7 @@ setWorkspaceDir
 # Specific function for node container selection
 select_node_container() {
     if ! select_container 'cardano-node-container'; then
-        return 1
+        return 1  # Return 1 to signal to break out of the loop
     fi
 }
 
