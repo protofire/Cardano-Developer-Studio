@@ -38,18 +38,12 @@ show_transaction_menu() {
 
 select_contract() {
     echo "Select the contract:"
-    echo "1) Datum Check After Deadline Validator"
-    echo "2) Datum Check Before Deadline Validator"
-    echo "3) Param Check After Deadline Validator"
-    echo "4) Param Check Before Deadline Validator"
+    echo "1) Free Validator"
     local contract_choice
     while true; do
         read -p "Enter your choice [1-4]: " contract_choice
         case $contract_choice in
-            1) selected_validator="datumCheckAfterDeadlineValidator"; break;;
-            2) selected_validator="datumCheckBeforeDeadlineValidator"; break;;
-            3) selected_validator="paramCheckAfterDeadlineValidator"; break;;
-            4) selected_validator="paramCheckBeforeDeadlineValidator"; break;;
+            1) selected_validator="freeValidator"; break;;
             *) echo "Invalid choice, please select a valid option.";;
         esac
     done
@@ -61,23 +55,8 @@ utxos_in_smart_contracts() {
     echo "Checking UTXOs in Smart Contracts..."
     echo ""
 
-    echo "Checking balance in Datum Check After Deadline Validator..."
-    script_address=$(cat "$selected_scripts/datumCheckAfterDeadlineValidator-$CARDANO_NETWORK_SUFIX.addr")
-    utxos_in_address "$script_address"
-    echo ""
-
-    echo "Checking balance in Datum Check Before Deadline Validator..."
-    script_address=$(cat "$selected_scripts/datumCheckBeforeDeadlineValidator-$CARDANO_NETWORK_SUFIX.addr")
-    utxos_in_address "$script_address"
-    echo ""
-
-    echo "Checking balance in Param Check After Deadline Validator..."
-    script_address=$(cat "$selected_scripts/paramCheckAfterDeadlineValidator-$CARDANO_NETWORK_SUFIX.addr")
-    utxos_in_address "$script_address"
-    echo ""
-
-    echo "Checking balance in Param Check Before Deadline Validator..."
-    script_address=$(cat "$selected_scripts/paramCheckBeforeDeadlineValidator-$CARDANO_NETWORK_SUFIX.addr")
+    echo "Checking balance in Free Validator..."
+    script_address=$(cat "$selected_scripts/freeValidator-$CARDANO_NETWORK_SUFIX.addr")
     utxos_in_address "$script_address"
     echo ""
 
@@ -88,12 +67,8 @@ utxos_in_smart_contracts() {
 generate_datum_json() {
     local validator=$1
     case $validator in
-        paramCheckAfterDeadlineValidator | paramCheckBeforeDeadlineValidator)
+        freeValidator)
             echo "{}"
-            ;;
-        datumCheckAfterDeadlineValidator | datumCheckBeforeDeadlineValidator)
-            local posix_time=$(get_posix_time)
-            echo "{\"int\": $posix_time}"
             ;;
     esac
 }

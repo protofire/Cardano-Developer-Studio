@@ -149,6 +149,19 @@ get_posix_time() {
     done
 }
 
+# Function to prompt user for public key hash and validate it
+get_pkh() {
+    while true; do
+        read -p "Enter public key hash: " pkh 
+        if [[ "$pkh" =~ ^[0-9a-fA-F]{56}$ ]]; then
+            echo $pkh
+            return
+        else
+            echo "Invalid public key hash. Please enter a valid 56-character hexadecimal string."
+        fi
+    done
+}
+
 select_utxos() {
     local container=$1
     local address=$2

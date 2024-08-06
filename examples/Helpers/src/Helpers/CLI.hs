@@ -31,11 +31,13 @@ import qualified Data.Time.Clock.POSIX as DataTimePOSIX
 import qualified Data.Time.Clock.POSIX as POSIX (utcTimeToPOSIXSeconds)
 import qualified Data.Time.Format as DataTimeFormat (defaultTimeLocale, formatTime)
 import qualified Ledger
+import qualified Ledger.Bytes as LedgerBytes
 import qualified Plutus.V2.Ledger.Api as LedgerApiV2
 import qualified PlutusTx.Builtins.Class as TxBuiltinsClass
 import PlutusTx.Prelude hiding (unless)
 import qualified System.Directory as SystemDirectory
 import qualified System.FilePath.Posix as SystemFilePathPosix
+import qualified Data.Text as T
 import qualified Text.Hex as TextHex
 import qualified Text.Read as TextRead (readMaybe)
 import qualified Prelude as P
@@ -275,6 +277,29 @@ getTime fieldName defTime lowerLimit = do
                 P.putStrLn "Invalid input, try again"
                 P.putStrLn "--------------------------------"
                 getTime fieldName defTime lowerLimit
+
+-- Function to remove "0x" prefix if present
+removeHexPrefix :: P.String -> P.String
+removeHexPrefix txt
+  | "0x" `DataList.isPrefixOf` txt = P.drop 2 txt
+  | otherwise               = txt
+
+getPkh :: P.String -> P.IO LedgerApiV2.PubKeyHash
+getPkh fieldName = do
+    P.putStrLn $ "Enter " ++ fieldName ++ ":"
+    str <- P.getLine
+    P.putStrLn "--------------------------------"
+    if P.null str
+        then do 
+            getPkh fieldName 
+        else case LedgerBytes.fromHex (DataString.fromString (removeHexPrefix str)) of
+              Right (LedgerBytes.LedgerBytes bytes) ->
+                  return $ LedgerApiV2.PubKeyHash bytes
+              Left _ -> do
+                  P.putStrLn "Invalid input, try again"
+                  P.putStrLn "--------------------------------"
+                  getPkh fieldName 
+
 
 --------------------------------------------------------------------------------2
 
