@@ -37,16 +37,7 @@ show_transaction_menu() {
 }
 
 select_contract() {
-    echo "Select the contract:"
-    echo "1) AllwaysTrue Validator"
-    local contract_choice
-    while true; do
-        read -p "Enter your choice [1]: " contract_choice
-        case $contract_choice in
-            1) selected_validator="allwaysTrueValidator"; break;;
-            *) echo "Invalid choice, please select a valid option.";;
-        esac
-    done
+    selected_validator="allwaysTrueValidator"
     script_address=$(cat "$selected_scripts/$selected_validator-$CARDANO_NETWORK_SUFIX.addr")
     echo "Selected address: $script_address"
 }

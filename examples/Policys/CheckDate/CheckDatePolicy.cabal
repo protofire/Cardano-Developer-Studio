@@ -46,4 +46,11 @@ test-suite CheckDatePolicyTest
     type:               exitcode-stdio-1.0
     main-is:            CheckDatePolicyTest.hs
     hs-source-dirs:     test
-    build-depends:      CheckDatePolicy
+    build-depends:  CheckDatePolicy
+
+executable CheckDatePolicyDeploy
+  import:         common-all
+  main-is:        deploy.hs
+  hs-source-dirs: app
+  build-depends:  CheckDatePolicy
+  build-depends:  time, playground-common, openapi3, plutus-ledger, filepath, directory, plutus-ledger, process   

@@ -38,7 +38,7 @@ show_transaction_menu() {
 
 select_contract() {
     local contract_choice
-    selected_policy="allwaysTruePolicy"
+    selected_policy="redeemerNftPolicy"
     script_cs=$(jq -r '.bytes' "$selected_scripts/$selected_policy.symbol")
     echo "Selected policy: $script_cs"
 }
