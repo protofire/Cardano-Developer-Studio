@@ -117,21 +117,21 @@ validator_selector(){
       if [[ "$INSIDE_DEV_CONTAINER" ]]; then
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/AllwaysTrue/scripts/cli.sh"
       else
-        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Validators/CheckDate/AllwaysTrue/cli.sh"
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Validators/AllwaysTrue/scripts/cli.sh"
       fi       
       ;;
     2)
       if [[ $INSIDE_DEV_CONTAINER == 1 ]]; then
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/AllwaysFalse/scripts/cli.sh"
       else
-        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckDate/AllwaysFalse/cli.sh"
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Validators/AllwaysFalse/scripts/cli.sh"
       fi       
       ;;
     3)
       if [[ "$INSIDE_DEV_CONTAINER" ]]; then
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/CheckDate/scripts/cli.sh"
       else
-        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/examples/Validators/CheckDate/scripts/cli.sh"
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Validators/CheckDate/scripts/cli.sh"
       fi       
       ;;
     4)
@@ -167,14 +167,14 @@ policy_selector(){
       if [[ "$INSIDE_DEV_CONTAINER" ]]; then
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/AllwaysTrue/scripts/cli.sh"
       else
-        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Validators/CheckDate/AllwaysTrue/cli.sh"
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Validators/AllwaysTrue/scripts/cli.sh"
       fi       
       ;;
     2)
       if [[ "$INSIDE_DEV_CONTAINER" ]]; then
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/AllwaysFalse/scripts/cli.sh"
       else
-        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Validators/CheckDate/AllwaysFalse/cli.sh"
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Validators/AllwaysFalse/scripts/cli.sh"
       fi       
       ;;
     3)
