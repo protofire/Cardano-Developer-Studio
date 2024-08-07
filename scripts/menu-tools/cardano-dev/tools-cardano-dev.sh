@@ -47,137 +47,11 @@ cardano_dev_tools() {
           fi
           read -p "Press Enter to continue..."
           ;;
-
-        3)
-          echo "----"
-          echo "MENU - Selected Type of Contract"
-          echo "----"
-          echo "1) Validators Contract Examples CLI"
-          echo "2) Policys Contract Examples CLI"
-          read -p "Enter your choice or 0 to exit: " contract_choice
-
-          case $contract_choice in
-            1)
-              echo "----"
-              echo "MENU - Selected Validators Example"
-              echo "----"
-              echo "1) Allways True CLI"
-              echo "2) Allways False CLI"
-              echo "3) Check Date CLI"
-              echo "4) Check Signature CLI"
-              read -p "Enter your choice or 0 to exit: " validators_choice
-              case $validators_choice in
-                1)
-                  if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
-                    docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/AllwaysTrue/scripts/cli.sh"
-                  else
-                    bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckDate/AllwaysTrue/cli.sh"
-                  fi       
-                  ;;
-                2)
-                  if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
-                    docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/AllwaysFalse/scripts/cli.sh"
-                  else
-                    bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckDate/AllwaysFalse/cli.sh"
-                  fi       
-                  ;;
-                3)
-                  if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
-                    docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/CheckDate/scripts/cli.sh"
-                  else
-                    bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckDate/scripts/cli.sh"
-                  fi       
-                  ;;
-                4)
-                  if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
-                    docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/CheckSignature/scripts/cli.sh"
-                  else
-                    bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckSignature/scripts/cli.sh"
-                  fi       
-                  ;;
-                0)
-                  break 4 # Breaks out of the current loop and the container selection loop
-                  ;;
-                *)
-                  echo "Invalid choice, please select a valid option."
-                  read -p "Press Enter to continue..."
-                  ;;
-              esac
-              ;;
-            2)
-              echo "----"
-              echo "MENU - Selected Contract Example"
-              echo "----"
-
-              echo "1) Allways True CLI"
-              echo "2) Allways False CLI"
-              echo "3) Check Date CLI"
-              echo "4) Check Signature CLI"
-              echo "5) Mint/Burn FT CLI"
-              echo "6) Mint/Burn NFT CLI"
-              read -p "Enter your choice or 0 to exit: " policys_choice
-              case $policys_choice in
-                1)
-                  if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
-                    docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/AllwaysTrue/scripts/cli.sh"
-                  else
-                    bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckDate/AllwaysTrue/cli.sh"
-                  fi       
-                  ;;
-                2)
-                  if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
-                    docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/AllwaysFalse/scripts/cli.sh"
-                  else
-                    bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckDate/AllwaysFalse/cli.sh"
-                  fi       
-                  ;;
-                3)
-                  if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
-                    docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/CheckDate/scripts/cli.sh"
-                  else
-                    bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckDate/scripts/cli.sh"
-                  fi       
-                  ;;
-                4)
-                  if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
-                    docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/CheckSignature/scripts/cli.sh"
-                  else
-                    bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckSignature/scripts/cli.sh"
-                  fi       
-                  ;;
-                5)
-                  if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
-                    docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/RedeemerFT/scripts/cli.sh"
-                  else
-                    bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/RedeemerFT/scripts/cli.sh"
-                  fi       
-                  ;;
-                6)
-                  if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
-                    docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/RedeemerNFT/scripts/cli.sh"
-                  else
-                    bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/RedeemerNFT/scripts/cli.sh"
-                  fi       
-                  ;;
-                0)
-                  break 4 # Breaks out of the current loop and the container selection loop
-                  ;;
-                *)
-                  echo "Invalid choice, please select a valid option."
-                  read -p "Press Enter to continue..."
-                  ;;
-                0)
-                  break 3 # Breaks out of the current loop and the container selection loop
-                  ;;
-                *)
-                  echo "Invalid choice, please select a valid option."
-                  read -p "Press Enter to continue..."
-                  ;;
-              esac
-              read -p "Press Enter to continue..."
-              ;;
-          esac
+        3) 
+          contract_type_selector
+          read -p "Press Enter to continue..."
           ;;
+
         4)
           monitor_logs "$selected_container"
           read -p "Press Enter to continue..."
@@ -198,4 +72,139 @@ cardano_dev_tools() {
       esac
     done
   done
+}
+
+contract_type_selector (){
+  echo "----"
+  echo "MENU - Selected Type of Contract"
+  echo "----"
+  echo "1) Validators Contract Examples CLI"
+  echo "2) Policys Contract Examples CLI"
+  read -p "Enter your choice or 0 to exit: " contract_choice
+
+  case $contract_choice in
+    1)
+      validator_selector
+      ;;
+    2)
+      policy_selector
+      ;;
+    0)
+      ;;
+    *)
+      echo "Invalid choice, please select a valid option."
+      contract_type_selector
+      ;;
+  esac
+}
+
+validator_selector(){
+  echo "----"
+  echo "MENU - Selected Validators Example"
+  echo "----"
+  echo "1) Allways True CLI"
+  echo "2) Allways False CLI"
+  echo "3) Check Date CLI"
+  echo "4) Check Signature CLI"
+  read -p "Enter your choice or 0 to exit: " validators_choice
+  case $validators_choice in
+    1)
+      if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+        docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/AllwaysTrue/scripts/cli.sh"
+      else
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckDate/AllwaysTrue/cli.sh"
+      fi       
+      ;;
+    2)
+      if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+        docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/AllwaysFalse/scripts/cli.sh"
+      else
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckDate/AllwaysFalse/cli.sh"
+      fi       
+      ;;
+    3)
+      if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+        docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/CheckDate/scripts/cli.sh"
+      else
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckDate/scripts/cli.sh"
+      fi       
+      ;;
+    4)
+      if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+        docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/CheckSignature/scripts/cli.sh"
+      else
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckSignature/scripts/cli.sh"
+      fi       
+      ;;
+    0)
+      ;;
+    *)
+      echo "Invalid choice, please select a valid option."
+      validator_selector
+      ;;
+  esac
+}
+
+policy_selector(){
+  echo "----"
+  echo "MENU - Selected Contract Example"
+  echo "----"
+
+  echo "1) Allways True CLI"
+  echo "2) Allways False CLI"
+  echo "3) Check Date CLI"
+  echo "4) Check Signature CLI"
+  echo "5) Mint/Burn FT CLI"
+  echo "6) Mint/Burn NFT CLI"
+  read -p "Enter your choice or 0 to exit: " policys_choice
+  case $policys_choice in
+    1)
+      if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+        docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/AllwaysTrue/scripts/cli.sh"
+      else
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckDate/AllwaysTrue/cli.sh"
+      fi       
+      ;;
+    2)
+      if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+        docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/AllwaysFalse/scripts/cli.sh"
+      else
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckDate/AllwaysFalse/cli.sh"
+      fi       
+      ;;
+    3)
+      if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+        docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/CheckDate/scripts/cli.sh"
+      else
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckDate/scripts/cli.sh"
+      fi       
+      ;;
+    4)
+      if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+        docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/CheckSignature/scripts/cli.sh"
+      else
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckSignature/scripts/cli.sh"
+      fi       
+      ;;
+    5)
+      if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+        docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/RedeemerFT/scripts/cli.sh"
+      else
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/RedeemerFT/scripts/cli.sh"
+      fi       
+      ;;
+    6)
+      if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+        docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/RedeemerNFT/scripts/cli.sh"
+      else
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/RedeemerNFT/scripts/cli.sh"
+      fi       
+      ;;
+    0)
+      ;;
+    *)
+      echo "Invalid choice, please select a valid option."
+      policy_selector
+      ;;
+  esac
 }
