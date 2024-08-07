@@ -15,12 +15,12 @@ index-state:
 
 packages: 
     Helpers
-    Validators/Free
-    Validators/Lock
+    Validators/AllwaysTrue
+    Validators/AllwaysFalse
     Validators/CheckSignature
     Validators/CheckDate
-    Policys/Lock
-    Policys/Free
+    Policys/AllwaysFalse
+    Policys/AllwaysTrue
     Policys/CheckSignature
     Policys/CheckDate
     Policys/RedeemerFT

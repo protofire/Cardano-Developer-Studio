@@ -42,8 +42,7 @@ import qualified Helpers.CLI            as CLIHelpers
 import qualified Helpers.Deploy         as DeployHelpers
 import qualified Helpers.OffChain       as OffChainHelpers
 
-import           DatumCheckSignatureValidator  as OnChain (datumCheckSignatureValidator)
-import           ParamCheckSignatureValidator  as OnChain (paramCheckSignatureValidator)
+import           ParamCheckSignaturePolicy  as OnChain (paramCheckSignaturePolicy)
 
 --------------------------------------------------------------------------------2
 
@@ -81,25 +80,13 @@ deploy = do
     ------------------------------
     P.putStrLn $ "Path: " ++ path SystemFilePathPosix.</> folderName
     ------------------------------
-    do 
-        P.putStrLn "Generating 'datumCheckSignatureValidator' Script..."
-        let validator = OnChain.datumCheckSignatureValidator
-            validator_Hash = OffChainHelpers.hashValidator validator
-            validator_Address = OffChainHelpers.addressValidator validator_Hash
-        _ <- DeployHelpers.deployValidator (path SystemFilePathPosix.</> folderName) "datumCheckSignatureValidator" validator
-        _ <- DeployHelpers.deployValidatorHash (path SystemFilePathPosix.</> folderName) "datumCheckSignatureValidator" validator_Hash
-        DeployHelpers.deployValidatorAddress (path SystemFilePathPosix.</> folderName) "datumCheckSignatureValidator" validator_Address
-    ------------------------------
     do
-        P.putStrLn "Generating 'paramCheckSignatureValidator' Script..."
+        P.putStrLn "Generating 'paramCheckSignaturePolicy' Script..."
          ------------------------------
         pkh <- CLIHelpers.getPkh "Address"
          ------------------------------
-        let validator = OnChain.paramCheckSignatureValidator pkh
-            validator_Hash = OffChainHelpers.hashValidator validator
-            validator_Address = OffChainHelpers.addressValidator validator_Hash
-        _ <- DeployHelpers.deployValidator (path SystemFilePathPosix.</> folderName) "paramCheckSignatureValidator" validator
-        _ <- DeployHelpers.deployValidatorHash (path SystemFilePathPosix.</> folderName) "paramCheckSignatureValidator" validator_Hash
-        DeployHelpers.deployValidatorAddress (path SystemFilePathPosix.</> folderName) "paramCheckSignatureValidator" validator_Address
+        let policy = OnChain.paramCheckSignaturePolicy pkh
+            policy_CS = OffChainHelpers.getCurSymbolOfPolicy policy
+        DeployHelpers.deployMintingPolicy (path SystemFilePathPosix.</> folderName) "paramCheckSignaturePolicy" policy policy_CS
     ------------------------------
     return ()

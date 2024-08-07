@@ -5,6 +5,10 @@
 {-# LANGUAGE TypeApplications    #-}
 {-# LANGUAGE OverloadedStrings   #-}
 
+--------------------------------------------------------------------------------
+{- HLINT ignore "Use camelCase"               -}
+{- HLINT ignore "Reduce duplication"          -}
+--------------------------------------------------------------------------------
 module ParamCheckBeforeDeadlinePolicy where
 
 import qualified Plutonomy

@@ -42,10 +42,8 @@ import qualified Helpers.CLI            as CLIHelpers
 import qualified Helpers.Deploy         as DeployHelpers
 import qualified Helpers.OffChain       as OffChainHelpers
 
-import           DatumCheckAfterDeadlineValidator  as OnChain (datumCheckAfterDeadlineValidator)
-import           DatumCheckBeforeDeadlineValidator as OnChain (datumCheckBeforeDeadlineValidator)
-import           ParamCheckAfterDeadlineValidator  as OnChain (paramCheckAfterDeadlineValidator)
-import           ParamCheckBeforeDeadlineValidator as OnChain (paramCheckBeforeDeadlineValidator)
+import           ParamCheckAfterDeadlinePolicy  as OnChain (paramCheckAfterDeadlinePolicy)
+import           ParamCheckBeforeDeadlinePolicy as OnChain (paramCheckBeforeDeadlinePolicy)
 
 --------------------------------------------------------------------------------2
 
@@ -83,50 +81,26 @@ deploy = do
     ------------------------------
     P.putStrLn $ "Path: " ++ path SystemFilePathPosix.</> folderName
     ------------------------------
-    do 
-        P.putStrLn "Generating 'datumCheckAfterDeadlineValidator' Script..."
-        let validator = OnChain.datumCheckAfterDeadlineValidator
-            validator_Hash = OffChainHelpers.hashValidator validator
-            validator_Address = OffChainHelpers.addressValidator validator_Hash
-        _ <- DeployHelpers.deployValidator (path SystemFilePathPosix.</> folderName) "datumCheckAfterDeadlineValidator" validator
-        _ <- DeployHelpers.deployValidatorHash (path SystemFilePathPosix.</> folderName) "datumCheckAfterDeadlineValidator" validator_Hash
-        DeployHelpers.deployValidatorAddress (path SystemFilePathPosix.</> folderName) "datumCheckAfterDeadlineValidator" validator_Address
-    ------------------------------
-    do 
-        P.putStrLn "Generating 'datumCheckBeforeDeadlineValidator' Script..."
-        let validator = OnChain.datumCheckBeforeDeadlineValidator
-            validator_Hash = OffChainHelpers.hashValidator validator
-            validator_Address = OffChainHelpers.addressValidator validator_Hash
-        _ <- DeployHelpers.deployValidator (path SystemFilePathPosix.</> folderName) "datumCheckBeforeDeadlineValidator" validator
-        _ <- DeployHelpers.deployValidatorHash (path SystemFilePathPosix.</> folderName) "datumCheckBeforeDeadlineValidator" validator_Hash
-        DeployHelpers.deployValidatorAddress (path SystemFilePathPosix.</> folderName) "datumCheckBeforeDeadlineValidator" validator_Address
-    ------------------------------
     do
-        P.putStrLn "Generating 'paramCheckAfterDeadlineValidator' Script..."
+        P.putStrLn "Generating 'paramCheckAfterDeadlinepolicy' Script..."
         ------------------------------
         let currentTimeLedger = CLIHelpers.uTCTimeToLedgerPosixTime currentTime
             currentTimePlus15Minuts = currentTimeLedger P.+ (15 P.* 60 P.* 1000)
         deadline <- CLIHelpers.getTime "Deadline POSIXTime" currentTimePlus15Minuts currentTimeLedger
         ------------------------------
-        let validator = OnChain.paramCheckAfterDeadlineValidator deadline
-            validator_Hash = OffChainHelpers.hashValidator validator 
-            validator_Address = OffChainHelpers.addressValidator validator_Hash
-        _ <- DeployHelpers.deployValidator (path SystemFilePathPosix.</> folderName) "paramCheckAfterDeadlineValidator" validator
-        _ <- DeployHelpers.deployValidatorHash (path SystemFilePathPosix.</> folderName) "paramCheckAfterDeadlineValidator" validator_Hash
-        DeployHelpers.deployValidatorAddress (path SystemFilePathPosix.</> folderName) "paramCheckAfterDeadlineValidator" validator_Address
+        let policy = paramCheckBeforeDeadlinePolicy deadline
+            policy_CS = OffChainHelpers.getCurSymbolOfPolicy policy
+        DeployHelpers.deployMintingPolicy (path SystemFilePathPosix.</> folderName) "paramCheckAfterDeadlinepolicy" policy policy_CS
     ------------------------------
     do
-        P.putStrLn "Generating 'paramCheckBeforeDeadlineValidator' Script..."
+        P.putStrLn "Generating 'paramCheckBeforeDeadlinePolicy' Script..."
          ------------------------------
         let currentTimeLedger = CLIHelpers.uTCTimeToLedgerPosixTime currentTime
             currentTimePlus15Minuts = currentTimeLedger P.+ (15 P.* 60 P.* 1000)
         deadline <- CLIHelpers.getTime "Deadline POSIXTime " currentTimePlus15Minuts currentTimeLedger
         ------------------------------
-        let validator = OnChain.paramCheckBeforeDeadlineValidator deadline
-            validator_Hash = OffChainHelpers.hashValidator validator
-            validator_Address = OffChainHelpers.addressValidator validator_Hash
-        _ <- DeployHelpers.deployValidator (path SystemFilePathPosix.</> folderName) "paramCheckBeforeDeadlineValidator" validator
-        _ <- DeployHelpers.deployValidatorHash (path SystemFilePathPosix.</> folderName) "paramCheckBeforeDeadlineValidator" validator_Hash
-        DeployHelpers.deployValidatorAddress (path SystemFilePathPosix.</> folderName) "paramCheckBeforeDeadlineValidator" validator_Address
+        let policy = paramCheckBeforeDeadlinePolicy deadline
+            policy_CS = OffChainHelpers.getCurSymbolOfPolicy policy
+        DeployHelpers.deployMintingPolicy (path SystemFilePathPosix.</> folderName) "paramCheckBeforeDeadlinePolicy" policy policy_CS
     ------------------------------
     return ()

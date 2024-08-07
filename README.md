@@ -45,12 +45,24 @@ This repository is the home of the Cardano Developer Studio, an all-in-one suite
     - [Cardano Node Tools Menu](#cardano-node-tools-menu)
     - [Cardano Wallet Tools Menu](#cardano-wallet-tools-menu)
     - [Cardano DB Sync Tools Menu](#cardano-db-sync-tools-menu)
+    - [Cardano Dev Tools Menu](#cardano-dev-tools-menu)
+        - [Validators Contract Examples CLI](#validators-contract-examples-cli)
+        - [Policys Contract Examples CLI](#policys-contract-examples-cli)
     - [Note to Users](#note-to-users-1)
   - [Using Docker Containers](#using-docker-containers)
     - [Cardano Node](#cardano-node-1)
     - [Cardano Wallet](#cardano-wallet-1)
       - [Importing API Collections into Postman](#importing-api-collections-into-postman)
-    - [Cardano DB Sync](#cardano-db-sync-1)
+    - [Cardano DB Sync](#cardano-db-sync-1) 
+  - [Plutus Development Toolkit](#plutus-development-toolkit)
+      - [Helpers Library](#helpers-library)
+      - [Example Suite](#example-suite)
+      - [Testing Functions](#testing-functions)
+      - [Step-by-Step Guide to Using the Helpers Library](#step-by-step-guide-to-using-the-helpers-library)
+      - [Step-by-Step Guide to Using the Examples](#step-by-step-guide-to-using-the-examples)
+      - [Using Different Environments](#using-different-environments)
+        - [With Docker Compose](#with-docker-compose)
+        - [With Dev Container in VSCode](#with-dev-container-in-vscode)
   - [Contribution](#contribution)
   - [License](#license)
   - [Acknowledgements](#acknowledgements)
@@ -409,7 +421,9 @@ The main menu will provide you with the following options:
 - `2) Cardano Node Testing and Tools`: Access tools related to the Cardano Node.
 - `3) Cardano Wallet Testing and Tools`: Manage wallets and perform wallet-related operations.
 - `4) Cardano DB Sync Tools`: Execute queries and interact with the Cardano DB Sync.
-- `5) Other Tool [Placeholder]`: Reserved for future tools and utilities.
+- `5) Ogmios Tools"`
+- `6) Kupo Tools`
+- `7) Smart Contract Plutus Development Tools`: Interact with the Cardano development container, build and test contracts, and execute example scripts.
 - `6) Exit`: Exits the script.
   
 ### Docker Compose Menu
@@ -453,6 +467,32 @@ By choosing option `4` from the main menu, the DB Sync tools menu provides:
 - `5) Delete this Container and Optionally Its Volumes`: To delete selected container and dependences
 - `6) Return Main Menu`: Returns to the main menu.
 
+### Cardano Dev Tools Menu
+Selecting option `7` from the main menu, you can interact with the Cardano development container:
+
+- `1) Cabal Build All`: Build all components using Cabal inside the selected container.
+- `2) Cabal Test All`: Run all tests using Cabal inside the selected container.
+- `3) Run Example Contract CLI`: Execute example contract scripts from the CLI.
+- `4) Docker Logs`: View logs from the selected container.
+- `5) Delete this Container and Optionally Its Volumes`: Delete the selected container and optionally its volumes.
+- `0) Return Main Menu`: Returns to the main menu.
+
+After selecting the type of contract example to run, you will be presented with specific options:
+
+#### Validators Contract Examples CLI
+- `1) Always True CLI`: Run the Always True contract example.
+- `2) Always False CLI`: Run the Always False contract example.
+- `3) Check Date CLI`: Run the Check Date contract example.
+- `4) Check Signature CLI`: Run the Check Signature contract example.
+#### Policies Contract Examples CLI
+- `1) Always True CLI`: Run the Always True policy example.
+- `2) Always False CLI`: Run the Always False policy example.
+- `3) Check Date CLI`: Run the Check Date policy example.
+- `4) Check Signature CLI`: Run the Check Signature policy example.
+- `5) Mint/Burn FT CLI`: Run the Mint/Burn FT policy example.
+- `6) Mint/Burn NFT CLI`: Run the Mint/Burn NFT policy example.
+
+For each selection, you can choose to run the scripts inside the container or in the local environment, depending on your setup.
 ### Note to Users
 
 - Before running the `run.sh` script, ensure Docker is installed and running on your system. Follow the installation instructions provided in the previous sections for your respective operating system.
@@ -486,7 +526,6 @@ cardano-node --version
 ```
 cardano-cli query tip --socket-path /ipc/node.socket --$CARDANO_NETWORK_WITH_MAGIC
 ```
-
 ### Cardano Wallet
 
 To interact with the Cardano Wallet container, follow the same steps as mentioned for the Cardano Node container to open a shell within the container using VS Code.
@@ -620,7 +659,7 @@ Replace <transaction_hash> with the actual transaction hash you want to query UT
 SELECT SUM(value) AS balance FROM utxo WHERE address = '<address>';
 ```
 
-Replace <address> with the actual Cardano address you want to retrieve the balance for. This query calculates the total balance of an address by summing the values of its UTxOs.
+Replace address with the actual Cardano address you want to retrieve the balance for. This query calculates the total balance of an address by summing the values of its UTxOs.
 
 - Querying stake distribution:
 
@@ -629,6 +668,109 @@ This query retrieves the total stake for each stake pool.
 ```
 select pool_id, sum (amount) from epoch_stake group by pool_id ;
 ```
+
+## Plutus Development Toolkit
+
+This project includes a comprehensive suite of tools, libraries, and examples to assist in Plutus smart contract development.
+
+### Helpers Library
+
+The Helpers Library provides a set of utility functions designed to simplify and streamline Plutus development. These functions cover common tasks and operations that are frequently needed when working with Plutus smart contracts.
+
+### Example Suite
+
+The Example Suite includes various example Plutus contracts to demonstrate different functionalities and use cases. These examples serve as practical guides to help you understand how to implement and deploy Plutus contracts.
+
+### Testing Functions
+
+The project also includes functions for testing resource usage and transaction sizes. These functions help ensure that your contracts are efficient and comply with the constraints of the Plutus platform.
+
+## Step-by-Step Guide to Using the Helpers Library
+
+To use the Helpers Library in your Haskell project, follow these steps:
+
+1. **Add the Helpers Library as a dependency in your Cabal file and cabal project**:
+   ```cabal
+   -- *.cabal
+
+   build-depends: cardano-helpers
+   ```
+   ```cabal
+   -- *.project
+
+   packages: 
+       Helpers 
+   ```
+
+2. **Import the Helpers Library in your Haskell code**:
+   ```haskell
+   import qualified Helpers.OnChain                   as OnChainHelpers -- OnChain is just possibilities
+   import qualified Helpers.OffChain                  as OffChainHelpers
+   import qualified Helpers.OffChainEval              as OffChainEval
+
+   ```
+## Step-by-Step Guide to Using the Examples
+
+To compile, test, deploy, and create transactions with the examples, follow these steps:
+1. **Go to examples dir**:
+   ```bash
+   cd examples
+   ```
+
+2. **Compile the examples**:
+   ```bash
+   cabal build all
+   ```
+
+3. **Test the examples**:
+   ```bash
+   cabal test all
+   ```
+
+3. **Deploy the examples**:
+   Follow the deployment instructions specific to each example. These instructions are typically provided in the example's documentation or source code comments.
+
+4. **Create transactions with the examples**:
+   Use the provided scripts or follow the example documentation to create transactions.
+
+## Using Different Environments
+
+You can use different environments to work with the examples:
+
+### With Docker Compose
+
+1. **Create the container**:
+   ```bash
+   docker-compose up
+   ```
+
+2. **Open the terminal in the created container**:
+   ```bash
+   docker-compose exec <service-name> /bin/bash
+   ```
+
+3. **Run the script**:
+   ```bash
+   ./scripts/run.sh master Interact with the Cardano development container, build and test contracts, and execute example scripts.
+   ```
+
+### With Dev Container in VSCode
+
+1. **Open the example folder in VSCode**:
+   ```bash
+   code ./example
+   ```
+
+2. **Open the terminal in the VSCode container**:
+   ```bash
+   -- Open the terminal in VSCode
+   ```
+
+3. **Run the script**:
+   ```bash
+   ./scripts/run.sh master
+   ```
+
 
 ## Contribution
 

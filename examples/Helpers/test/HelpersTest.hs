@@ -5,6 +5,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 
+--------------------------------------------------------------------------------
+{- HLINT ignore "Use camelCase"               -}
+{- HLINT ignore "Reduce duplication"          -}
+--------------------------------------------------------------------------------
 module Main where
 
 import Control.Monad (replicateM, unless)

@@ -4,6 +4,10 @@
 {-# LANGUAGE TemplateHaskell     #-}
 {-# LANGUAGE TypeApplications    #-}
 
+--------------------------------------------------------------------------------2
+{- HLINT ignore "Use camelCase"          -}
+{- HLINT ignore "Reduce duplication"          -}
+--------------------------------------------------------------------------------2
 module RedeemerFtPolicy where
 
 import qualified Plutonomy
@@ -18,7 +22,14 @@ import           PlutusTx.Prelude     (($), Bool (True, False), error)
 --   - Burn: to burn existing tokens.
 --   - BadRedeemer: an invalid redeemer that should cause the policy to fail.
 data RedeemerFT = Mint | Burn | BadRedeemer
-PlutusTx.unstableMakeIsData ''RedeemerFT
+-- PlutusTx.unstableMakeIsData ''RedeemerNFT
+
+PlutusTx.makeIsDataIndexed
+    ''RedeemerFT
+    [ ('Mint, 0)
+    , ('Burn, 1)
+    , ('BadRedeemer, 2)
+    ]
 
 -- | The core minting policy function.
 -- This function enforces that only valid redeemer actions are allowed.
