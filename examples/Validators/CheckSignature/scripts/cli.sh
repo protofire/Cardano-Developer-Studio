@@ -170,14 +170,10 @@ main() {
         show_main_menu
         case $main_choice in
             1)
-                cd examples
                 test_smart_contract
-                cd -
             ;;
             2)
-                cd examples
                 deploy_smart_contract
-                cd -
             ;;
             3)
                 while true; do
