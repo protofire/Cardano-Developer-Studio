@@ -32,18 +32,23 @@ cardano_dev_tools() {
 
       case $tool_choice in
         1)
-          if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+          if [[ "$INSIDE_DEV_CONTAINER" ]]; then
             docker exec -it "$selected_container" cabal build all
           else
+            cd $WORKSPACE_ROOT_DIR_ABSOLUTE/examples
             cabal build all
+            cd -
           fi
           read -p "Press Enter to continue..."
           ;;
         2)
-          if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+          if [[ "$INSIDE_DEV_CONTAINER" ]]; then
             docker exec -it "$selected_container" cabal test all
           else
+            cd $WORKSPACE_ROOT_DIR_ABSOLUTE/examples
+
             cabal test all
+            cd -
           fi
           read -p "Press Enter to continue..."
           ;;
@@ -109,31 +114,31 @@ validator_selector(){
   read -p "Enter your choice or 0 to exit: " validators_choice
   case $validators_choice in
     1)
-      if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+      if [[ "$INSIDE_DEV_CONTAINER" ]]; then
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/AllwaysTrue/scripts/cli.sh"
       else
-        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckDate/AllwaysTrue/cli.sh"
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Validators/CheckDate/AllwaysTrue/cli.sh"
       fi       
       ;;
     2)
-      if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+      if [[ $INSIDE_DEV_CONTAINER == 1 ]]; then
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/AllwaysFalse/scripts/cli.sh"
       else
         bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckDate/AllwaysFalse/cli.sh"
       fi       
       ;;
     3)
-      if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+      if [[ "$INSIDE_DEV_CONTAINER" ]]; then
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/CheckDate/scripts/cli.sh"
       else
-        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckDate/scripts/cli.sh"
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/examples/Validators/CheckDate/scripts/cli.sh"
       fi       
       ;;
     4)
-      if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+      if [[ "$INSIDE_DEV_CONTAINER" ]]; then
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/CheckSignature/scripts/cli.sh"
       else
-        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckSignature/scripts/cli.sh"
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Validators/CheckSignature/scripts/cli.sh"
       fi       
       ;;
     0)
@@ -159,45 +164,45 @@ policy_selector(){
   read -p "Enter your choice or 0 to exit: " policys_choice
   case $policys_choice in
     1)
-      if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+      if [[ "$INSIDE_DEV_CONTAINER" ]]; then
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/AllwaysTrue/scripts/cli.sh"
       else
-        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckDate/AllwaysTrue/cli.sh"
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Validators/CheckDate/AllwaysTrue/cli.sh"
       fi       
       ;;
     2)
-      if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+      if [[ "$INSIDE_DEV_CONTAINER" ]]; then
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/AllwaysFalse/scripts/cli.sh"
       else
-        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckDate/AllwaysFalse/cli.sh"
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Validators/CheckDate/AllwaysFalse/cli.sh"
       fi       
       ;;
     3)
-      if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+      if [[ "$INSIDE_DEV_CONTAINER" ]]; then
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/CheckDate/scripts/cli.sh"
       else
-        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckDate/scripts/cli.sh"
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Validators/CheckDate/scripts/cli.sh"
       fi       
       ;;
     4)
-      if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+      if [[ "$INSIDE_DEV_CONTAINER" ]]; then
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/CheckSignature/scripts/cli.sh"
       else
-        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckSignature/scripts/cli.sh"
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Validators/CheckSignature/scripts/cli.sh"
       fi       
       ;;
     5)
-      if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+      if [[ "$INSIDE_DEV_CONTAINER" ]]; then
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/RedeemerFT/scripts/cli.sh"
       else
-        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/RedeemerFT/scripts/cli.sh"
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Validators/RedeemerFT/scripts/cli.sh"
       fi       
       ;;
     6)
-      if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
+      if [[ "$INSIDE_DEV_CONTAINER" ]]; then
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/RedeemerNFT/scripts/cli.sh"
       else
-        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/RedeemerNFT/scripts/cli.sh"
+        bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Validators/RedeemerNFT/scripts/cli.sh"
       fi       
       ;;
     0)

@@ -181,10 +181,22 @@ main() {
         show_main_menu
         case $main_choice in
             1)
+              if [[ $DEV_CONTAINER != 0  ]]; then
+                cd examples
+              fi
                 test_smart_contract
+              if [[ $DEV_CONTAINER != 0  ]]; then
+                cd -
+              fi
             ;;
             2)
+              if [[ $DEV_CONTAINER != 0  ]]; then
+                cd examples
+              fi
                 deploy_smart_contract
+              if [[ $DEV_CONTAINER != 0  ]]; then
+                cd -
+              fi
             ;;
             3)
                 while true; do
