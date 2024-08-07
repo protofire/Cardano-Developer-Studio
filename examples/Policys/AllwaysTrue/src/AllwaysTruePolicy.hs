@@ -2,7 +2,10 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE TemplateHaskell     #-}
-
+--------------------------------------------------------------------------------
+{- HLINT ignore "Use camelCase"               -}
+{- HLINT ignore "Reduce duplication"          -}
+--------------------------------------------------------------------------------
 module AllwaysTruePolicy where
 
 import qualified Plutonomy

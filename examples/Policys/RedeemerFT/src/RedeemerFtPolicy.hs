@@ -4,6 +4,10 @@
 {-# LANGUAGE TemplateHaskell     #-}
 {-# LANGUAGE TypeApplications    #-}
 
+--------------------------------------------------------------------------------2
+{- HLINT ignore "Use camelCase"          -}
+{- HLINT ignore "Reduce duplication"          -}
+--------------------------------------------------------------------------------2
 module RedeemerFtPolicy where
 
 import qualified Plutonomy

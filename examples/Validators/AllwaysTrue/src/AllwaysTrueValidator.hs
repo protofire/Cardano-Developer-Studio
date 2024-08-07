@@ -2,6 +2,10 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE TemplateHaskell     #-}
+--------------------------------------------------------------------------------2
+{- HLINT ignore "Use camelCase"          -}
+{- HLINT ignore "Reduce duplication"          -}
+--------------------------------------------------------------------------------2
 
 module AllwaysTrueValidator where
 

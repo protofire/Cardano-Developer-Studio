@@ -3,6 +3,10 @@
 {-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE TemplateHaskell     #-}
 
+--------------------------------------------------------------------------------
+{- HLINT ignore "Use camelCase"               -}
+{- HLINT ignore "Reduce duplication"          -}
+--------------------------------------------------------------------------------
 module AllwaysFalsePolicy where
 
 import qualified Plutonomy
