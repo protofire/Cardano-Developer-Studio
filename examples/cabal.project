@@ -15,16 +15,16 @@ index-state:
 
 packages: 
     Helpers
-    Validators/AllwaysTrue
-    Validators/AllwaysFalse
+    Validators/AlwaysTrue
+    Validators/AlwaysFalse
     Validators/CheckSignature
     Validators/CheckDate
-    Policys/AllwaysFalse
-    Policys/AllwaysTrue
-    Policys/CheckSignature
-    Policys/CheckDate
-    Policys/RedeemerFT
-    Policys/RedeemerNFT
+    Policies/AlwaysFalse
+    Policies/AlwaysTrue
+    Policies/CheckSignature
+    Policies/CheckDate
+    Policies/RedeemerFT
+    Policies/RedeemerNFT
 
 -- We never, ever, want this.
 write-ghc-environment-files: never

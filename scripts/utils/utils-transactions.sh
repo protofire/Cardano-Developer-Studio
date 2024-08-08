@@ -348,24 +348,69 @@ build_and_submit_transaction() {
     echo "Creating the transaction..."
     # echo  $tx_in_list $tx_out_list $mint_params
 
+    ## PROTOCOL PARAMETERS FILE
+    mkdir -p "$WORKSPACE_ROOT_DIR_ABSOLUTE/configs/cardano-node/$CARDANO_NETWORK"
+    ppFile="$WORKSPACE_ROOT_DIR_ABSOLUTE/configs/cardano-node/$CARDANO_NETWORK/protocol-parameters.json"
+    if [[ -f "$ppFile" ]]
+    then
+        # echo "Protocol File: $ppFile"
+        docker cp -q "$ppFile" "$container:/tmp/protocol-parameters.json" 
+        # echo "Existe... desea actualizarlo (y/n)?"
+        # read -n 1 -s opcion
+        # if [[ $opcion = "y" ]]; then 
+        #     cardano-cli query protocol-parameters --out-file $ppFile --$CARDANO_NETWORK_WITH_MAGIC 
+        # fi
+    else
+        # echo "Getting Protocol File: $ppFile..."
+        docker exec -i "$container" cardano-cli query protocol-parameters --socket-path /ipc/node.socket --$CARDANO_NETWORK_WITH_MAGIC --out-file "/tmp/protocol-parameters.json"
+        docker cp -q "$container:/tmp/protocol-parameters.json" "$ppFile"
+    fi
+
+    ## SLOT TIP
+    tipSlot=$(docker exec -i "$container" cardano-cli query tip --socket-path /ipc/node.socket --$CARDANO_NETWORK_WITH_MAGIC | jq -r .slot)
+    echo "tipSlot: $tipSlot"
+
+    ## WALLET SIGNER
+    wallet_skey_path="$walletPath/$(basename $walletPath).skey"
+    docker cp -q "$wallet_skey_path" "$container:/tmp/wallet.skey"
+
+    # wallet_vkey_path="$walletPath/$(basename $walletPath).vkey"
+    # docker cp -q "$wallet_vkey_path" "$container:/tmp/wallet.vkey"
+    # wallet_pkh=$(docker exec -i "$container" cardano-cli address key-hash --payment-verification-key-file "/tmp/wallet.vkey")
+    wallet_pkh=$(cat "$walletPath/$(basename $walletPath).pkh")
+    # echo "wallet_pkh:"  $wallet_pkh
+
+    ## BUILD TRANSACTION
+
+    # --required-signer-hash $wallet_pkh \
+    # --required-signer="/tmp/wallet.skey" \
+    #  --protocol-params-file \"$ppFile\" \
+
     cmd="docker exec -i \"$container\" cardano-cli transaction build \
             --babbage-era \
             --socket-path /ipc/node.socket \
             --$CARDANO_NETWORK_WITH_MAGIC \
             $tx_in_list $tx_out_list $mint_params \
             --change-address \"$change_address\" \
+            --required-signer-hash $wallet_pkh \
+            --invalid-before ${tipSlot} \
+            --script-valid
             --out-file \"/tmp/tx.body\""
+
+    # echo "Command: $cmd"
+
     if ! eval $cmd; then
         echo "Error: Failed to build the transaction. Check the input parameters and script." >&2
         return 0  # Indicate failure
     fi
 
-    # docker cp "$container:/tmp/tx.body" "/tmp/tx.body" 
+    # docker cp -q "$container:/tmp/tx.body" "/tmp/tx.body" 
     # cat /tmp/tx.body
 
+    ## SIGN TRANSACTION
+
     echo "Signing the transaction..."
-    wallet_skey_path="$walletPath/$(basename $walletPath).skey"
-    docker cp "$wallet_skey_path" "$container:/tmp/wallet.skey"
+   
     if ! docker exec -i "$container" cardano-cli transaction sign \
             --tx-body-file "/tmp/tx.body" \
             --signing-key-file "/tmp/wallet.skey" \
@@ -375,11 +420,12 @@ build_and_submit_transaction() {
         docker exec -i "$container" rm /tmp/wallet.skey  # Clean up
         return 0
     fi
-
-    docker cp "$container:/tmp/tx.signed" "/tmp/tx.signed" 
-    cat /tmp/tx.signed
-
     docker exec -i "$container" rm /tmp/wallet.skey
+
+    # docker cp -q "$container:/tmp/tx.signed" "/tmp/tx.signed" 
+    # cat /tmp/tx.signed
+
+    ## SUBMIT TRANSACTION
 
     echo "Submitting the transaction..."
     if ! docker exec -i "$container" cardano-cli transaction submit \
@@ -399,7 +445,7 @@ create_collateral_tx() {
 
     wallet_address=$(cat "$selected_wallet/$(basename $selected_wallet).addr")
     echo "Choosing UTXOs from wallet to use as inputs..."
-    select_utxos_output=$(select_utxos "$selected_node_container" "$wallet_address")
+    select_utxos_output=$(select_utxos "$selected_node_container" "$wallet_address" 1)
     IFS='|' read -r wallet_tx_in_list total_lovelace_in_list <<< "$select_utxos_output"
 
     tx_in_list=""
@@ -413,6 +459,205 @@ create_collateral_tx() {
 
     build_and_submit_transaction "$selected_node_container" "$selected_wallet" "$tx_in_list" "$tx_out_list" "$wallet_address" 
 
+    read -p "Press Enter to continue..."
+
+}
+
+create_minting_tx() {
+    local redeemer="$1"
+    echo "Creating minting transaction..."
+    create_generic_minting_tx "mint" "$redeemer"
+    read -p "Press Enter to continue..."
+}
+
+create_burning_tx() {
+    local redeemer="$1"
+    echo "Creating burning transaction..."
+    create_generic_minting_tx "burn" "$redeemer"
+    read -p "Press Enter to continue..."
+}
+
+create_generic_minting_tx() {
+    local action="$1"
+    local redeemer="$2"
+    select_contract
+
+    wallet_address=$(cat "$selected_wallet/$(basename $selected_wallet).addr")
+    echo "Choosing UTXOs from wallet to use as inputs..."
+    select_utxos_output=$(select_utxos "$selected_node_container" "$wallet_address" 1)
+    IFS='|' read -r wallet_tx_in_list total_lovelace_in_list <<< "$select_utxos_output"
+
+    tx_in_list=""
+    if [[ -n "$wallet_tx_in_list" ]]; then
+        IFS=' ' read -ra wallet_tx_ins <<< "$wallet_tx_in_list"
+        for wallet_tx_in in "${wallet_tx_ins[@]}"; do
+            tx_in_list+=" --tx-in $wallet_tx_in"
+        done
+    fi
+    
+    collateral_utxo=$(select_collateral_utxo "$selected_node_container" "$wallet_address")
+    if [[ $? -ne 0 || -z "$collateral_utxo" ]]; then
+        echo "No suitable collateral UTXO selected."
+        read -p "Press Enter to continue..."
+        return 0
+    else
+        tx_in_collateral=" --tx-in-collateral $collateral_utxo"
+    fi
+    
+    tx_in_list+="$tx_in_collateral"
+
+    # Prompt for token names and amounts
+    local tokens=()
+    local amounts=()
+
+    while true; do
+        read -p "Enter token name (leave empty to finish): " token_name
+        if [[ -z "$token_name" && ${#tokens[@]} -eq 0 ]]; then
+            echo "No tokens added. Please add at least one token."
+            continue
+        elif [[ -z "$token_name" ]]; then
+            break
+        fi
+
+        # Convert token name to HEX
+        token_name_hex=$(echo -n "$token_name" | xxd -p)
+        echo "Token name in HEX: $token_name_hex"
+
+        while true; do
+            read -p "Enter amount of tokens to $action (default 1): " token_amount
+            if [[ -z "$token_amount" ]]; then
+                token_amount=1
+            fi
+
+            # Validate token amount (only positive numbers allowed)
+            if ! [[ "$token_amount" =~ ^[0-9]+$ ]]; then
+                echo "Invalid amount. Please enter a positive number."
+            else
+                # Set amount to negative for burning
+                if [[ "$action" == "burn" ]]; then
+                    token_amount=$(( -token_amount ))
+                fi
+                break
+            fi
+        done
+
+        tokens+=("$token_name_hex")
+        amounts+=("$token_amount")
+    done
+
+    # Handle redeemer if provided
+    redeemer_json_file="/tmp/redeemer.json"
+    if (declare -f sw_use_redeemer > /dev/null && sw_use_redeemer) || [[ -n "$redeemer" ]]; then
+        generate_redeemer_json "$redeemer" "$redeemer_json_file"
+        docker cp -q "$redeemer_json_file" "$selected_node_container:$redeemer_json_file"
+        # echo "Redeemer - $redeemer - JSON: $(cat $redeemer_json_file)"
+    fi
+
+    tx_in_script_file="$selected_scripts/$selected_policy.plutus"
+    docker cp -q "$tx_in_script_file" "$selected_node_container:/tmp/policy.plutus"
+    pid=$(docker exec -i "$selected_node_container" cardano-cli transaction policyid --script-file /tmp/policy.plutus)
+
+    mint_params=""
+    for i in "${!tokens[@]}"; do
+        token_name_hex="${tokens[$i]}"
+        token_amount="${amounts[$i]}"
+        mint_value="$token_amount $pid.$token_name_hex"
+        if (declare -f sw_use_redeemer > /dev/null && sw_use_redeemer) || [[ -n "$redeemer" ]]; then
+            mint_params+=" --mint \"$mint_value\" --mint-script-file /tmp/policy.plutus --mint-redeemer-file /tmp/redeemer.json"
+        else
+            mint_params+=" --mint \"$mint_value\" --mint-script-file /tmp/policy.plutus --mint-redeemer-value {}"
+        fi
+    done
+    
+    build_and_submit_transaction "$selected_node_container" "$selected_wallet" "$tx_in_list" "" "$wallet_address" "$mint_params"
+}
+
+
+create_vesting_tx() {
+    local datum="$1"
+
+    echo "Creating vesting transaction..."
+    select_contract
+
+    # Handle datum if provided
+    datum_json_file="/tmp/datum.json"
+    if (declare -f sw_use_datum > /dev/null && sw_use_datum) || [[ -n "$datum" ]]; then
+        generate_datum_json "$datum" "$datum_json_file"
+        docker cp -q "$datum_json_file" "$selected_node_container:$datum_json_file"
+        # echo "Datum - $datum - JSON: $(cat $datum_json_file)"
+    fi
+
+    amount_ada=$(select_amount_ada)
+
+    wallet_address=$(cat "$selected_wallet/$(basename $selected_wallet).addr")
+    echo "Choosing UTXOs from wallet to use as inputs..."
+    select_utxos_output=$(select_utxos "$selected_node_container" "$wallet_address" $amount_ada)
+    IFS='|' read -r wallet_tx_in_list total_lovelace_in_list <<< "$select_utxos_output"
+
+    tx_in_list=""
+    if [[ -n "$wallet_tx_in_list" ]]; then
+        IFS=' ' read -ra wallet_tx_ins <<< "$wallet_tx_in_list"
+        for wallet_tx_in in "${wallet_tx_ins[@]}"; do
+            tx_in_list+=" --tx-in $wallet_tx_in"
+        done
+    fi
+    
+    if (declare -f sw_use_datum > /dev/null && sw_use_datum) || [[ -n "$datum" ]]; then
+        tx_out_list="--tx-out $script_address+$amount_ada --tx-out-inline-datum-file /tmp/datum.json"
+    else
+        tx_out_list="--tx-out $script_address+$amount_ada --tx-out-inline-datum-value {}"
+    fi
+
+    build_and_submit_transaction "$selected_node_container" "$selected_wallet" "$tx_in_list" "$tx_out_list" "$wallet_address"
+
+    read -p "Press Enter to continue..."
+}
+
+create_claiming_tx() {
+    echo "Creating claiming transaction..."
+    select_contract
+
+    wallet_address=$(cat "$selected_wallet/$(basename $selected_wallet).addr")
+    echo "Choosing UTXOs from wallet to use as inputs..."
+    select_utxos_output=$(select_utxos "$selected_node_container" "$wallet_address" 1)
+    IFS='|' read -r wallet_tx_in_list total_lovelace_in_list <<< "$select_utxos_output"
+
+    echo "Choosing UTXOs from script address to consume..."
+    select_utxos_output=$(select_utxos "$selected_node_container" "$script_address" 1)
+    IFS='|' read -r script_tx_in_list total_lovelace_in_script <<< "$select_utxos_output"
+    
+    tx_in_script_file="$selected_scripts/$selected_validator.plutus"
+    docker cp -q "$tx_in_script_file" "$selected_node_container:/tmp/validator.plutus"
+
+    tx_in_list=""
+    if [[ -n "$wallet_tx_in_list" ]]; then
+        IFS=' ' read -ra wallet_tx_ins <<< "$wallet_tx_in_list"
+        for wallet_tx_in in "${wallet_tx_ins[@]}"; do
+            tx_in_list+=" --tx-in $wallet_tx_in"
+        done
+    fi
+
+    collateral_utxo=$(select_collateral_utxo "$selected_node_container" "$wallet_address")
+    if [[ $? -ne 0 || -z "$collateral_utxo" ]]; then
+        echo "No suitable collateral UTXO selected."
+        read -p "Press Enter to continue..."
+        return 0
+    else
+        tx_in_collateral=" --tx-in-collateral $collateral_utxo"
+    fi
+    
+    tx_in_list+="$tx_in_collateral"
+
+    # Handle script tx-in list
+    if [[ -n "$script_tx_in_list" ]]; then
+        IFS=' ' read -ra script_tx_ins <<< "$script_tx_in_list"
+        for script_tx_in in "${script_tx_ins[@]}"; do
+            tx_in_list+=" --tx-in $script_tx_in --tx-in-script-file /tmp/validator.plutus --tx-in-inline-datum-present --tx-in-redeemer-value {} $tx_in_collateral"
+        done
+    fi
+    
+    build_and_submit_transaction "$selected_node_container" "$selected_wallet" "$tx_in_list" "" "$wallet_address"
+    
     read -p "Press Enter to continue..."
 
 }

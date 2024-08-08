@@ -49,7 +49,6 @@ import           ParamCheckBeforeDeadlineValidator as OnChain (paramCheckBeforeD
 
 --------------------------------------------------------------------------------2
 
-
 main :: P.IO ()
 main = deploy
 
@@ -57,6 +56,15 @@ deploy :: P.IO ()
 deploy = do
     ------------------------------
     args <- SystemEnvironment.getArgs
+    ------------------------------
+    case args of
+        [baseFolder] -> runDeploy baseFolder
+        [] -> runDeploy ""
+        _ -> P.putStrLn "Error: Expected 1 argument: baseFolder"
+    ------------------------------
+
+runDeploy :: P.String -> P.IO ()
+runDeploy baseFolder = do
     ------------------------------
     progName <- SystemEnvironment.getProgName
     ------------------------------
@@ -67,8 +75,7 @@ deploy = do
             else str
         projectName = stripSuffix "Deploy" progName
     ------------------------------
-    let baseFolder = if not (P.null args) then P.head args else ""
-        path = baseFolder SystemFilePathPosix.</> "export" SystemFilePathPosix.</> projectName
+    let path = baseFolder SystemFilePathPosix.</> "export" SystemFilePathPosix.</> projectName
     ------------------------------
     currentTime <- DataTime.getCurrentTime
     let defaultName = DataTime.formatTime DataTime.defaultTimeLocale "%Y-%m-%d-%H-%M" currentTime

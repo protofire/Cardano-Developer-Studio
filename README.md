@@ -47,7 +47,7 @@ This repository is the home of the Cardano Developer Studio, an all-in-one suite
     - [Cardano DB Sync Tools Menu](#cardano-db-sync-tools-menu)
     - [Cardano Dev Tools Menu](#cardano-dev-tools-menu)
         - [Validators Contract Examples CLI](#validators-contract-examples-cli)
-        - [Policys Contract Examples CLI](#policys-contract-examples-cli)
+        - [Policies Contract Examples CLI](#policies-contract-examples-cli)
     - [Note to Users](#note-to-users-1)
   - [Using Docker Containers](#using-docker-containers)
     - [Cardano Node](#cardano-node-1)

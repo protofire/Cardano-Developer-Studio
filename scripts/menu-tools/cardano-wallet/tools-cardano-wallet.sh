@@ -194,23 +194,23 @@ process_saved_wallet_file() {
 
     echo ""
     echo "Generating Wallet Private Key and Signing Key: "
-    docker cp "${filePath%.json}.root.prv" "$container:/tmp/root.prv"
+    docker cp -q "${filePath%.json}.root.prv" "$container:/tmp/root.prv"
     docker exec -i "$container" cardano-cli key convert-cardano-address-key --signing-key-file /tmp/root.prv --shelley-payment-key --out-file /tmp/root.skey
-    docker cp "$container:/tmp/root.skey" "${filePath%.json}.root.skey"
+    docker cp -q "$container:/tmp/root.skey" "${filePath%.json}.root.skey"
     echo "File: ${filePath%.json}.root.skey"
     # cat "${filePath%.json}.root.skey"
 
-    docker cp "${filePath%.json}.prv" "$container:/tmp/prv"
+    docker cp -q "${filePath%.json}.prv" "$container:/tmp/prv"
     docker exec -i "$container" cardano-cli key convert-cardano-address-key --signing-key-file /tmp/prv --shelley-payment-key --out-file /tmp/skey
-    docker cp "$container:/tmp/skey" "${filePath%.json}.skey"
+    docker cp -q "$container:/tmp/skey" "${filePath%.json}.skey"
     echo "File: ${filePath%.json}.skey"
     # cat "${filePath%.json}.skey"
 
     echo ""
     echo "Generating Wallet Public Key and Payment Verification Key:"
-    docker cp "${filePath%.json}.skey" "$container:/tmp/skey"
+    docker cp -q "${filePath%.json}.skey" "$container:/tmp/skey"
     docker exec -i "$container" cardano-cli key verification-key --signing-key-file /tmp/skey --verification-key-file /tmp/vkey
-    docker cp "$container:/tmp/vkey" "${filePath%.json}.vkey"
+    docker cp -q "$container:/tmp/vkey" "${filePath%.json}.vkey"
     echo "File: ${filePath%.json}.vkey"
     # cat "${filePath%.json}.vkey"
 

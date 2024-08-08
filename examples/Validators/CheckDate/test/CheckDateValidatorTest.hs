@@ -39,18 +39,19 @@ import           ParamCheckBeforeDeadlineValidator (paramCheckBeforeDeadlineVali
 -- before and after deadlines using both parameters and datums.
 main :: IO ()
 main = Tasty.defaultMain $ do
-   Tasty.testGroup
-    "Testing validator" [
-      Tasty.testGroup
+    Tasty.testGroup
+      "Testing time checks validator"
+      [ 
+        Tasty.testGroup
         "Testing size and resources"
-        [
-          Tasty.testGroup
-            "Test size and resources of the valid claiming tx of the validator"
-            [
-              Tasty.testCase "Deadline: 6000; TxValidRange (4900, 5100); TxValidSize < 14Mb" $
+          [
+          
+              Tasty.testCase "Test Claim After the deadline using datum; Deadline: 6000; TxDate: 6100; TxValidSize < 16Kb; Mem < 14Mb; Cpu < 10_000M" $
               let
+                  deadline = 6000
+                  txDate = 6100
                   validator = datumCheckAfterDeadlineValidator
-                  ctx = claimingTxWithDatumContext validator 6000 6100
+                  ctx = claimingTxWithDatumContext validator deadline txDate
 
                   getValidator :: LedgerApiV2.Address -> Maybe LedgerApiV2.Validator
                   getValidator _ = Just validator
@@ -62,33 +63,83 @@ main = Tasty.defaultMain $ do
               in do
                   eval_log `OffChainEval.assertContainsAnyOf` []
                   OffChainEval.assertBudgetAndSize eval_err eval_size OffChainEval.maxMemory OffChainEval.maxCPU OffChainEval.maxTxSize
+              ,
+              Tasty.testCase "Test Claim Before the deadline using datum; Deadline: 6000; TxDate: 5900; TxValidSize < 16Kb; Mem < 14Mb; Cpu < 10_000M" $
+              let
+                  deadline = 6000
+                  txDate = 5900
+                  validator = datumCheckBeforeDeadlineValidator
+                  ctx = claimingTxWithDatumContext validator deadline txDate
+
+                  getValidator :: LedgerApiV2.Address -> Maybe LedgerApiV2.Validator
+                  getValidator _ = Just validator
+
+                  getMintingPolicy :: LedgerApiV2.CurrencySymbol -> Maybe LedgerApiV2.MintingPolicy
+                  getMintingPolicy _ = Nothing
+
+                  (eval_log, eval_err, eval_size) = OffChainEval.testContext getValidator getMintingPolicy ctx
+              in do
+                  eval_log `OffChainEval.assertContainsAnyOf` []
+                  OffChainEval.assertBudgetAndSize eval_err eval_size OffChainEval.maxMemory OffChainEval.maxCPU OffChainEval.maxTxSize
+              ,
+              Tasty.testCase "Test Claim After the deadline using parameters; Deadline: 6000; TxDate: 6100; TxValidSize < 16Kb; Mem < 14Mb; Cpu < 10_000M" $
+              let
+                  deadline = 6000
+                  txDate = 6100
+                  validator = paramCheckAfterDeadlineValidator deadline
+                  ctx = claimingTxWithParamsContext validator txDate
+
+                  getValidator :: LedgerApiV2.Address -> Maybe LedgerApiV2.Validator
+                  getValidator _ = Just validator
+
+                  getMintingPolicy :: LedgerApiV2.CurrencySymbol -> Maybe LedgerApiV2.MintingPolicy
+                  getMintingPolicy _ = Nothing
+
+                  (eval_log, eval_err, eval_size) = OffChainEval.testContext getValidator getMintingPolicy ctx
+              in do
+                  eval_log `OffChainEval.assertContainsAnyOf` []
+                  OffChainEval.assertBudgetAndSize eval_err eval_size OffChainEval.maxMemory OffChainEval.maxCPU OffChainEval.maxTxSize
+              ,
+              Tasty.testCase "Test Claim Before the deadline using parameters; Deadline: 6000; TxDate: 5900; TxValidSize < 16Kb; Mem < 14Mb; Cpu < 10_000M" $
+              let
+                  deadline = 6000
+                  txDate = 5900
+                  validator = paramCheckBeforeDeadlineValidator deadline
+                  ctx = claimingTxWithParamsContext validator txDate
+
+                  getValidator :: LedgerApiV2.Address -> Maybe LedgerApiV2.Validator
+                  getValidator _ = Just validator
+
+                  getMintingPolicy :: LedgerApiV2.CurrencySymbol -> Maybe LedgerApiV2.MintingPolicy
+                  getMintingPolicy _ = Nothing
+
+                  (eval_log, eval_err, eval_size) = OffChainEval.testContext getValidator getMintingPolicy ctx
+              in do
+                  eval_log `OffChainEval.assertContainsAnyOf` []
+                  OffChainEval.assertBudgetAndSize eval_err eval_size OffChainEval.maxMemory OffChainEval.maxCPU OffChainEval.maxTxSize
+          ]
+        ,
+        Tasty.testGroup
+            "Test Claim Before the deadline using parameters"
+            [ bad   "Deadline: 6000; TxValidRange (6900, 7100)" $ datumCheckBeforeDeadlineTest 6000 (-100) 100 7000
+            , good  "Deadline: 6000; TxValidRange (4900, 5100)" $ datumCheckBeforeDeadlineTest 6000 (-100) 100 5000
+            ],
+        Tasty.testGroup
+            "Test claim after the deadline using parameters"
+            [ good  "Deadline: 6000; TxValidRange (6900, 7100)" $ datumCheckAfterDeadlineTest 6000 (-100) 100 7000
+            , bad   "Deadline: 6000; TxValidRange (4900, 5100)" $ datumCheckAfterDeadlineTest 6000 (-100) 100 5000
+            ],
+        Tasty.testGroup
+            "Test Claim Before the deadline using datums"
+            [ bad   "Deadline: 6000; TxValidRange (6900, 7100)" $ paramCheckBeforeDeadlineTest 6000 (-100) 100 7000
+            , good  "Deadline: 6000; TxValidRange (4900, 5100)" $ paramCheckBeforeDeadlineTest  6000 (-100) 100 5000
+            ],
+        Tasty.testGroup
+            "Test claim after the deadline using datums"
+            [ good  "Deadline: 6000; TxValidRange (6900, 7100)" $ paramCheckAfterDeadlineTest 6000 (-100) 100 7000
+            , bad   "Deadline: 6000; TxValidRange (4900, 5100)" $ paramCheckAfterDeadlineTest 6000 (-100) 100 5000
             ]
         ]
-       ,
-       Tasty.testGroup
-         "Testing time checks"
-         [ Tasty.testGroup
-             "Test Claim Before the deadline using parameters"
-             [ bad   "Deadline: 6000; TxValidRange (6900, 7100)" $ datumCheckBeforeDeadlineTest 6000 (-100) 100 7000
-             , good  "Deadline: 6000; TxValidRange (4900, 5100)" $ datumCheckBeforeDeadlineTest 6000 (-100) 100 5000
-             ],
-         Tasty.testGroup
-             "Test claim after the deadline using parameters"
-             [ good  "Deadline: 6000; TxValidRange (6900, 7100)" $ datumCheckAfterDeadlineTest 6000 (-100) 100 7000
-             , bad   "Deadline: 6000; TxValidRange (4900, 5100)" $ datumCheckAfterDeadlineTest 6000 (-100) 100 5000
-             ],
-         Tasty.testGroup
-             "Test Claim Before the deadline using datums"
-             [ bad   "Deadline: 6000; TxValidRange (6900, 7100)" $ paramCheckBeforeDeadlineTest 6000 (-100) 100 7000
-             , good  "Deadline: 6000; TxValidRange (4900, 5100)" $ paramCheckBeforeDeadlineTest  6000 (-100) 100 5000
-             ],
-         Tasty.testGroup
-             "Test claim after the deadline using datums"
-             [ good  "Deadline: 6000; TxValidRange (6900, 7100)" $ paramCheckAfterDeadlineTest 6000 (-100) 100 7000
-             , bad   "Deadline: 6000; TxValidRange (4900, 5100)" $ paramCheckAfterDeadlineTest 6000 (-100) 100 5000
-             ]
-         ]
-    ]
   where
     -- | Marks the test as bad (expected to fail)
     bad msg = good msg . Model.mustFail
@@ -232,13 +283,29 @@ claimingTxWithDatum pkh datumCheckDateScript deadline contractRef vestVal =
 -----------------------------------------------------------------------------------------
 
 claimingTxWithDatumContext :: LedgerApiV2.Validator -> LedgerApiV2.POSIXTime -> LedgerApiV2.POSIXTime ->  LedgerApiV2.ScriptContext
-claimingTxWithDatumContext validator datumDate txDate =
+claimingTxWithDatumContext validator deadline txDate =
   let
     uTxO :: LedgerApiV2.TxOut
     uTxO = LedgerApiV2.TxOut
               (OffChainHelpers.addressValidator $ OffChainHelpers.hashValidator validator)
               (LedgerAda.lovelaceValueOf 100)
-              (LedgerApiV2.OutputDatum $ LedgerApiV2.Datum $ PlutusTx.toBuiltinData datumDate)
+              (LedgerApiV2.OutputDatum $ LedgerApiV2.Datum $ PlutusTx.toBuiltinData deadline)
+              Nothing
+    in
+      OffChainEval.mkBaseValidatorContext [] [] 0
+        OffChainEval.|> OffChainEval.setInputsAndAddRedeemers [(uTxO,  LedgerApiV2.Redeemer $ PlutusTx.toBuiltinData ())]
+        OffChainEval.|> OffChainEval.setValidRange (OffChainEval.createValidRange txDate)
+
+-----------------------------------------------------------------------------------------
+
+claimingTxWithParamsContext :: LedgerApiV2.Validator -> LedgerApiV2.POSIXTime ->  LedgerApiV2.ScriptContext
+claimingTxWithParamsContext validator txDate =
+  let
+    uTxO :: LedgerApiV2.TxOut
+    uTxO = LedgerApiV2.TxOut
+              (OffChainHelpers.addressValidator $ OffChainHelpers.hashValidator validator)
+              (LedgerAda.lovelaceValueOf 100)
+              (LedgerApiV2.OutputDatum $ LedgerApiV2.Datum $ PlutusTx.toBuiltinData ())
               Nothing
     in
       OffChainEval.mkBaseValidatorContext [] [] 0

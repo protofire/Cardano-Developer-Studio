@@ -278,6 +278,8 @@ getTime fieldName defTime lowerLimit = do
                 P.putStrLn "--------------------------------"
                 getTime fieldName defTime lowerLimit
 
+--------------------------------------------------------------------------------
+
 -- Function to remove "0x" prefix if present
 removeHexPrefix :: P.String -> P.String
 removeHexPrefix txt

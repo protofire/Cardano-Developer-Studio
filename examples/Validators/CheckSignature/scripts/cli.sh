@@ -30,8 +30,9 @@ show_transaction_menu() {
     echo "3) Select Wallet Files - Selected: $(basename "$selected_wallet")"
     echo "4) UTXOs in Wallet"
     echo "5) UTXOs in Smart Contracts"
-    echo "6) Create Vesting Transaction"
-    echo "7) Create Claiming Transaction"
+    echo "6) Create UTXO for Collateral in Wallet"
+    echo "7) Create Vesting Transaction"
+    echo "8) Create Claiming Transaction"
     echo "0) Return to Main Menu"
     read -p "Enter your choice or 0 to return: " tx_choice
 }
@@ -72,97 +73,37 @@ utxos_in_smart_contracts() {
 
 # Function to generate datum JSON
 generate_datum_json() {
-    local validator=$1
-    case $validator in
-        paramCheckSignatureValidator )
-            echo "{}"
-            ;;
-        datumCheckSignatureValidator )
+    local datum=$1
+    local file_path=$2
+    case $selected_validator in
+        datumCheckSignatureValidator)
             local pkh=$(get_pkh)
-            echo "{\"hex\": $pkh}"
+            cat <<EOM > "$file_path"
+{
+    "bytes": "$pkh"
+}
+EOM
+            ;;
+        *)
+            echo "Invalid datum type: $datum" >&2
+            return 1
             ;;
     esac
 }
 
-create_vesting_tx() {
-    echo "Creating vesting transaction..."
-    select_contract
-
-    datum_json=$(generate_datum_json "$selected_validator")
-    if [[ $? -ne 0 ]]; then
-        echo "Failed to generate datum JSON."
-        read -p "Press Enter to continue..."
-        return
-    fi
-
-    # Save datum JSON to a file
-    datum_json_file="/tmp/datum.json"
-    echo "$datum_json" > "$datum_json_file"
-    docker cp "$datum_json_file" "$selected_node_container:$datum_json_file"
-
-    amount_ada=$(select_amount_ada)
-
-    wallet_address=$(cat "$selected_wallet/$(basename $selected_wallet).addr")
-    echo "Choosing UTXOs from wallet to use as inputs..."
-    select_utxos_output=$(select_utxos "$selected_node_container" "$wallet_address" $amount_ada)
-    IFS='|' read -r wallet_tx_in_list total_lovelace_in_list <<< "$select_utxos_output"
-
-    if [[ -n "$wallet_tx_in_list" ]]; then
-        IFS=' ' read -ra wallet_tx_ins <<< "$wallet_tx_in_list"
-        for wallet_tx_in in "${wallet_tx_ins[@]}"; do
-            tx_in_list+=" --tx-in $wallet_tx_in"
-        done
-    fi
-    
-    tx_out_list="--tx-out $script_address+$amount_ada --tx-out-inline-datum-file /tmp/datum.json"
-    echo "$tx_out_list" 
-
-    build_and_submit_transaction "$selected_node_container" "$selected_wallet" "$tx_in_list" "$tx_out_list" "$wallet_address"
-
-    read -p "Press Enter to continue..."
+# Function to know if a datum must be used
+sw_use_datum() {
+    case $selected_validator in
+        datumCheckSignatureValidator)
+            return 0
+            ;;
+        *)
+            return 1
+            ;;
+    esac
 }
 
-create_claiming_tx() {
-    echo "Creating claiming transaction..."
-    select_contract
 
-    wallet_address=$(cat "$selected_wallet/$(basename $selected_wallet).addr")
-    echo "Choosing UTXOs from wallet to use as inputs..."
-    select_utxos_output=$(select_utxos "$selected_node_container" "$wallet_address")
-    IFS='|' read -r wallet_tx_in_list total_lovelace_in_list <<< "$select_utxos_output"
-
-    echo "Choosing UTXOs from script address to consume..."
-    select_utxos_output=$(select_utxos "$selected_node_container" "$script_address")
-    IFS='|' read -r script_tx_in_list total_lovelace_in_script <<< "$select_utxos_output"
-    
-    tx_in_script_file="$selected_scripts/$selected_validator.plutus"
-    docker cp "$tx_in_script_file" "$selected_node_container:/tmp/validator.plutus"
-
-    tx_in_list=""
-    
-    if [[ -n "$wallet_tx_in_list" ]]; then
-        IFS=' ' read -ra wallet_tx_ins <<< "$wallet_tx_in_list"
-        for wallet_tx_in in "${wallet_tx_ins[@]}"; do
-            tx_in_list+=" --tx-in $wallet_tx_in"
-            tx_in_collateral=" --tx-in-collateral $wallet_tx_in"
-        done
-    fi
-
-    # Handle script tx-in list
-    if [[ -n "$script_tx_in_list" ]]; then
-        IFS=' ' read -ra script_tx_ins <<< "$script_tx_in_list"
-        for script_tx_in in "${script_tx_ins[@]}"; do
-            tx_in_list+=" --tx-in $script_tx_in --tx-in-script-file /tmp/validator.plutus --tx-in-inline-datum-present --tx-in-redeemer-value {} $tx_in_collateral"
-        done
-    fi
-    
-    echo "$tx_in_list" 
-
-    build_and_submit_transaction "$selected_node_container" "$selected_wallet" "$tx_in_list" "" "$wallet_address"
-    
-    read -p "Press Enter to continue..."
-
-}
 
 # Main script logic
 main() {
@@ -201,8 +142,8 @@ main() {
                             select_wallet_files
                         ;;
                         4)
-                            if [[ -z "$selected_node_container" || -z "$selected_scripts" || -z "$selected_wallet" ]]; then
-                                echo "Please select the container, smart contract files, and wallet files first."
+                            if [[ -z "$selected_node_container" || -z "$selected_wallet" ]]; then
+                                echo "Please select the container and wallet files first."
                                 read -p "Press Enter to continue..."
                             else
                                 utxos_in_wallet
@@ -217,6 +158,14 @@ main() {
                             fi
                         ;;
                         6)
+                            if [[ -z "$selected_node_container" || -z "$selected_wallet" ]]; then
+                                echo "Please select the container, and wallet files first."
+                                read -p "Press Enter to continue..."
+                            else
+                                create_collateral_tx
+                            fi
+                        ;;
+                        7)
                             if [[ -z "$selected_node_container" || -z "$selected_scripts" || -z "$selected_wallet" ]]; then
                                 echo "Please select the container, smart contract files, and wallet files first."
                                 read -p "Press Enter to continue..."
@@ -224,7 +173,7 @@ main() {
                                 create_vesting_tx
                             fi
                         ;;
-                        7)
+                        8)
                             if [[ -z "$selected_node_container" || -z "$selected_scripts" || -z "$selected_wallet" ]]; then
                                 echo "Please select the container, smart contract files, and wallet files first."
                                 read -p "Press Enter to continue..."

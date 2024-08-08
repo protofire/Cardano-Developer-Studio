@@ -11,12 +11,18 @@
 module Main where
 
 import Control.Monad (replicateM, unless)
-import PlutusTx.Prelude ((&&), (.), ($), (==))
+import PlutusTx.Prelude ((&&), (.), ($), (==), Maybe (Just, Nothing))
 import Prelude (IO, mapM, mconcat)
 
-import qualified Plutus.Model as Model
-import qualified Plutus.V2.Ledger.Api as LedgerApiV2
-import qualified Test.Tasty as Tasty
+import qualified Ledger.Ada                        as LedgerAda
+import qualified Plutus.Model                      as Model
+import qualified Plutus.V2.Ledger.Api              as LedgerApiV2
+import qualified PlutusTx
+import qualified Test.Tasty                        as Tasty
+import qualified Test.Tasty.HUnit                  as Tasty
+
+import qualified Helpers.OffChain                  as OffChainHelpers
+import qualified Helpers.OffChainEval              as OffChainEval
 
 import ParamCheckSignatureValidator (paramCheckSignatureValidator)
 import DatumCheckSignatureValidator (datumCheckSignatureValidator)
@@ -31,7 +37,49 @@ main :: IO ()
 main = Tasty.defaultMain $ do
     Tasty.testGroup
         "Testing checkSignature validator"
-        [ Tasty.testGroup
+        [ 
+          Tasty.testGroup
+            "Testing size and resources"
+              [
+                Tasty.testCase "Test Valid Claim using datum; TxValidSize < 16Kb; Mem < 14Mb; Cpu < 10_000M" $
+                let
+                    walletPkh = LedgerApiV2.PubKeyHash "ed485b083eb5816c10c35a9d091d8af4cfdceef40c96578cae2b2266a8d976c9"
+                    txDate = 6100
+                    validator = datumCheckSignatureValidator
+                    ctx = claimingTxWithDatumContext validator walletPkh txDate
+
+                    getValidator :: LedgerApiV2.Address -> Maybe LedgerApiV2.Validator
+                    getValidator _ = Just validator
+
+                    getMintingPolicy :: LedgerApiV2.CurrencySymbol -> Maybe LedgerApiV2.MintingPolicy
+                    getMintingPolicy _ = Nothing
+
+                    (eval_log, eval_err, eval_size) = OffChainEval.testContext getValidator getMintingPolicy ctx
+                in do
+                    eval_log `OffChainEval.assertContainsAnyOf` []
+                    OffChainEval.assertBudgetAndSize eval_err eval_size OffChainEval.maxMemory OffChainEval.maxCPU OffChainEval.maxTxSize
+                ,
+                Tasty.testCase "Test Valid Claim using parameters; TxValidSize < 16Kb; Mem < 14Mb; Cpu < 10_000M" $
+                let
+                    walletPkh = LedgerApiV2.PubKeyHash "ed485b083eb5816c10c35a9d091d8af4cfdceef40c96578cae2b2266a8d976c9"
+                    txDate = 5900
+                    validator = paramCheckSignatureValidator walletPkh
+                    ctx = claimingTxWithDatumContext validator walletPkh txDate
+
+                    getValidator :: LedgerApiV2.Address -> Maybe LedgerApiV2.Validator
+                    getValidator _ = Just validator
+
+                    getMintingPolicy :: LedgerApiV2.CurrencySymbol -> Maybe LedgerApiV2.MintingPolicy
+                    getMintingPolicy _ = Nothing
+
+                    (eval_log, eval_err, eval_size) = OffChainEval.testContext getValidator getMintingPolicy ctx
+                in do
+                    eval_log `OffChainEval.assertContainsAnyOf` []
+                    OffChainEval.assertBudgetAndSize eval_err eval_size OffChainEval.maxMemory OffChainEval.maxCPU OffChainEval.maxTxSize
+            ]
+          ,
+          
+          Tasty.testGroup
             "Test using parameters"
             [ 
               good "User 1 deploys contract for User 2 and User 2 claims it" paramCheckSignatureTest
@@ -233,3 +281,39 @@ paramTakeTx takePkh paramCheckScript giftRef giftVal =
     , Model.payToKey takePkh giftVal
     ]
 
+
+-----------------------------------------------------------------------------------------
+
+claimingTxWithDatumContext :: LedgerApiV2.Validator -> LedgerApiV2.PubKeyHash -> LedgerApiV2.POSIXTime ->  LedgerApiV2.ScriptContext
+claimingTxWithDatumContext validator pkh txDate =
+  let
+    uTxO :: LedgerApiV2.TxOut
+    uTxO = LedgerApiV2.TxOut
+              (OffChainHelpers.addressValidator $ OffChainHelpers.hashValidator validator)
+              (LedgerAda.lovelaceValueOf 100)
+              (LedgerApiV2.OutputDatum $ LedgerApiV2.Datum $ PlutusTx.toBuiltinData pkh)
+              Nothing
+    in
+      OffChainEval.mkBaseValidatorContext [] [] 0
+        OffChainEval.|> OffChainEval.setInputsAndAddRedeemers [(uTxO,  LedgerApiV2.Redeemer $ PlutusTx.toBuiltinData ())]
+        OffChainEval.|> OffChainEval.addSignatory pkh
+        OffChainEval.|> OffChainEval.setValidRange (OffChainEval.createValidRange txDate)
+
+-----------------------------------------------------------------------------------------
+
+claimingTxWithParamsContext :: LedgerApiV2.Validator -> LedgerApiV2.PubKeyHash ->  LedgerApiV2.POSIXTime ->  LedgerApiV2.ScriptContext
+claimingTxWithParamsContext validator pkh txDate =
+  let
+    uTxO :: LedgerApiV2.TxOut
+    uTxO = LedgerApiV2.TxOut
+              (OffChainHelpers.addressValidator $ OffChainHelpers.hashValidator validator)
+              (LedgerAda.lovelaceValueOf 100)
+              (LedgerApiV2.OutputDatum $ LedgerApiV2.Datum $ PlutusTx.toBuiltinData ())
+              Nothing
+    in
+      OffChainEval.mkBaseValidatorContext [] [] 0
+        OffChainEval.|> OffChainEval.setInputsAndAddRedeemers [(uTxO, LedgerApiV2.Redeemer $ PlutusTx.toBuiltinData ())]
+        OffChainEval.|> OffChainEval.addSignatory pkh
+        OffChainEval.|> OffChainEval.setValidRange (OffChainEval.createValidRange txDate)
+
+-----------------------------------------------------------------------------------------

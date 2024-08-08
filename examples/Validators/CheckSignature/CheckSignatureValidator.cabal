@@ -32,7 +32,9 @@ common common-all-tests
     import:           common-all
     build-depends:    QuickCheck
                     , tasty
+                    , tasty-hunit
                     , plutus-simple-model
+                    , plutus-ledger
 
 library
     import:             common-all
