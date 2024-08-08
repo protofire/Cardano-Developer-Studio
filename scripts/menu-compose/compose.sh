@@ -303,8 +303,8 @@ set_cardano_dev_env_variables() {
     echo "Setting up Smart Contract Plutus environment..."
     # echo "Checking for existing Docker volumes. If found, you'll have the option to delete them. Should you choose not to delete, ensure that your specified values (pattern) align with those of the existing setup."
     # force_delete_docker_volume "cardano_dev"
-    DOCKER_GID=$(getent group docker | cut -d: -f3)
-    export DOCKER_GID
+    DOCKER_GID=$(getent group docker | cut -d ':' -f3)
+    export DOCKER_GID
 }
 
 # Function to display menu and read user choice

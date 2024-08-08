@@ -204,7 +204,7 @@ source-repository-package
 -- https://github.com/input-output-hk/cardano-ledger/pull/3111
 source-repository-package
     type: git
-    location: https://github.com/input-output-hk/cardano-ledger
+    location: https://github.com/IntersectMBO/cardano-ledger
     tag: da3e9ae10cf9ef0b805a046c84745f06643583c2
     subdir:
       eras/alonzo/impl

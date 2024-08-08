@@ -28,7 +28,11 @@ RUN apt-get install -y \
        stable"
 
 # Install docker-ce-cli separately to ensure all previous commands are cached if docker-ce-cli version remains the same
-RUN apt-get install -y docker-ce-cli
+RUN apt-get install -y docker-ce docker-ce-cli containerd.io
+# Add user to the docker group
+ARG DOCKER_GID=1001
+RUN groupmod -g ${DOCKER_GID} docker || groupadd -g ${DOCKER_GID} docker && usermod -aG docker root
+RUN newgrp docker
 
 # Install rsync
 RUN apt-get install -y rsync
