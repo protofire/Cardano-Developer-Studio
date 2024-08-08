@@ -21,8 +21,13 @@ const lucid = await Lucid.new(
 
 // deno run -A minting.ts
 
-const privateKey ="ed25519_sk1uv6pp8rm92a9djd224q9q65luspkjc53zug27rz3drukz0wfgqzqrrr93k"
-lucid.selectWalletFromPrivateKey(privateKey);
+// USE A WALLET THAT HAS ADA (OR TESTING ADA)
+// you can create firts the wallet, get the address, fund it, and then use the created one, not a generated new one
+
+// const seed = lucid.utils.generateSeedPhrase();
+const seed = ["success", "hero", "obvious", "crawl", "creek", "example", "sting", "hollow", "month", "smart", "distance", "spy", "airport", "vivid", "choice"].join(' ')
+// console.log ("own seed: " + seed);
+lucid.selectWalletFromSeed(seed);
 
 const addr: Address = await lucid.wallet.address();
 console.log("own address: " + addr);
