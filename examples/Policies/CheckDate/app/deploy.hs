@@ -89,15 +89,15 @@ runDeploy baseFolder = do
     P.putStrLn $ "Path: " ++ path SystemFilePathPosix.</> folderName
     ------------------------------
     do
-        P.putStrLn "Generating 'paramCheckAfterDeadlinepolicy' Script..."
+        P.putStrLn "Generating 'paramCheckAfterDeadlinePolicy' Script..."
         ------------------------------
         let currentTimeLedger = CLIHelpers.uTCTimeToLedgerPosixTime currentTime
             currentTimePlus15Minuts = currentTimeLedger P.+ (15 P.* 60 P.* 1000)
         deadline <- CLIHelpers.getTime "Deadline POSIXTime" currentTimePlus15Minuts currentTimeLedger
         ------------------------------
-        let policy = paramCheckBeforeDeadlinePolicy deadline
+        let policy = paramCheckAfterDeadlinePolicy deadline
             policy_CS = OffChainHelpers.getCurSymbolOfPolicy policy
-        DeployHelpers.deployMintingPolicy (path SystemFilePathPosix.</> folderName) "paramCheckAfterDeadlinepolicy" policy policy_CS
+        DeployHelpers.deployMintingPolicy (path SystemFilePathPosix.</> folderName) "paramCheckAfterDeadlinePolicy" policy policy_CS
     ------------------------------
     do
         P.putStrLn "Generating 'paramCheckBeforeDeadlinePolicy' Script..."

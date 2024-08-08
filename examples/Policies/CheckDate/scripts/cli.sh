@@ -44,12 +44,12 @@ select_contract() {
     while true; do
         read -p "Enter your choice [1-2]: " contract_choice
         case $contract_choice in
-            1) selected_policy="paramCheckAfterDeadlinepolicy"; break;;
-            2) selected_policy="paramCheckBeforeDeadlinepolicy"; break;;
+            1) selected_policy="paramCheckAfterDeadlinePolicy"; break;;
+            2) selected_policy="paramCheckBeforeDeadlinePolicy"; break;;
             *) echo "Invalid choice, please select a valid option.";;
         esac
     done
-    
+    echo "$selected_scripts/$selected_policy.symbol"
     script_cs=$(jq -r '.bytes' "$selected_scripts/$selected_policy.symbol")
     echo "Selected policy: $script_cs"
 }
