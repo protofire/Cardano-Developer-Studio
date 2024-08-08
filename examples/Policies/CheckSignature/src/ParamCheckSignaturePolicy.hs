@@ -15,7 +15,7 @@ import qualified Plutonomy
 import qualified Plutus.V2.Ledger.Api as LedgerApiV2
 import qualified PlutusTx
 
-import           PlutusTx.Prelude     (($), Bool, traceIfFalse, error)
+import           PlutusTx.Prelude     (($), Bool, traceIfFalse, error, BuiltinByteString)
 import qualified Plutus.V2.Ledger.Contexts as LedgerContextsV2
 
 -- | 'Parameter' is a type alias for 'LedgerApiV2.PubKeyHash', which represents the public key hash required to sign the transaction.
@@ -61,3 +61,13 @@ plutonomyPolicy signatureKey =
         $$(PlutusTx.compile [|| mkParamCheckSignaturePolicy ||])
         `PlutusTx.applyCode` PlutusTx.liftCode signatureKey
 
+--------------------------------------------------------------------------------
+
+{-# INLINEABLE mkWrappedPolicy #-}
+mkWrappedPolicy :: PlutusTx.BuiltinData -> PlutusTx.BuiltinData -> PlutusTx.BuiltinData -> ()
+mkWrappedPolicy signatureKeyData = mkParamCheckSignaturePolicy signatureKey
+    where
+        signatureKey = PlutusTx.unsafeFromBuiltinData signatureKeyData :: LedgerApiV2.PubKeyHash
+
+paramCheckSignaturePolicyCode :: PlutusTx.CompiledCode (PlutusTx.BuiltinData -> PlutusTx.BuiltinData -> PlutusTx.BuiltinData -> ())
+paramCheckSignaturePolicyCode = Plutonomy.optimizeUPLC $$(PlutusTx.compile [||mkWrappedPolicy||])

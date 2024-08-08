@@ -15,7 +15,7 @@ import qualified Plutonomy
 import qualified Plutus.V2.Ledger.Api as LedgerApiV2
 import qualified PlutusTx
 
-import           PlutusTx.Prelude     (($), traceIfFalse, (&&), error)
+import           PlutusTx.Prelude     (($), traceIfFalse, (&&), error, BuiltinByteString)
 import qualified Plutus.V2.Ledger.Contexts as LedgerContextsV2
 import qualified Helpers.OnChain as OnChainHelpers
 
@@ -73,3 +73,21 @@ plutonomyPolicy outRef =
       $$(PlutusTx.compile [|| mkRedeemerNftPolicy ||])
       `PlutusTx.applyCode` PlutusTx.liftCode outRef
 
+
+--------------------------------------------------------------------------------
+
+{-# INLINEABLE mkWrappedPolicy #-}
+mkWrappedPolicy :: PlutusTx.BuiltinData -> PlutusTx.BuiltinData -> PlutusTx.BuiltinData -> PlutusTx.BuiltinData -> ()
+mkWrappedPolicy txHash txOutputIndex = mkRedeemerNftPolicy txOutRef
+    where
+        tid = PlutusTx.unsafeFromBuiltinData txHash :: BuiltinByteString
+        txOutRef =
+            LedgerApiV2.TxOutRef
+                { LedgerApiV2.txOutRefId = LedgerApiV2.TxId tid
+                , LedgerApiV2.txOutRefIdx = PlutusTx.unsafeFromBuiltinData txOutputIndex
+                }
+
+redeemerNftPolicyCode :: PlutusTx.CompiledCode (PlutusTx.BuiltinData -> PlutusTx.BuiltinData -> PlutusTx.BuiltinData -> PlutusTx.BuiltinData -> ())
+redeemerNftPolicyCode = Plutonomy.optimizeUPLC $$(PlutusTx.compile [||mkWrappedPolicy||])
+
+--------------------------------------------------------------------------------

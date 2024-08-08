@@ -54,3 +54,10 @@ executable RedeemerNftPolicyDeploy
   hs-source-dirs: app
   build-depends:  RedeemerNftPolicy
   build-depends:  time, playground-common, openapi3, plutus-ledger, filepath, directory, plutus-ledger, process
+
+executable RedeemerNftPolicyDeployWithoutParameters
+  import:         common-all
+  main-is:        deployWithoutParameters.hs
+  hs-source-dirs: app
+  build-depends:  RedeemerNftPolicy
+  build-depends:  time, playground-common, openapi3, plutus-ledger, filepath, directory, plutus-ledger, process   

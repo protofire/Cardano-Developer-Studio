@@ -92,6 +92,7 @@ readMintingPolicy path file = do
             let curSymbol = OffChainHelpers.getCurSymbolOfPolicy policy
             return (policy, curSymbol)
 
+
 --------------------------------------------------------------------------------2
 -- ESCRIBE Y LEE COMPILED CODE A ARCHIVO
 --------------------------------------------------------------------------------2
@@ -157,6 +158,9 @@ readCompiledCodeFromJsonFile filePath = do
         Right script -> compiledCodeFromScript script
 
 --------------------------------------------------------------------------------2
+
+
+
 
 -- Function to parse JSON string to TextView
 jsonStringToTextEnvelope :: P.String -> CardanoApiShelley.TextEnvelope
