@@ -5,19 +5,19 @@ source "$(dirname "${BASH_SOURCE[0]}")/../../utils/utils.sh"
 setWorkspaceDir
 
 # Specific function for container selection
-select_dev_container() {
+select_development_container() {
   if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
-    if ! select_container 'cardano-dev'; then
+    if ! select_container 'cardano-development'; then
       return 1
     fi
   else
-    selected_container='cardano-dev'
+    selected_container='cardano-development'
   fi
 }
 
 # Function to interact with the Cardano Dev container
 cardano_dev_tools() {
-  while select_dev_container; do
+  while select_development_container; do
     while true; do
       echo "----"
       echo "MENU - Selected container: $selected_container"

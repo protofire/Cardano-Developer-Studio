@@ -347,10 +347,12 @@
             10
         ]
     },
+    "decentralization": null,
     "executionUnitPrices": {
         "priceMemory": 5.77e-2,
         "priceSteps": 7.21e-5
     },
+    "extraPraosEntropy": null,
     "maxBlockBodySize": 90112,
     "maxBlockExecutionUnits": {
         "memory": 62000000,
@@ -365,6 +367,7 @@
     "maxTxSize": 16384,
     "maxValueSize": 5000,
     "minPoolCost": 170000000,
+    "minUTxOValue": null,
     "monetaryExpansion": 3.0e-3,
     "poolPledgeInfluence": 0.3,
     "poolRetireMaxEpoch": 18,

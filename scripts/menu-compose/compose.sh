@@ -298,11 +298,11 @@ set_ogmios_kupo_env_variables() {
 
 }
 
-set_cardano_dev_env_variables() {
+set_cardano_development_env_variables() {
     echo "----"
     echo "Setting up Smart Contract Plutus environment..."
     # echo "Checking for existing Docker volumes. If found, you'll have the option to delete them. Should you choose not to delete, ensure that your specified values (pattern) align with those of the existing setup."
-    # force_delete_docker_volume "cardano_dev"
+    # force_delete_docker_volume "cardano_development"
     DOCKER_GID=$(getent group docker | cut -d ':' -f3)
     export DOCKER_GID
 }
@@ -366,9 +366,9 @@ docker_compose_workflow() {
                 read -p "Press Enter to continue..."
             ;;
             5)
-                set_cardano_dev_env_variables
-                PROJECT_NAME=$(echo "cardano-dev" | tr '.:' '_' | tr -d '[:upper:]')
-                $DOCKER_COMPOSE_CMD -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-enviroments/cardano-dev/docker-compose.dev.yml" --verbose up -d
+                set_cardano_development_env_variables
+                PROJECT_NAME=$(echo "cardano-development" | tr '.:' '_' | tr -d '[:upper:]')
+                $DOCKER_COMPOSE_CMD -p $PROJECT_NAME -f "$WORKSPACE_ROOT_DIR_ABSOLUTE/docker-enviroments/cardano-development/docker-compose.development.yml" --verbose up -d
                 read -p "Press Enter to continue..."
             ;;
             0)

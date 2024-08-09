@@ -263,6 +263,7 @@ check_node_resources() {
 select_container() {
     local container_type="$1"  # e.g., 'cardano-wallet-container'
     local include_stopped="${2:-1}"  # Default to 1 (include stopped) if not provided
+    local accept_local="${3:-1}"  # Default to 1 (no accept local) if not provided
 
     echo "----"
     if [[ "$include_stopped" -eq 1 ]]; then

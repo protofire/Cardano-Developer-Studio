@@ -384,7 +384,7 @@ build_and_submit_transaction() {
 
     # --required-signer-hash $wallet_pkh \
     # --required-signer="/tmp/wallet.skey" \
-    #  --protocol-params-file \"$ppFile\" \
+    # --protocol-params-file \"$ppFile\" \
 
     cmd="docker exec -i \"$container\" cardano-cli transaction build \
             --babbage-era \
@@ -394,10 +394,27 @@ build_and_submit_transaction() {
             --change-address \"$change_address\" \
             --required-signer-hash $wallet_pkh \
             --invalid-before ${tipSlot} \
-            --script-valid
             --out-file \"/tmp/tx.body\""
 
-    # echo "Command: $cmd"
+
+# cardano-cli transaction build  \
+#     --babbage-era  \
+#     --testnet-magic 1  \
+#     --tx-in 4f909998b77f71d4a75eaa8ed5f800d1a97a419ecee70ed2179b1589ba409fc8#0   \
+#     --tx-in-script-file CheckDateValidator/2024-08-08-02-21/paramCheckAfterDeadlineValidator.plutus  \
+#     --tx-in-inline-datum-present  \
+#     --tx-in-redeemer-file redeemer.json  \
+#     --tx-in-collateral 1df0a401b4821cc9e4481ef697ec111e6ba7a54cc0509ce87afd14d1506c0af8#3  \
+#     --required-signer-hash 336f16c12c359e9188d0006e4a914b0b011449dc376286360d0edecc  \
+#     --change-address addr_test1qqek79kp9s6eayvg6qqxuj53fv9sz9zfmsmk9p3kp58danpj089g4nmyect2j4x4tatv08qsg09pkj84n0aj5lq6pkvs2cnthz
+#     --invalid-before 1  \
+#     --out-file tx.body
+
+    # 
+    
+    if [ "$sw_debug" -eq 0 ]; then
+        echo "Command: $cmd"
+    fi
 
     if ! eval $cmd; then
         echo "Error: Failed to build the transaction. Check the input parameters and script." >&2
@@ -420,7 +437,7 @@ build_and_submit_transaction() {
         docker exec -i "$container" rm /tmp/wallet.skey  # Clean up
         return 0
     fi
-    docker exec -i "$container" rm /tmp/wallet.skey
+    # docker exec -i "$container" rm /tmp/wallet.skey
 
     # docker cp -q "$container:/tmp/tx.signed" "/tmp/tx.signed" 
     # cat /tmp/tx.signed
@@ -614,6 +631,7 @@ create_vesting_tx() {
 }
 
 create_claiming_tx() {
+    local redeemer="$1"
     echo "Creating claiming transaction..."
     select_contract
 
@@ -648,11 +666,23 @@ create_claiming_tx() {
     
     tx_in_list+="$tx_in_collateral"
 
+    # Handle redeemer if provided
+    redeemer_json_file="/tmp/redeemer.json"
+    if (declare -f sw_use_redeemer > /dev/null && sw_use_redeemer) || [[ -n "$redeemer" ]]; then
+        generate_redeemer_json "$redeemer" "$redeemer_json_file"
+        docker cp -q "$redeemer_json_file" "$selected_node_container:$redeemer_json_file"
+        # echo "Redeemer - $redeemer - JSON: $(cat $redeemer_json_file)"
+    fi
+
     # Handle script tx-in list
     if [[ -n "$script_tx_in_list" ]]; then
         IFS=' ' read -ra script_tx_ins <<< "$script_tx_in_list"
         for script_tx_in in "${script_tx_ins[@]}"; do
-            tx_in_list+=" --tx-in $script_tx_in --tx-in-script-file /tmp/validator.plutus --tx-in-inline-datum-present --tx-in-redeemer-value {} $tx_in_collateral"
+            if (declare -f sw_use_redeemer > /dev/null && sw_use_redeemer) || [[ -n "$redeemer" ]]; then
+                tx_in_list+=" --tx-in $script_tx_in --tx-in-script-file /tmp/validator.plutus --tx-in-inline-datum-present --tx-in-redeemer-file /tmp/redeemer.json $tx_in_collateral"
+            else
+                tx_in_list+=" --tx-in $script_tx_in --tx-in-script-file /tmp/validator.plutus --tx-in-inline-datum-present --tx-in-redeemer-value {} $tx_in_collateral"
+            fi
         done
     fi
     

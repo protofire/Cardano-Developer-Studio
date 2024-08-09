@@ -99,9 +99,13 @@ generate_datum_json() {
 EOM
             ;;
         *)
-            echo "Invalid datum type: $datum" >&2
-            return 1
+            cat <<EOM > "$file_path"
+{}
+EOM
             ;;
+            # echo "Invalid datum type: $datum" >&2
+            # return 1
+            # ;;
     esac
 }
 
@@ -112,9 +116,25 @@ sw_use_datum() {
             return 0
             ;;
         *)
+            return 0
             return 1
             ;;
     esac
+}
+
+
+# Function to generate redeemer JSON
+generate_redeemer_json() {
+    local redeemer=$1
+    local file_path=$2
+    cat <<EOM > "$file_path"
+{}
+EOM
+}
+
+# Function to know if a redeemer must be used
+sw_use_redeemer() {
+    return 0
 }
 
 # Main script logic

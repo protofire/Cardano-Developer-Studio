@@ -280,8 +280,7 @@ readDecodedFromFile filePath = do
 
 -- lee datums o redeemers desde archivos exportados con OffChainHelpers.writeEncodedToFile
 -- :set -XOverloadedStrings -XTypeApplications
--- readFileDecodedAsDatum "/home/manuelpadilla/source/copyRepos/RATS-DAO/cardano-devs-scripts/files/validators/V2/StakePlusV2/CampaignDatum-HEX.json"
--- readFileDecodedAsDatum "/home/manuelpadilla/source/copyRepos/RATS-DAO/cardano-devs-scripts/files/validators/V2/exampleDatum-HEX.json"
+-- readFileDecodedAsDatum "datum-HEX.json"
 -- contents of file: {"getDatum":"d87a9fd8799fd8799f581c9925b87688572c90085d2a6bcaa7e8f4d1e631fc18a4439ea998ce3f5820d793c0edc6b088fbd76e749658a27a7cad242ec4fb63f9547bffccf2bfcbda41ff9fd8799f581cabfff883edcf7a2e38628015cebb72952e361b2c8a2262f7daf9c16e1a002dc96600ffff800000ffff"}
 -- readFileDecodedAsRedeemer
 -- contents of file: {"getRedeemer":"d87a9fd8799fd8799f581c9925b87688572c90085d2a6bcaa7e8f4d1e631fc18a4439ea998ce3f5820d793c0edc6b088fbd76e749658a27a7cad242ec4fb63f9547bffccf2bfcbda41ff9fd8799f581cabfff883edcf7a2e38628015cebb72952e361b2c8a2262f7daf9c16e1a002dc96600ffff800000ffff"}
@@ -301,8 +300,7 @@ readFileDecodedAsRedeemer filepath = do
 -- lee cualquier tipo de datum o redeemer desde archivos exportados con OffChainHelpers.writeEncodedToFile
 -- :set -XOverloadedStrings -XTypeApplications
 -- @TIPO puede ser @LedgerApiV2.Datum o cualquiera creado internamente
--- readFileDecodedAsTypedDatum @LedgerApiV2.Datum "/home/manuelpadilla/source/copyRepos/RATS-DAO/cardano-devs-scripts/files/validators/V2/StakePlusV2/CampaignDatum-HEX.json"
--- readFileDecodedAsTypedDatum @LedgerApiV2.Datum "/home/manuelpadilla/source/copyRepos/RATS-DAO/cardano-devs-scripts/files/validators/V2/exampleDatum-HEX.json"
+-- readFileDecodedAsTypedDatum @LedgerApiV2.Datum "datum-HEX.json"
 -- contents of file: {"getDatum":"d87a9fd8799fd8799f581c9925b87688572c90085d2a6bcaa7e8f4d1e631fc18a4439ea998ce3f5820d793c0edc6b088fbd76e749658a27a7cad242ec4fb63f9547bffccf2bfcbda41ff9fd8799f581cabfff883edcf7a2e38628015cebb72952e361b2c8a2262f7daf9c16e1a002dc96600ffff800000ffff"}
 
 readFileDecodedAsTypedDatum :: forall a. (LedgerApiV2.UnsafeFromData a, P.Show a) => P.String -> P.IO a
@@ -401,7 +399,7 @@ writePlutusDataToFile filepath dataToWrite = do
 -- lee archivos exportados con OffChainHelpers.writePlutusDataToFile
 
 -- :set -XOverloadedStrings -XTypeApplications
--- readFileToPlutusData "/home/manuelpadilla/source/copyRepos/RATS-DAO/cardano-devs-scripts/files/validators/V2/exampleDatum.json"
+-- readFileToPlutusData "datum.json"
 -- contents of file: {"constructor":0,"fields":[{"bytes":"abfff883edcf7a2e38628015cebb72952e361b2c8a2262f7daf9c16e"},{"constructor":0,"fields":[{"bytes":"4353"},{"bytes":"4d616e75"}]},{"int":5000000}]}
 
 readFileToPlutusData :: P.String -> P.IO PlutusTx.Data
@@ -415,8 +413,8 @@ readFileToPlutusData filepath = do
 -- :set -XOverloadedStrings -XTypeApplications
 
 -- @TIPO puede ser LedgerApiV2.Datum o LedgerApiV2.Redeemer o cualquiera creado internamente
--- readFileToPlutusDataAsTyped @TIPO "/home/manuelpadilla/source/copyRepos/RATS-DAO/cardano-devs-scripts/files/validators/V2/exampleDatum.json"
--- readFileToPlutusDataAsTyped @LedgerApiV2.Datum "/home/manuelpadilla/source/copyRepos/RATS-DAO/cardano-devs-scripts/files/validators/V2/exampleDatum.json"
+-- readFileToPlutusDataAsTyped @TIPO "datum.json"
+-- readFileToPlutusDataAsTyped @LedgerApiV2.Datum "datum.json"
 -- contents of file: {"constructor":0,"fields":[{"bytes":"abfff883edcf7a2e38628015cebb72952e361b2c8a2262f7daf9c16e"},{"constructor":0,"fields":[{"bytes":"4353"},{"bytes":"4d616e75"}]},{"int":5000000}]}
 
 readFileToPlutusDataAsTyped :: forall a. (LedgerApiV2.UnsafeFromData a, P.Show a) => P.String -> P.IO a

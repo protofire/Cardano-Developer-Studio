@@ -45,7 +45,7 @@ source "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts/menu-compose/compose.sh"
 source "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts/menu-tools/cardano-node/tools-cardano-node.sh"
 source "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts/menu-tools/cardano-wallet/tools-cardano-wallet.sh"
 source "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts/menu-tools/cardano-dbsync/tools-cardano-dbsync.sh"
-source "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts/menu-tools/cardano-dev/tools-cardano-dev.sh"
+source "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts/menu-tools/cardano-development/tools-cardano-development.sh"
 source "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts/menu-tools/ogmios/tools-ogmios.sh"
 source "$WORKSPACE_ROOT_DIR_ABSOLUTE/scripts/menu-tools/kupo/tools-kupo.sh"
 

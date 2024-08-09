@@ -54,6 +54,22 @@ select_contract() {
     echo "Selected policy: $script_cs"
 }
 
+sw_debug=0
+
+# Function to generate redeemer JSON
+generate_redeemer_json() {
+    local redeemer=$1
+    local file_path=$2
+    cat <<EOM > "$file_path"
+{"constructor":0,"fields":[]}
+EOM
+}
+
+# Function to know if a redeemer must be used
+sw_use_redeemer() {
+    return 0
+}
+
 # Main script logic
 main() {
     while true; do

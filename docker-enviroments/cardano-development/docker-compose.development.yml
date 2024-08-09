@@ -2,7 +2,7 @@
 version: "3.5"
 
 services:
-  cardano-dev:
+  cardano-development:
     build:
       context: .
       dockerfile: ./Dockerfile
