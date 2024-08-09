@@ -264,6 +264,8 @@ select_container() {
     local container_type="$1"  # e.g., 'cardano-wallet-container'
     local include_stopped="${2:-1}"  # Default to 1 (include stopped) if not provided
     local accept_local="${3:-1}"  # Default to 1 (no accept local) if not provided
+    
+    do_local_execution=0  # Default to Local
 
     echo "----"
     if [[ "$include_stopped" -eq 1 ]]; then
@@ -293,20 +295,27 @@ select_container() {
     
     while true; do
         echo "----"
-        echo "Available $container_type Containers (0 to Return Main Menu):"
+        echo "Available $container_type Containers (0 to Return Main Menu) Default: Local machine"
         for i in "${!containers[@]}"; do
             echo "$((i+1))) ${containers[i]} - ${statuses[i]}"
         done
-        read -p "Select a container [1-${#containers[@]}] or 0 to Return Main Menu: " container_choice
+        read -p "Select a container [0-${#containers[@]}]: " container_choice
         echo "----"
         
-        if [[ -z "$container_choice" ]] || ! [[ "$container_choice" =~ ^[0-9]+$ ]]; then
+       
+        if [[ -z "$container_choice" ]]; then
+            selected_container="Local Machine"
+            do_local_execution=0
+            return 0  # Return success status for Local option
+        elif  ! [[ "$container_choice" =~ ^[0-9]+$ ]]; then
             echo "Invalid selection. Please try again."
             read -p "Press Enter to continue..."
         elif [ "$container_choice" -eq 0 ]; then
             return 2  # Return with specific status to signal user requested exit
+
         elif [ "$container_choice" -ge 1 ] && [ "$container_choice" -le ${#containers[@]} ]; then
             selected_container="${containers[$container_choice-1]}"
+            do_local_execution=1
             echo "Selected container: $selected_container"
             if [[ "${statuses[$container_choice-1]}" != *"Up"* ]] && [[ "$include_stopped" -eq 1 ]]; then
                 echo "Container is stopped, starting it..."

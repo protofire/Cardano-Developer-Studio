@@ -48,7 +48,8 @@ set_node_env_variables() {
     # Ensure the database directory exists.
     if [ ! -d "$CARDANO_NODE_DB_PATH" ]; then
         echo "Creating directory for CARDANO_NODE_DB_PATH at $CARDANO_NODE_DB_PATH"
-        sudo mkdir -p "$CARDANO_NODE_DB_PATH"
+        mkdir -p "$CARDANO_NODE_DB_PATH"
+        mkdir -p "$CARDANO_NODE_DB_PATH"
     else
         echo "Directory for CARDANO_NODE_DB_PATH already exists."
     fi
@@ -73,7 +74,8 @@ set_node_env_variables() {
             # ensuring directory permissions are set appropriately.
             if [ ! -d "$SNAPSHOT_SAVE_PATH" ]; then
                 echo "Creating directory for snapshots at $SNAPSHOT_SAVE_PATH with appropriate permissions..."
-                sudo mkdir -p "$SNAPSHOT_SAVE_PATH"
+                mkdir -p "$SNAPSHOT_SAVE_PATH"
+                mkdir -p "$SNAPSHOT_SAVE_PATH"
             else
                 echo "Directory for SNAPSHOT_SAVE_PATH already exists."
             fi
