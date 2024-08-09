@@ -7,7 +7,7 @@ setWorkspaceDir
 # Specific function for container selection
 select_development_container() {
   if [[ -z "$INSIDE_DEV_CONTAINER" ]]; then
-    if ! select_container 'cardano-development'; then
+    if ! select_container 'cardano-development' 1 0; then
       return 1
     fi
   else

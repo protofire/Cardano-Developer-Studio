@@ -284,6 +284,12 @@ select_container() {
     done < <(docker ps $container_status_filter --format "{{.Names}} {{.Status}}" | grep "$container_type")
     
     if [ ${#containers[@]} -eq 0 ]; then
+        if [[ accept_local -eq 0 ]]; then
+            echo "No $container_type containers found. Running in local machine."
+            selected_container="Local Machine"
+            do_local_execution=0
+            return 0  # Return success status for Local option
+        fi
         if [[ "$include_stopped" -eq 1 ]]; then
             echo "No $container_type containers found. Please ensure they are deployed."
         else
@@ -295,7 +301,10 @@ select_container() {
     
     while true; do
         echo "----"
-        echo "Available $container_type Containers (0 to Return Main Menu) Default: Local machine"
+        echo "Available $container_type Containers (0 to Return Main Menu)"
+        if [[ accept_local -eq 0 ]]; then
+            echo "Default: Local machine"
+        fi
         for i in "${!containers[@]}"; do
             echo "$((i+1))) ${containers[i]} - ${statuses[i]}"
         done
@@ -304,9 +313,15 @@ select_container() {
         
        
         if [[ -z "$container_choice" ]]; then
-            selected_container="Local Machine"
-            do_local_execution=0
-            return 0  # Return success status for Local option
+            if [[ accept_local -eq 0 ]]; then
+
+                selected_container="Local Machine"
+                do_local_execution=0
+                return 0  # Return success status for Local option
+            else
+                echo "Invalid selection. Please try again."
+                read -p "Press Enter to continue..."
+            fi
         elif  ! [[ "$container_choice" =~ ^[0-9]+$ ]]; then
             echo "Invalid selection. Please try again."
             read -p "Press Enter to continue..."
