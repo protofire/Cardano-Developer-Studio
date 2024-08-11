@@ -1,12 +1,11 @@
 cabal-version:      3.4
 name:               cardano-helpers
 version:            0.1.0.0
-author:             Francisco Ciordia Cantarella
-maintainer:         francisco.ciordia.cantarella@gmail.com
+author:             Manuel Padilla
+maintainer:         manuelpad@gmail.com
 build-type:         Simple
-copyright:          © 2024 Francisco Ciordia Cantarella 
+copyright:          © 2024 Manuel Padilla
 license:            Apache-2.0
-
 
 common common-all
     build-depends:    base ^>=4.14.3.0
