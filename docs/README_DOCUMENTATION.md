@@ -1,7 +1,3 @@
-**Gitbook**
-
-https://protofire-docs.gitbook.io/developer-studio/
-
 ## What is included
 
 ### [Cardano Node](https://github.com/intersectmbo/cardano-node/)

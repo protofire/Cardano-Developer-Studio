@@ -4,13 +4,15 @@ This repository is the home of the Cardano Developer Studio, an all-in-one suite
 ## Table of Contents
 - [Welcome to Cardano Developer Studio](#welcome-to-cardano-developer-studio)
    - [Table of Contents](#table-of-contents)
-   - [Features](./docs/README_FEATURES.md)
-   - [Documentation](./docs/README_DOCUMENTATION.md)
-   - [What is included](./docs/README_FEATURES.md#what-is-included)
-      - [Cardano Node](./docs/README_FEATURES.md#cardano-node)
-      - [Cardano Wallet](./docs/README_FEATURES.md#cardano-wallet)
-      - [Cardano DB Sync](./docs/README_FEATURES.md#cardano-db-sync)
-      - [Script Menus and Tools](./docs/README_FEATURES.md#script-menus-and-tools)
+   - [What is included](./docs/README_DOCUMENTATION.md#what-is-included)
+      - [Cardano Node](./docs/README_DOCUMENTATION.md#cardano-node)
+      - [Cardano Wallet](./docs/README_DOCUMENTATION.md#cardano-wallet)
+      - [Cardano DB Sync](./docs/README_DOCUMENTATION.md#cardano-db-sync)
+      - [Helpers Library](./docs/README_DOCUMENTATION.md#helpers-library)
+      - [Examples Suite](./docs/README_DOCUMENTATION.md#example-suite)
+      - [Testing Suite](./docs/README_DOCUMENTATION.md#testing-suite)
+      - [Script Menus and Tools](./docs/README_DOCUMENTATION.md#script-menus-and-tools)
+      - [Dockerized Tools Ready for Use](./docs/README_DOCUMENTATION.md#dockerized-tools-ready-for-use)
    - [Why Developers Need to Experiment with These Tools](./docs/README_DOCUMENTATION.md#why-developers-need-to-experiment-with-these-tools)
    - [Installation and Setup](./docs/README_INSTALLATION.md)
       - [Why Choose the DevContainer Method?](./docs/README_INSTALLATION.md#why-choose-the-devcontainer-method)
@@ -35,8 +37,8 @@ This repository is the home of the Cardano Developer Studio, an all-in-one suite
       - [Work Inside the Container](./docs/README_VSCODE.md#work-inside-the-container)
       - [Stop the Development Container](./docs/README_VSCODE.md#stop-the-development-container)
       - [Next Steps](./docs/README_VSCODE.md#next-steps)
-   - [Initial Requirements Checks by the Script](./docs/README_SCRIPT.md#initial-requirements-checks-by-the-script)
-      - [What the Script Checks](./docs/README_SCRIPT.md#what-the-script-checks)
+   - [Initial Requirements Checks by the Script](./docs/README_VSCODE.md#initial-requirements-checks-by-the-script)
+      - [What the Script Checks](./docs/README_VSCODE.md#what-the-script-checks)
    - [Running the Main Script](./docs/README_SCRIPT.md)
       - [How to Use `run.sh`](./docs/README_SCRIPT.md#how-to-use-runsh)
       - [Main Menu](./docs/README_SCRIPT.md#main-menu)
@@ -59,10 +61,43 @@ This repository is the home of the Cardano Developer Studio, an all-in-one suite
          - [Testing Functions](./docs/README_CONTAINERS.md#testing-functions)
          - [Step-by-Step Guide to Using the Helpers Library](./docs/README_CONTAINERS.md#step-by-step-guide-to-using-the-helpers-library)
          - [Step-by-Step Guide to Using the Examples](./docs/README_CONTAINERS.md#step-by-step-guide-to-using-the-examples)
+         - [Step-by-Step Guide to deploy the examples](./docs/README_CONTAINERS.md#step-by-step-guide-to-deploy-the-examples)
+         - [Step-by-Step Guide to build and test the examples](./docs/README_CONTAINERS.md#step-by-step-guide-to-build-and-test-the-examples)
          - [Using Different Environments](./docs/README_CONTAINERS.md#using-different-environments)
-            - [With Docker Compose](./docs/README_CONTAINERS.md#with-docker-compose)
-            - [With Dev Container in VSCode](./docs/README_CONTAINERS.md#with-dev-container-in-vscode)
-   - [Contribution](./docs/README_CONTRIBUTION.md#contribution)
-   - [License](./docs/README_CONTRIBUTION.md#license)
-   - [Acknowledgements](./docs/README_CONTRIBUTION.md#acknowledgements)
+            - [Local execution](./docs/README_CONTAINERS.md#local-execution)
+            - [Using Example Container](./docs/README_CONTAINERS.md#using-example-container)
+            - [Using Developer Container](./docs/README_CONTAINERS.md#using-developer-container)
+   - [Documentation](#documentation)
+   - [Features](#features)
+   - [Contribution](#contribution)
+   - [License](#license)
+   - [Acknowledgements](#acknowledgements)
    - [Ongoing Progress](#ongoing-progress)
+
+
+
+## Documentation
+**Gitbook**
+
+https://protofire-docs.gitbook.io/developer-studio/
+
+## Features
+
+- Docker Compose configurations for easy setup and integration
+- Script tool with menus to navigate and configure and run different tools
+
+## Contribution
+
+Contributions to the Cardano Developer Studio are welcome. Whether you're looking to fix bugs, add new features, or improve documentation, your help is appreciated. Please see our contribution guidelines for more information.
+
+## License
+
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgements
+
+We express our deepest gratitude to the Cardano community for their unwavering support and valuable contributions to this project. This work is part of a funded project through Cardano Catalyst, a community-driven innovation platform. For more details on the proposal and its progress, please visit our proposal page on [IdeaScale](https://cardano.ideascale.com/c/idea/110047).
+
+## Ongoing Progress
+
+Welcome to the beginning of a journey! You're looking at the first milestone and release of our Cardano Developer Studio, where the foundations are set, but the building is far from over. As we continue to grow and evolve, expect to see an array of new menus, tools, and functionalities rolled out in future updates. Each release will be packed with features designed to make the Cardano development experience smoother, more intuitive, and increasingly powerful. Stay tuned, and grow with us, as we expand the possibilities and support you, the builders of tomorrow's Cardano ecosystem. Your feedback, ideas, and contributions will shape the road ahead, so let's forge this path together!

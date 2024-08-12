@@ -534,7 +534,7 @@ To test the examples, follow these steps:
    0) None (Exit)
    Select a folder [1-2] or 0 to exit: 
    ```
-8. **Try it by your self**:
+10. **Try it by your self**:
    ``` 
    Transaction Menu - AlwaysTrueValidator - Choose an option:
    ----

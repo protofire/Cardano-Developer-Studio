@@ -1,2 +1,0 @@
-- Docker Compose configurations for easy setup and integration
-- Script tool with menus to navigate and configure and run different tools
