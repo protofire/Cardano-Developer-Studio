@@ -1,6 +1,6 @@
 {
   "name": "Developer Studio Cabal-Haskell-Plutus",
-  "dockerComposeFile": "../../docker-enviroments/cardano-development/docker-compose.dev.yml",
+  "dockerComposeFile": "../../docker-enviroments/cardano-development/docker-compose.development.yml",
   "service": "cardano-development",
   "userEnvProbe": "loginShell",
   "workspaceFolder": "/home/plutus/workspace",
