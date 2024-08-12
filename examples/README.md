@@ -1,6 +1,6 @@
 # Plutus Contract Examples
 
-This directory contains a collection of examples for Plutus validator contracts and minting policies, along with their corresponding tests. Each contract example is organized into its own directory with the following structure:
+This directory `./examples` contains a collection of examples for Plutus validator contracts and minting policies, along with their corresponding tests. Each contract example is organized into its own directory with the following structure:
 
 - **`src/`**: Contains the Haskell source code for the validator contract or minting policy.
 - **`test/`**: Contains the Haskell source code for the tests related to the contract or policy.
