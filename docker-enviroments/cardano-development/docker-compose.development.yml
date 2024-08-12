@@ -10,10 +10,10 @@ services:
         USER: plutus
         DOCKER_GID: ${DOCKER_GID}
     volumes:
-      - ../../examples:/home/plutus/workspace
-      - ../../scripts:/home/plutus/workspace/scripts
-      - ../../.priv:/home/plutus/workspace/.priv
-      - ../../configs:/home/plutus/workspace/configs
+      - ${HOST_PROJECT_PATH}/examples:/home/plutus/workspace
+      - ${HOST_PROJECT_PATH}/scripts:/home/plutus/workspace/scripts
+      - ${HOST_PROJECT_PATH}/.priv:/home/plutus/workspace/.priv
+      - ${HOST_PROJECT_PATH}/configs:/home/plutus/workspace/configs
       - /var/run/docker.sock:/var/run/docker.sock
     restart: on-failure
     logging:
@@ -23,7 +23,7 @@ services:
         max-file: "10"
         max-size: "50m"
     entrypoint: []
-    # command: tail -f /dev/null  # Keep the container running indefinitely
-    command: /bin/bash -c "chmod +x /home/plutus/workspace/.devcontainer/scripts/on-create-container.sh && /home/plutus/workspace/.devcontainer/scripts/on-create-container.sh && tail -f /dev/null"
+    #command: tail -f /dev/null  # Keep the container running indefinitely
+    command: /bin/bash -c "sudo chmod +x /home/plutus/workspace/.devcontainer/scripts/on-create-container.sh && /home/plutus/workspace/.devcontainer/scripts/on-create-container.sh && tail -f /dev/null"
 
 
