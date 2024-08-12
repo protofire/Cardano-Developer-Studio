@@ -4,22 +4,22 @@
 - [Welcome to Cardano Developer Studio](README.md)
 
 ## Documentation
-- [Documentation](docs/README_DOCUMENTATION.md)
+- [Documentation](docs/README.md#documentation)
 
 ## Features
-- [Features](docs/README_FEATURES.md)
+- [Features](README.md#features)
   
 ## What is included
-- [Overview](docs/README_DOCUMENTATION.md#what-is-included)
-  - [Cardano Node](docs/README_DOCUMENTATION.md#cardano-node)
-  - [Cardano Wallet](docs/README_DOCUMENTATION.md#cardano-wallet)
-  - [Cardano DB Sync](docs/README_DOCUMENTATION.md#cardano-db-sync)
-  - [Helpers Library](docs/README_DOCUMENTATION.md#helpers-library)
-  - [Examples Suite](docs/README_DOCUMENTATION.md#example-suite)
-  - [Testing Suite](docs/README_DOCUMENTATION.md#testing-suite)
-  - [Script Menus and Tools](docs/README_DOCUMENTATION.md#script-menus-and-tools)
-  - [Dockerized Tools Ready for Use](docs/README_DOCUMENTATION.md#dockerized-tools-ready-for-use)
-- [Why Developers Need to Experiment with These Tools](docs/README_DOCUMENTATION.md#why-developers-need-to-experiment-with-these-tools)
+- [Overview](docs/README_INCLUDED.md#what-is-included)
+  - [Cardano Node](docs/README_INCLUDED.md#cardano-node)
+  - [Cardano Wallet](docs/README_INCLUDED.md#cardano-wallet)
+  - [Cardano DB Sync](docs/README_INCLUDED.md#cardano-db-sync)
+  - [Helpers Library](docs/README_INCLUDED.md#helpers-library)
+  - [Examples Suite](docs/README_INCLUDED.md#example-suite)
+  - [Testing Suite](docs/README_INCLUDED.md#testing-suite)
+  - [Script Menus and Tools](docs/README_INCLUDED.md#script-menus-and-tools)
+  - [Dockerized Tools Ready for Use](docs/README_INCLUDED.md#dockerized-tools-ready-for-use)
+- [Why Developers Need to Experiment with These Tools](docs/README_INCLUDED.md#why-developers-need-to-experiment-with-these-tools)
 
 ## Installation and Setup
 - [Installation and Setup](docs/README_INSTALLATION.md)
@@ -40,7 +40,7 @@
   - [Getting Started with Docker](docs/README_DOCKER.md#getting-started-with-docker)
   - [Note to Users](docs/README_DOCKER.md#note-to-users)
 
-## Development Environment
+## Using the Dev Container in VS Code
 - [Using the Development Container in VS Code](docs/README_VSCODE.md)
   - [Introduction](docs/README_VSCODE.md#introduction)
   - [Prerequisites](docs/README_VSCODE.md#prerequisites)
@@ -52,7 +52,7 @@
 - [Initial Requirements Checks by the Script](docs/README_VSCODE.md#initial-requirements-checks-by-the-script)
   - [What the Script Checks](docs/README_VSCODE.md#what-the-script-checks)
 
-## Running Scripts
+## Running CLI script
 - [Running the Main Script](docs/README_SCRIPT.md)
   - [How to Use `run.sh`](docs/README_SCRIPT.md#how-to-use-runsh)
   - [Main Menu](docs/README_SCRIPT.md#main-menu)
@@ -86,7 +86,11 @@
 
 ## Contribution
 - [Contribution](docs/README_CONTRIBUTION.md#contribution)
+
+## License
 - [License](docs/README_CONTRIBUTION.md#license)
+
+## Acknowledgements
 - [Acknowledgements](docs/README_CONTRIBUTION.md#acknowledgements)
 
 ## Ongoing Progress
