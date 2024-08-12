@@ -6,7 +6,7 @@
 
 - [Features](README.md#features)
   
-- [What is included](./docs/README_INCLUDED.md#what-is-included)
+- [What is included](./docs/README_INCLUDED.md)
   - [Cardano Node](./docs/README_INCLUDED.md#cardano-node)
   - [Cardano Wallet](./docs/README_INCLUDED.md#cardano-wallet)
   - [Cardano DB Sync](./docs/README_INCLUDED.md#cardano-db-sync)
@@ -87,10 +87,10 @@
   - [Validator CheckDate](examples/Validators/CheckDate/README.md)
   - [Validator CheckSignature](examples/Validators/CheckSignature/README.md)
 
-- [Contribution](./docs/README_CONTRIBUTION.md#contribution)
+- [Contribution](README.md#contribution)
 
-- [License](./docs/README_CONTRIBUTION.md#license)
+- [License](README.md#license)
 
-- [Acknowledgements](./docs/README_CONTRIBUTION.md#acknowledgements)
+- [Acknowledgements](README.md#acknowledgements)
 
 - [Ongoing Progress](README.md#ongoing-progress)
