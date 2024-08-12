@@ -83,8 +83,11 @@ https://protofire-docs.gitbook.io/developer-studio/
 
 ## Features
 
-- Docker Compose configurations for easy setup and integration
-- Script tool with menus to navigate and configure and run different tools
+- Docker Compose Configurations: Simplify setup and integration of all necessary tools.
+- Script Tool with Menus: Navigate, configure, and run various tools through an intuitive menu system.
+- Pre-built Smart Contract Examples: Access a suite of example contracts that demonstrate various functionalities in Plutus, helping you get started quickly.
+- Comprehensive Testing Tools: Utilize testing tools for resource consumption, transaction size analysis, and contract evaluation to ensure compliance with Plutus constraints.
+- Dockerized Tools Ready for Use: All tools are dockerized, ensuring a consistent and streamlined development environment across different setups.
 
 ## Contribution
 

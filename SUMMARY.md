@@ -3,6 +3,12 @@
 ## Introduction
 - [Welcome to Cardano Developer Studio](README.md)
 
+## Documentation
+- [Documentation](docs/README_DOCUMENTATION.md)
+
+## Features
+- [Features](docs/README_FEATURES.md)
+  
 ## What is included
 - [Overview](docs/README_DOCUMENTATION.md#what-is-included)
   - [Cardano Node](docs/README_DOCUMENTATION.md#cardano-node)
@@ -77,12 +83,6 @@
       - [Local Execution](docs/README_CONTAINERS.md#local-execution)
       - [Using Example Container](docs/README_CONTAINERS.md#using-example-container)
       - [Using Developer Container](docs/README_CONTAINERS.md#using-developer-container)
-
-## Documentation
-- [Documentation](docs/README_DOCUMENTATION.md)
-
-## Features
-- [Features](docs/README_FEATURES.md)
 
 ## Contribution
 - [Contribution](docs/README_CONTRIBUTION.md#contribution)
