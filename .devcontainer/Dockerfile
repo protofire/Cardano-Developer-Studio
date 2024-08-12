@@ -33,7 +33,6 @@ RUN apt-get install -y docker-ce docker-ce-cli containerd.io
 ARG DOCKER_GID=1001
 RUN groupmod -g ${DOCKER_GID} docker || groupadd -g ${DOCKER_GID} docker && usermod -aG docker root
 RUN newgrp docker
-
 # Install rsync
 RUN apt-get install -y rsync
 
