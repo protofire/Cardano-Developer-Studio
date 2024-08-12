@@ -69,7 +69,7 @@ This repository is the home of the Cardano Developer Studio, an all-in-one suite
             - [Local execution](./docs/README_CONTAINERS.md#local-execution)
             - [Using Example Container](./docs/README_CONTAINERS.md#using-example-container)
             - [Using Developer Container](./docs/README_CONTAINERS.md#using-developer-container)
-    - [Examples](examples/README.md)
+    - [Plutus Contract Examples](examples/README.md)
       - [Policy AlwaysFalse](examples/Policies/AlwaysFalse/README.md)
       - [Policy AlwaysTrue](examples/Policies/AlwaysTrue/README.md)
       - [Policy CheckDate](examples/Policies/CheckDate/README.md)
