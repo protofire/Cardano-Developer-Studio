@@ -11,8 +11,8 @@ This repository provides a comprehensive suite of tools and examples for develop
   - [Overview](#overview)
   - [Table of Contents](#table-of-contents)
   - [Helpers Library](#helpers-library)
-  - [Testing Functions](#testing-functions)
     - [Step-by-Step Guide: Using the Helpers Library](#step-by-step-guide-using-the-helpers-library)
+  - [Testing Functions](#testing-functions)
   - [Examples Directory](#examples-directory)
     - [Examples](#examples)
       - [Policy AlwaysFalse](#policy-alwaysfalse)
@@ -54,10 +54,6 @@ The Helpers Library, located in the directory `./examples/Helpers`  is a set of 
 - **Off-Chain Helpers:** Utilities that facilitate building transactions and communicating with the blockchain from an off-chain environment.
 - **Evaluation Helpers:** Tools for evaluating and simulating the execution of smart contracts, enabling thorough testing before deployment.
   
-## Testing Functions
-
-The project also includes functions for testing resource usage and transaction sizes. These functions help ensure that your contracts are efficient and comply with the constraints of the Plutus platform.
-
 ### Step-by-Step Guide: Using the Helpers Library
 
 To use the Helpers Library in your Haskell project, follow these steps:
@@ -82,6 +78,10 @@ To use the Helpers Library in your Haskell project, follow these steps:
    import qualified Helpers.OffChainEval              as OffChainEval
 
    ```
+
+## Testing Functions
+
+The project also includes functions for testing resource usage and transaction sizes. These functions help ensure that your contracts are efficient and comply with the constraints of the Plutus platform.
 
 ## Examples Directory
 
