@@ -4,13 +4,27 @@
 
 This repository provides a comprehensive suite of tools and examples for developing and testing Plutus smart contracts. It includes the Helpers Library to streamline development, along with a variety of example contracts and their corresponding tests. The tools and examples are designed to assist developers in understanding, building, and deploying Plutus smart contracts effectively.
 
+
+
 ## Table of Contents
 - [Plutus Smart Contracts Example and Helpers Library](#plutus-smart-contracts-example-and-helpers-library)
   - [Overview](#overview)
   - [Table of Contents](#table-of-contents)
   - [Helpers Library](#helpers-library)
+  - [Testing Functions](#testing-functions)
     - [Step-by-Step Guide: Using the Helpers Library](#step-by-step-guide-using-the-helpers-library)
   - [Examples Directory](#examples-directory)
+    - [Examples](#examples)
+      - [Policy AlwaysFalse](#policy-alwaysfalse)
+      - [Policy AlwaysTrue](#policy-alwaystrue)
+      - [Policy CheckDate](#policy-checkdate)
+      - [Policy CheckSignature](#policy-checksignature)
+      - [Policy RedeemerFT](#policy-redeemerft)
+      - [Policy RedeemerNFT](#policy-redeemernft)
+      - [Validator AlwaysFalse](#validator-alwaysfalse)
+      - [Validator AlwaysTrue](#validator-alwaystrue)
+      - [Validator CheckDate](#validator-checkdate)
+      - [Validator CheckSignature](#validator-checksignature)
     - [Step-by-Step Guide: Running the Example CLI](#step-by-step-guide-running-the-example-cli)
       - [Step-by-Step Guide to build and test the examples](#step-by-step-guide-to-build-and-test-the-examples)
       - [Step-by-Step Guide to deploy the compiled Plutus smart contracts](#step-by-step-guide-to-deploy-the-compiled-plutus-smart-contracts)
@@ -39,6 +53,10 @@ The Helpers Library, located in the directory `./examples/Helpers`  is a set of 
 - **On-Chain Helpers:** Functions that run on-chain, assisting with validations and the logic of smart contracts.
 - **Off-Chain Helpers:** Utilities that facilitate building transactions and communicating with the blockchain from an off-chain environment.
 - **Evaluation Helpers:** Tools for evaluating and simulating the execution of smart contracts, enabling thorough testing before deployment.
+  
+## Testing Functions
+
+The project also includes functions for testing resource usage and transaction sizes. These functions help ensure that your contracts are efficient and comply with the constraints of the Plutus platform.
 
 ### Step-by-Step Guide: Using the Helpers Library
 
@@ -72,6 +90,28 @@ This directory `./examples` contains a collection of examples for Plutus validat
 - **`src/`**: Contains the Haskell source code for the validator contract or minting policy.
 - **`test/`**: Contains the Haskell source code for the tests related to the contract or policy.
 - **`.cabal`**: The Cabal configuration file for building and testing the project.
+
+### Examples
+  #### Policy AlwaysFalse
+  - See README file: [Policy AlwaysFalse](examples/Policies/AlwaysFalse/README.md)
+  #### Policy AlwaysTrue
+  - See README file: [Policy AlwaysTrue](examples/Policies/AlwaysTrue/README.md)
+  #### Policy CheckDate
+  - See README file: [Policy CheckDate](examples/Policies/CheckDate/README.md)
+  #### Policy CheckSignature
+  - See README file: [Policy CheckSignature](examples/Policies/CheckSignature/README.md)
+  #### Policy RedeemerFT
+  - See README file: [Policy RedeemerFT](examples/Policies/RedeemerFT/README.md)
+  #### Policy RedeemerNFT
+  - See README file: [Policy RedeemerNFT](examples/Policies/RedeemerNFT/README.md)
+  #### Validator AlwaysFalse
+  - See README file: [Validator AlwaysFalse](examples/Validators/AlwaysFalse/README.md)
+  #### Validator AlwaysTrue
+  - See README file: [Validator AlwaysTrue](examples/Validators/AlwaysTrue/README.md)
+  #### Validator CheckDate
+  - See README file: [Validator CheckDate](examples/Validators/CheckDate/README.md)
+  #### Validator CheckSignature
+  - See README file: [Validator CheckSignature](examples/Validators/CheckSignature/README.md)
 
 ### Step-by-Step Guide: Running the Example CLI
 
