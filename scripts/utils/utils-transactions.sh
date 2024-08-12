@@ -410,7 +410,8 @@ build_and_submit_transaction() {
 #     --invalid-before 1  \
 #     --out-file tx.body
 
-    # 
+    # Initialize sw_debug with a default value, 1 ==  false
+    sw_debug=${sw_debug:-1}
     
     if [ "$sw_debug" -eq 0 ]; then
         echo "Command: $cmd"
@@ -575,18 +576,24 @@ create_generic_minting_tx() {
     pid=$(docker exec -i "$selected_node_container" cardano-cli transaction policyid --script-file /tmp/policy.plutus)
 
     mint_params=""
+    mint_values=""
     for i in "${!tokens[@]}"; do
         token_name_hex="${tokens[$i]}"
         token_amount="${amounts[$i]}"
         mint_value="$token_amount $pid.$token_name_hex"
+        mint_values+=" + $mint_value"
         if (declare -f sw_use_redeemer > /dev/null && sw_use_redeemer) || [[ -n "$redeemer" ]]; then
             mint_params+=" --mint \"$mint_value\" --mint-script-file /tmp/policy.plutus --mint-redeemer-file /tmp/redeemer.json"
         else
             mint_params+=" --mint \"$mint_value\" --mint-script-file /tmp/policy.plutus --mint-redeemer-value {}"
         fi
     done
+
+    if [[ "$action" == "mint" ]]; then
+        tx_out_list=" --tx-out \"$wallet_address + 2000000 lovelace + $mint_values\""
+    fi
     
-    build_and_submit_transaction "$selected_node_container" "$selected_wallet" "$tx_in_list" "" "$wallet_address" "$mint_params"
+    build_and_submit_transaction "$selected_node_container" "$selected_wallet" "$tx_in_list" "$tx_out_list" "$wallet_address" "$mint_params"
 }
 
 
@@ -684,9 +691,12 @@ create_claiming_tx() {
                 tx_in_list+=" --tx-in $script_tx_in --tx-in-script-file /tmp/validator.plutus --tx-in-inline-datum-present --tx-in-redeemer-value {} $tx_in_collateral"
             fi
         done
+
+        tx_out_list=" --tx-out \"$wallet_address + $total_lovelace_in_script\""
+    
     fi
     
-    build_and_submit_transaction "$selected_node_container" "$selected_wallet" "$tx_in_list" "" "$wallet_address"
+    build_and_submit_transaction "$selected_node_container" "$selected_wallet" "$tx_in_list" "$tx_out_list" "$wallet_address"
     
     read -p "Press Enter to continue..."
 
