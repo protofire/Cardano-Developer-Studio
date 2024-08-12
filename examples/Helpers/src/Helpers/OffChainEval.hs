@@ -1341,7 +1341,7 @@ resultContainsAnyOfIfCondition xs searchAny ifCondition =
         else QC.property $ null xs || DebugTrace.trace ("Unexpected errors found. Expected none. Found: " ++ P.show xs ++ ".\nLocation: " ++ GHC.prettyCallStack GHC.callStack) False
 
 -- Custom function to check budget and size conditions
-assertBudgetAndSize ::
+assertBudgetAndSize :: GHC.HasCallStack =>
     P.Either LedgerApiV2.EvaluationError LedgerApiV2.ExBudget ->
     P.Either Integer Integer ->
     Integer -> -- Max memory
@@ -1349,18 +1349,44 @@ assertBudgetAndSize ::
     Integer -> -- Max size
     Tasty.Assertion
 assertBudgetAndSize eval_err eval_size maxMem' maxCPU' maxSize' = do
-    case eval_err of
-        P.Left err -> 
-            return ()
+    (memVal, cpuVal) <- case eval_err of
+        P.Left _ -> return (Nothing, Nothing)
         P.Right (LedgerApiV2.ExBudget (LedgerApiV2.ExCPU cpu) (LedgerApiV2.ExMemory mem)) -> do
-            case TextRead.readMaybe (P.show mem) of
-                Just memInt -> Tasty.assertBool ("Memory usage exceeds limit: " ++ P.show memInt) (memInt < maxMem')
-                Nothing -> Tasty.assertFailure $ "Failed to parse ExMemory: " ++ P.show mem
-            case TextRead.readMaybe (P.show cpu) of
-                Just cpuInt -> Tasty.assertBool ("CPU usage exceeds limit: " ++ P.show cpuInt) (cpuInt < maxCPU')
-                Nothing -> Tasty.assertFailure $ "Failed to parse ExCPU: " ++ P.show cpu
+            let memInt = TextRead.readMaybe (P.show mem) :: Maybe Integer
+            let cpuInt = TextRead.readMaybe (P.show cpu) :: Maybe Integer
+            return (memInt, cpuInt)
 
-    case eval_size of
-        P.Left err -> 
-            return ()
-        P.Right size -> Tasty.assertBool ("Size exceeds limit: " ++ P.show size) (size < maxSize')
+    sizeVal <- case eval_size of
+        P.Left _ -> return Nothing
+        P.Right size -> return (Just size)
+
+    -- Helper to calculate percentage
+    let percentageOverMax :: Integer -> Integer -> P.Double
+        percentageOverMax current maxVal = (P.fromIntegral current P./ P.fromIntegral maxVal) P.* 100
+
+    -- Generate a message string with all values
+    let allValuesMsg = "Memory usage: current = " ++ maybe "N/A" P.show memVal ++ ", max = " ++ P.show maxMem'
+                       ++ " (" ++ maybe "N/A" (P.show . (`percentageOverMax` maxMem')) memVal ++ "% over max), "
+                       ++ "CPU usage: current = " ++ maybe "N/A" P.show cpuVal ++ ", max = " ++ P.show maxCPU'
+                       ++ " (" ++ maybe "N/A" (P.show . (`percentageOverMax` maxCPU')) cpuVal ++ "% over max), "
+                       ++ "Size usage: current = " ++ maybe "N/A" P.show sizeVal ++ ", max = " ++ P.show maxSize'
+                       ++ " (" ++ maybe "N/A" (P.show . (`percentageOverMax` maxSize')) sizeVal ++ "% over max)."
+
+    
+    P.putStrLn allValuesMsg
+
+    -- Perform assertions and include the detailed message in every one
+    case memVal of
+        Just mem -> Tasty.assertBool ("Memory usage exceeds limit.") (mem < maxMem')
+        -- Just mem -> Tasty.assertBool (allValuesMsg ++ " Memory usage exceeds limit.") (mem < maxMem')
+        _ -> return ()
+
+    case cpuVal of
+        Just cpu -> Tasty.assertBool ("CPU usage exceeds limit.") (cpu < maxCPU')
+        -- Just cpu -> Tasty.assertBool (allValuesMsg ++ " CPU usage exceeds limit.") (cpu < maxCPU')
+        _ -> return ()
+
+    case sizeVal of
+        Just size -> Tasty.assertBool ("Size usage exceeds limit.") (size < maxSize')
+        -- Just size -> Tasty.assertBool (allValuesMsg ++ " Size usage exceeds limit.") (size < maxSize')
+        _ -> return ()

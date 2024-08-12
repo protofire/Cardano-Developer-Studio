@@ -57,7 +57,7 @@
     - [Policies Contract Examples CLI](./docs/README_SCRIPT.md#policies-contract-examples-cli)
   - [Note to Users](./docs/README_SCRIPT.md#note-to-users-1)
 
-- [Using Docker Containers](./docs/README_CONTAINERS.md)
+- [Using the Docker Containers](./docs/README_CONTAINERS.md)
   - [Cardano Node](./docs/README_CONTAINERS.md#cardano-node)
   - [Cardano Wallet](./docs/README_CONTAINERS.md#cardano-wallet)
     - [Importing API Collections into Postman](./docs/README_CONTAINERS.md#importing-api-collections-into-postman)

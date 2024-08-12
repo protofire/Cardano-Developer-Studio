@@ -15,7 +15,7 @@ The main menu will provide you with the following options:
 - `4) Cardano DB Sync Tools`: Execute queries and interact with the Cardano DB Sync.
 - `5) Ogmios Tools`: Access tools and utilities related to Ogmios, the lightweight bridge between Cardano and your application.
 - `6) Kupo Tools`: Manage and utilize Kupo, a lightweight and scalable Cardano indexer.
-- `7) Smart Contract Plutus Development Tools`: Access a suite of tools for developing and testing Plutus smart contracts.
+- `7) Plutus Development Tools`: Access a suite of tools for developing and testing Plutus smart contracts.
 - `0) Exit`: Exits the script.
   
 ### Docker Compose Menu
