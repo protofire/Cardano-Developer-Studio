@@ -4,6 +4,8 @@ This repository is the home of the Cardano Developer Studio, an all-in-one suite
 ## Table of Contents
 - [Welcome to Cardano Developer Studio](#welcome-to-cardano-developer-studio)
    - [Table of Contents](#table-of-contents)
+   - [Documentation](#documentation)
+   - [Features](#features)
    - [What is included](./docs/README_DOCUMENTATION.md#what-is-included)
       - [Cardano Node](./docs/README_DOCUMENTATION.md#cardano-node)
       - [Cardano Wallet](./docs/README_DOCUMENTATION.md#cardano-wallet)
@@ -67,8 +69,6 @@ This repository is the home of the Cardano Developer Studio, an all-in-one suite
             - [Local execution](./docs/README_CONTAINERS.md#local-execution)
             - [Using Example Container](./docs/README_CONTAINERS.md#using-example-container)
             - [Using Developer Container](./docs/README_CONTAINERS.md#using-developer-container)
-   - [Documentation](#documentation)
-   - [Features](#features)
    - [Contribution](#contribution)
    - [License](#license)
    - [Acknowledgements](#acknowledgements)
