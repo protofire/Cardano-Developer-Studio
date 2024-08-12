@@ -45,7 +45,7 @@ This repository is the home of the Cardano Developer Studio, an all-in-one suite
       - [Cardano Node Tools Menu](#cardano-node-tools-menu)
       - [Cardano Wallet Tools Menu](#cardano-wallet-tools-menu)
       - [Cardano DB Sync Tools Menu](#cardano-db-sync-tools-menu)
-      - [Cardano Dev Tools Menu](#cardano-dev-tools-menu)
+      - [Cardano Development Tools Menu](#cardano-development-tools-menu)
          - [Validators Contract Examples CLI](#validators-contract-examples-cli)
          - [Policies Contract Examples CLI](#policies-contract-examples-cli)
       - [Note to Users](#note-to-users-1)
@@ -81,21 +81,47 @@ https://protofire-docs.gitbook.io/developer-studio/
 
 ## What is included
 
-### Cardano Node
+### [Cardano Node](https://github.com/intersectmbo/cardano-node/)
 
 Knowing how to operate a Cardano Node is fundamental for developers because it serves as your gateway to the Cardano blockchain. With it, you can create and submit transactions, query the blockchain state, and participate in consensus. For dApp development, it provides the infrastructure needed to interact with the blockchain, ensuring your applications are well-integrated within the Cardano ecosystem. Additionally, understanding the node's workings is crucial for optimizing network participation, whether for personal projects or running a stake pool.
 
-### Cardano Wallet
+### [Cardano Wallet](https://github.com/cardano-foundation/cardano-wallet/releases)
 
 The wallet is more than just a way to store cryptocurrency; it's a critical component for any application needing to handle ADA transactions or manage staking operations. For developers, integrating wallet functionalities into your applications can significantly enhance user experience by providing secure and seamless transaction capabilities. Moreover, understanding wallet operations, such as key management and wallet restoration, is vital for building robust and secure applications on the Cardano platform.
 
-### Cardano DB Sync
+### [Cardano DB Sync](https://github.com/intersectmbo/cardano-db-sync/pkgs/container/cardano-db-sync)
 
 Data is king in the modern world, and Cardano DB Sync allows developers to harness blockchain data efficiently. Whether you're building financial tools, exploring chain analytics, or creating user-friendly interfaces for interacting with the blockchain, DB Sync provides the data backbone for these applications. By enabling complex queries and easy access to historical data, it allows for deep insights into blockchain operations and user transactions. This can inform business decisions, provide analytics services, or enhance application functionalities with rich data features.
+
+### Helpers Library
+
+The **Helpers Library** is a set of utility functions designed to simplify and streamline the development of smart contracts in Plutus. These functions cover common tasks and operations needed throughout the lifecycle of a smart contract, from input validation to building complex transactions. The library is divided into modules focusing on different aspects of development:
+
+- **On-Chain Helpers**: These include functions that run on-chain, assisting with validations and the logic of smart contracts.
+- **Off-Chain Helpers**: This module contains utilities that facilitate building transactions and communicating with the blockchain from an off-chain environment.
+- **Evaluation Helpers**: Provides tools for evaluating and simulating the execution of smart contracts, enabling thorough testing before deployment.
+
+### Example Suite
+
+The **Example Suite** contains a series of example smart contracts that demonstrate how to implement various functionalities in Plutus. Each example is designed to illustrate a specific use case, providing a practical guide for contract development. These examples not only help in understanding how to write contracts in Plutus but also show how to deploy them and interact with them on the blockchain.
+
+- **Validators Examples**: Contracts that always return true or false, examples of date and signature validation, among others.
+- **Policies Examples**: Examples of minting policies, both for fungible and non-fungible tokens.
+
+### Testing Suite
+
+The **Testing Suite** includes a range of functions for testing resource usage and transaction sizes. These tests are essential to ensure that contracts comply with Plutus constraints, such as time and space limits, preventing unexpected failures when interacting with the blockchain.
+
+- **Resource Testing**: Evaluates the resource consumption of contracts, helping to optimize their execution and ensure they fit within the blockchain's limits.
+- **Transaction Size Testing**: Analyzes the size of generated transactions to ensure they do not exceed the allowed limits, preventing issues when submitting them to the network.
 
 ### Script Menus and Tools
 
 To facilitate interaction with Cardano Node, Wallet, and DB Sync, we have provided scripts that include menus for easy navigation and tool execution. 
+
+### Dockerized Tools Ready for Use
+
+All these tools are fully dockerized and ready to be used, whether you choose to run them through Visual Studio Code or any other compatible IDE. This setup ensures a streamlined and consistent development environment, allowing you to focus on building and testing your applications with ease.
 
 ## Why Developers Need to Experiment with These Tools
 
@@ -409,30 +435,29 @@ To streamline the setup and execution of the Cardano Developer Studio tools, we 
 - **Open a terminal** and navigate to the root directory of the Cardano Developer Studio project.
 - **Execute the main script** by running the following command:
 
-```
-bash scripts/run.sh
-```
-
 ### Main Menu
 
 The main menu will provide you with the following options:
 
 - `1) Docker Compose Workflow`: Initiates the Docker Compose workflow, allowing you to select which components to run (e.g., Cardano Node, Cardano Wallet).
-- `2) Cardano Node Testing and Tools`: Access tools related to the Cardano Node.
-- `3) Cardano Wallet Testing and Tools`: Manage wallets and perform wallet-related operations.
+- `2) Cardano Node Tools`: Access tools related to the Cardano Node.
+- `3) Cardano Wallet Tools`: Manage wallets and perform wallet-related operations.
 - `4) Cardano DB Sync Tools`: Execute queries and interact with the Cardano DB Sync.
-- `5) Ogmios Tools"`
-- `6) Kupo Tools`
-- `7) Smart Contract Plutus Development Tools`: Interact with the Cardano development container, build and test contracts, and execute example scripts.
-- `6) Exit`: Exits the script.
+- `5) Ogmios Tools`: Access tools and utilities related to Ogmios, the lightweight bridge between Cardano and your application.
+- `6) Kupo Tools`: Manage and utilize Kupo, a lightweight and scalable Cardano indexer.
+- `7) Smart Contract Plutus Development Tools`: Access a suite of tools for developing and testing Plutus smart contracts.
+- `0) Exit`: Exits the script.
   
 ### Docker Compose Menu
 
 After selecting the Docker Compose Workflow, you will be presented with another menu to choose the specific component you wish to run:
+
 - `1) Cardano Node`: Starts the Cardano Node container with the configured environment.
 - `2) Cardano Wallet`: Initiates the Cardano Wallet container setup.
 - `3) Cardano DB Sync`: Begins the Cardano DB Sync container.
-- `4) Return Main Menu`: Returns to the main menu.
+- `4) Ogmios and Kupo`: Starts the Ogmios and Kupo containers, providing a lightweight bridge and scalable Cardano indexer.
+- `5) Smart Contract Plutus Development`: Initiates the container environment for developing and testing Plutus smart contracts.
+- `0) Return Main Menu`: Returns to the main menu.
 
 For each selection, you will be prompted to enter environment variables such as `CARDANO_NODE_VERSION`, `CARDANO_NETWORK`, and `CARDANO_NODE_PORT`. Default values are provided, but you may customize them as needed.
 
@@ -450,11 +475,19 @@ Selecting option `2` from the main menu, you can:
 Selecting option `3` from the main menu, the wallet tools menu allows you to:
 
 - `1) Generate mnemonic`: Create a new recovery phrase.
-- `2) Generate mnemonic and create wallet`: Create a new wallet with a generated mnemonic.
-- `3) List wallets`: Display all created wallets.
-- `4) Fetch network information`: Get current network information.
-- `5) Delete this Container and Optionally Its Volumes`: To delete selected container and dependences
-- `6) Return Main Menu`: Returns to the main menu.
+- `2) Create wallet`: Generate a new wallet with a created mnemonic.
+- `3) Export Wallet to File`: Export the current wallet data to a file.
+- `4) List wallets ids and names`: Display all wallet IDs and their associated names.
+- `5) List wallets utxos`: Show the unspent transaction outputs (UTXOs) of the wallets.
+- `6) Addresses Tools`: Access tools for managing wallet addresses.
+   - `1) PKH To Address`: Convert a public key hash (PKH) to a Cardano address.
+   - `0) Return Main Menu`: Return to the main menu.
+- `7) Fetch network information`: Retrieve current network information.
+- `8) Docker Logs`: View the logs of the Docker container.
+- `9) Delete this Container and Optionally Its Volumes`: Remove the selected container and optionally its associated volumes.
+- `0) Return Main Menu`: Return to the main menu.
+
+
 
 ### Cardano DB Sync Tools Menu
 
@@ -467,7 +500,7 @@ By choosing option `4` from the main menu, the DB Sync tools menu provides:
 - `5) Delete this Container and Optionally Its Volumes`: To delete selected container and dependences
 - `6) Return Main Menu`: Returns to the main menu.
 
-### Cardano Dev Tools Menu
+### Cardano Development Tools Menu
 Selecting option `7` from the main menu, you can interact with the Cardano development container:
 
 - `1) Cabal Build All`: Build all components using Cabal inside the selected container.
@@ -749,7 +782,7 @@ To test the examples, follow these steps:
    ```
 
 2. **Choose the "Smart Contract Plutus Development Tools" option**:
-   ```bash
+   ``` 
       ----
       Main Menu - Choose an option:
       ----
@@ -765,7 +798,7 @@ To test the examples, follow these steps:
       ```
 
 3. **Choose the a Cardano Development Container or use the local execution**:
-   ```bash
+   ``` 
    ----
    Fetching list of cardano-development containers (including stopped)...
    ----
@@ -789,7 +822,7 @@ To test the examples, follow these steps:
    ```
 
 5. **Choose the desire contract type to deploy**:
-   ```bash
+   ``` 
    ----
    MENU - Selected Type of Contract
    ----
@@ -800,7 +833,7 @@ To test the examples, follow these steps:
    For this example, I select validators type.
 
 6. **Choose the desire contract to deploy**:
-   ```bash
+   ``` 
    ----
    MENU - Selected Validators Example
    ----
@@ -812,7 +845,7 @@ To test the examples, follow these steps:
    ```
    For this example, I select Always True.
 7. **Choose "deploy" option**:
-   ```bash
+   ``` 
    ----
    Main Menu - AlwaysTrueValidator - Choose an option:
    ----
@@ -846,7 +879,7 @@ To build and test the examples, follow these steps:
    ```
 
 2. **Choose the "Smart Contract Plutus Development Tools" option**:
-   ```bash
+   ``` 
       ----
       Main Menu - Choose an option:
       ----
@@ -862,7 +895,7 @@ To build and test the examples, follow these steps:
       ```
 
 3. **Choose the a Cardano Development Container or use the local execution**:
-   ```bash
+   ``` 
    ----
    Fetching list of cardano-development containers (including stopped)...
    ----
@@ -907,7 +940,7 @@ To test the examples, follow these steps:
    ```
 
 2. **Choose the "Smart Contract Plutus Development Tools" option**:
-   ```bash
+   ``` 
       ----
       Main Menu - Choose an option:
       ----
@@ -923,7 +956,7 @@ To test the examples, follow these steps:
       ```
 
 3. **Choose the a Cardano Development Container or use the local execution**:
-   ```bash
+   ``` 
    ----
    Fetching list of cardano-development containers (including stopped)...
    ----
@@ -947,7 +980,7 @@ To test the examples, follow these steps:
    ```
 
 5. **Choose the desire contract type to use**:
-   ```bash
+   ``` 
    ----
    MENU - Selected Type of Contract
    ----
@@ -958,7 +991,7 @@ To test the examples, follow these steps:
    For this example, I select validators type.
 
 6. **Choose the desire contract to use**:
-   ```bash
+   ``` 
    ----
    MENU - Selected Validators Example
    ----
@@ -970,7 +1003,7 @@ To test the examples, follow these steps:
    ```
    For this example, I select Always True.
 7. **Choose "Create Transactions" option**:
-   ```bash
+   ``` 
    ----
    Main Menu - AlwaysTrueValidator - Choose an option:
    ----
@@ -1037,7 +1070,7 @@ To test the examples, follow these steps:
    Select a folder [1-2] or 0 to exit: 
    ```
 8. **Try it by your self**:
-   ```
+   ``` 
    Transaction Menu - AlwaysTrueValidator - Choose an option:
    ----
    1) Select Container with Node - Selected: cardano-node-container-9.0.0-preprod
@@ -1062,40 +1095,31 @@ To test the examples, follow these steps:
 
 You can use different environments to work with the examples:
 
-#### With Docker Compose
+#### Local execution
+Once you have all the dependencies installed, which you can find in the [examples README](./examples/README.md), follow the steps in the [Step-by-Step Guide to Build and Test the Examples section](#step-by-step-guide-to-build-and-test-the-examples).
 
-1. **Create the container**:
-   ```bash
-   docker-compose up
-   ```
+#### Using Example Container
 
-2. **Open the terminal in the created container**:
-   ```bash
-   docker-compose exec <service-name> /bin/bash
-   ```
-
-3. **Run the script**:
-   ```bash
-   ./scripts/run.sh master Interact with the Cardano development container, build and test contracts, and execute example scripts.
-   ```
-
-#### With Dev Container in VSCode
+This container can be used as a standard Docker container or through Visual Studio Code Integration.
 
 1. **Open the example folder in VSCode**:
    ```bash
    code ./example
    ```
 
-2. **Open the terminal in the VSCode container**:
-   ```bash
-   -- Open the terminal in VSCode
-   ```
+   Details on this usage are explained in [Using the Development Container in VS Code](#using-the-development-container-in-vs-code).
 
-3. **Run the script**:
-   ```bash
-   ./scripts/run.sh master
-   ```
+This container installs all dependencies required for building, testing, and using the examples and helper libraries. You can follow the [Getting Started section](./examples/README.md?tab=readme-ov-file#getting-started) from here.
 
+#### Using Developer Container
+
+Similar to the [Example Container](#using-example-container), the main developer container can be used in the same way, as explained in the [Using the Development Container in VS Code section](#using-the-development-container-in-vs-code).
+
+Inside this container, you can use [the main script](#running-the-main-script) and deploy the development container as described in the [Docker Compose Menu](#docker-compose-menu) using the `7) Smart Contract Plutus Development` option.
+
+From there, you can explore the `./examples/` directory, [deploy](#step-by-step-guide-to-deploy-the-examples), [build and test](#step-by-step-guide-to-build-and-test-the-examples) the contract examples.
+
+Additionally, you can use it as a playground for [making transactions to mint tokens, burn tokens, and manage vesting and claim contracts](#step-by-step-guide-to-make-transactions-with-the-examples).
 
 ## Contribution
 
