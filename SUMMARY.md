@@ -1,16 +1,12 @@
 # Summary
 
-## Introduction
 - [Welcome to Cardano Developer Studio](README.md)
 
-## Documentation
 - [Documentation](README.md#documentation)
 
-## Features
 - [Features](README.md#features)
   
-## What is included
-- [Overview](docs/README_INCLUDED.md#what-is-included)
+- [What is included](docs/README_INCLUDED.md#what-is-included)
   - [Cardano Node](docs/README_INCLUDED.md#cardano-node)
   - [Cardano Wallet](docs/README_INCLUDED.md#cardano-wallet)
   - [Cardano DB Sync](docs/README_INCLUDED.md#cardano-db-sync)
@@ -21,7 +17,6 @@
   - [Dockerized Tools Ready for Use](docs/README_INCLUDED.md#dockerized-tools-ready-for-use)
 - [Why Developers Need to Experiment with These Tools](docs/README_INCLUDED.md#why-developers-need-to-experiment-with-these-tools)
 
-## Installation and Setup
 - [Installation and Setup](docs/README_INSTALLATION.md)
   - [Why Choose the DevContainer Method?](docs/README_INSTALLATION.md#why-choose-the-devcontainer-method)
   - [Updating Bash and Installing Package Managers](docs/README_INSTALLATION.md#updating-bash-and-installing-package-managers)
@@ -33,14 +28,12 @@
     - [On Windows](docs/README_INSTALLATION.md#on-windows)
     - [On Mac](docs/README_INSTALLATION.md#on-mac)
 
-## Docker Containers
 - [Docker Containers](docs/README_DOCKER.md)
   - [What is Docker?](docs/README_DOCKER.md#what-is-docker)
   - [Why Docker for Our Scripts?](docs/README_DOCKER.md#why-docker-for-our-scripts)
   - [Getting Started with Docker](docs/README_DOCKER.md#getting-started-with-docker)
   - [Note to Users](docs/README_DOCKER.md#note-to-users)
 
-## Using the Dev Container in VS Code
 - [Using the Development Container in VS Code](docs/README_VSCODE.md)
   - [Introduction](docs/README_VSCODE.md#introduction)
   - [Prerequisites](docs/README_VSCODE.md#prerequisites)
@@ -52,7 +45,6 @@
 - [Initial Requirements Checks by the Script](docs/README_VSCODE.md#initial-requirements-checks-by-the-script)
   - [What the Script Checks](docs/README_VSCODE.md#what-the-script-checks)
 
-## Running CLI script
 - [Running the Main Script](docs/README_SCRIPT.md)
   - [How to Use `run.sh`](docs/README_SCRIPT.md#how-to-use-runsh)
   - [Main Menu](docs/README_SCRIPT.md#main-menu)
@@ -65,7 +57,6 @@
     - [Policies Contract Examples CLI](docs/README_SCRIPT.md#policies-contract-examples-cli)
   - [Note to Users](docs/README_SCRIPT.md#note-to-users-1)
 
-## Using Docker Containers
 - [Using Docker Containers](docs/README_CONTAINERS.md)
   - [Cardano Node](docs/README_CONTAINERS.md#cardano-node)
   - [Cardano Wallet](docs/README_CONTAINERS.md#cardano-wallet)
@@ -84,8 +75,7 @@
       - [Using Example Container](docs/README_CONTAINERS.md#using-example-container)
       - [Using Developer Container](docs/README_CONTAINERS.md#using-developer-container)
 
-## Plutus Contract Examples
-- [Examples](examples/README.md)
+- [Plutus Contract Examples](examples/README.md)
   - [Policy AlwaysFalse](examples/Policies/AlwaysFalse/README.md)
   - [Policy AlwaysTrue](examples/Policies/AlwaysTrue/README.md)
   - [Policy CheckDate](examples/Policies/CheckDate/README.md)
@@ -97,14 +87,10 @@
   - [Validator CheckDate](examples/Validators/CheckDate/README.md)
   - [Validator CheckSignature](examples/Validators/CheckSignature/README.md)
 
-## Contribution
 - [Contribution](docs/README_CONTRIBUTION.md#contribution)
 
-## License
 - [License](docs/README_CONTRIBUTION.md#license)
 
-## Acknowledgements
 - [Acknowledgements](docs/README_CONTRIBUTION.md#acknowledgements)
 
-## Ongoing Progress
 - [Ongoing Progress](README.md#ongoing-progress)
