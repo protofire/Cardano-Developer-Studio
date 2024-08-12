@@ -4,7 +4,7 @@
 - [Welcome to Cardano Developer Studio](README.md)
 
 ## Documentation
-- [Documentation](docs/README.md#documentation)
+- [Documentation](README.md#documentation)
 
 ## Features
 - [Features](README.md#features)
