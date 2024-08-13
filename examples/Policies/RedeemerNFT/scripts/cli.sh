@@ -77,11 +77,11 @@ main() {
         show_main_menu
         case $main_choice in
             1)
-              if [[ $DEV_CONTAINER != 0  ]]; then
-                cd examples
+              if [[ -z $INSIDE_DEV_CONTAINER  ]]; then
+                cd $WORKSPACE_ROOT_DIR_ABSOLUTE/examples
               fi
                 test_smart_contract
-              if [[ $DEV_CONTAINER != 0  ]]; then
+              if [[ -z $INSIDE_DEV_CONTAINER  ]]; then
                 cd -
               fi
             ;;
@@ -110,13 +110,13 @@ main() {
                     continue
                 fi
 
-                if [[ $DEV_CONTAINER != 0  ]]; then
-                    cd examples
+                if [[ -z $INSIDE_DEV_CONTAINER  ]]; then
+                    cd $WORKSPACE_ROOT_DIR_ABSOLUTE/examples
                 fi
 
                 deploy_smart_contract "$select_utxo_parameter"
 
-                if [[ $DEV_CONTAINER != 0  ]]; then
+                if [[ -z $INSIDE_DEV_CONTAINER  ]]; then
                     cd -
                 fi
                 
@@ -151,6 +151,7 @@ main() {
                             fi
                         ;;
                         6)
+                            sw_debug=0
                             if [[ -z "$selected_node_container" || -z "$selected_scripts" || -z "$selected_wallet" ]]; then
                                 echo "Please select the container, smart contract files, and wallet files first."
                                 read -p "Press Enter to continue..."
@@ -159,6 +160,7 @@ main() {
                             fi
                         ;;
                         7)
+                            sw_debug=0
                             if [[ -z "$selected_node_container" || -z "$selected_scripts" || -z "$selected_wallet" ]]; then
                                 echo "Please select the container, smart contract files, and wallet files first."
                                 read -p "Press Enter to continue..."

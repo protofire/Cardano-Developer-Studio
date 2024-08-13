@@ -56,7 +56,9 @@ cardano_dev_tools() {
               cd $WORKSPACE_ROOT_DIR_ABSOLUTE/examples
             fi
             cabal test all
-            cd -
+            if [[ -z $INSIDE_DEV_CONTAINER  ]]; then
+              cd -
+            fi
           fi
           read -p "Press Enter to continue..."
           ;;

@@ -590,7 +590,7 @@ create_generic_minting_tx() {
     done
 
     if [[ "$action" == "mint" ]]; then
-        tx_out_list=" --tx-out \"$wallet_address + 2000000 lovelace + $mint_values\""
+        tx_out_list=" --tx-out \"$wallet_address + 2000000 lovelace $mint_values\""
     fi
     
     build_and_submit_transaction "$selected_node_container" "$selected_wallet" "$tx_in_list" "$tx_out_list" "$wallet_address" "$mint_params"

@@ -76,22 +76,22 @@ main() {
         show_main_menu
         case $main_choice in
             1)
-              if [[ $DEV_CONTAINER != 0  ]]; then
-                cd examples
+              if [[ -z $INSIDE_DEV_CONTAINER  ]]; then
+                cd $WORKSPACE_ROOT_DIR_ABSOLUTE/examples
               fi
                 test_smart_contract
-              if [[ $DEV_CONTAINER != 0  ]]; then
+              if [[ -z $INSIDE_DEV_CONTAINER  ]]; then
                 cd -
               fi
             ;;
             2)
-                if [[ $DEV_CONTAINER != 0  ]]; then
-                    cd examples
+                if [[ -z $INSIDE_DEV_CONTAINER  ]]; then
+                    cd $WORKSPACE_ROOT_DIR_ABSOLUTE/examples
                 fi
 
                 deploy_smart_contract
 
-                if [[ $DEV_CONTAINER != 0  ]]; then
+                if [[ -z $INSIDE_DEV_CONTAINER  ]]; then
                     cd -
                 fi
             ;;
