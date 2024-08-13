@@ -64,9 +64,7 @@
   - [Cardano DB Sync](./docs/README_CONTAINERS.md#cardano-db-sync) 
   - [Plutus Development Tools](./docs/README_CONTAINERS.md#plutus-development-toolkit)
     
-- [Plutus Smart Contracts Examples and Helpers Library](./examples/README.md#plutus-smart-contracts-examples-and-helpers-library)
-  - [Overview](./examples/README.md#overview)
-  - [Table of Contents](./examples/README.md#table-of-contents)
+- [Plutus Smart Contracts Examples and Helpers Library](./examples/README.md)
   - [Helpers Library](./examples/README.md#helpers-library)
     - [Step-by-Step Guide: Using the Helpers Library](./examples/README.md#step-by-step-guide-using-the-helpers-library)
   - [Testing Functions](./examples/README.md#testing-functions)
