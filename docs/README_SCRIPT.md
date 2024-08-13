@@ -57,8 +57,6 @@ Selecting option `3` from the main menu, the wallet tools menu allows you to:
 - `9) Delete this Container and Optionally Its Volumes`: Remove the selected container and optionally its associated volumes.
 - `0) Return Main Menu`: Return to the main menu.
 
-
-
 ### Cardano DB Sync Tools Menu
 
 By choosing option `4` from the main menu, the DB Sync tools menu provides:

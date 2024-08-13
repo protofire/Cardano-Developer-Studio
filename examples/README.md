@@ -1,13 +1,11 @@
-# Plutus Smart Contracts Example and Helpers Library
+# Plutus Smart Contracts Examples and Helpers Library
 
 ## Overview
 
 This repository provides a comprehensive suite of tools and examples for developing and testing Plutus smart contracts. It includes the Helpers Library to streamline development, along with a variety of example contracts and their corresponding tests. The tools and examples are designed to assist developers in understanding, building, and deploying Plutus smart contracts effectively.
 
-
-
 ## Table of Contents
-- [Plutus Smart Contracts Example and Helpers Library](#plutus-smart-contracts-example-and-helpers-library)
+- [Plutus Smart Contracts Examples and Helpers Library](#plutus-smart-contracts-examples-and-helpers-library)
   - [Overview](#overview)
   - [Table of Contents](#table-of-contents)
   - [Helpers Library](#helpers-library)
@@ -25,11 +23,8 @@ This repository provides a comprehensive suite of tools and examples for develop
       - [Validator AlwaysTrue](#validator-alwaystrue)
       - [Validator CheckDate](#validator-checkdate)
       - [Validator CheckSignature](#validator-checksignature)
-    - [Step-by-Step Guide: Running the Example CLI](#step-by-step-guide-running-the-example-cli)
-      - [Step-by-Step Guide to build and test the examples](#step-by-step-guide-to-build-and-test-the-examples)
-      - [Step-by-Step Guide to deploy the compiled Plutus smart contracts](#step-by-step-guide-to-deploy-the-compiled-plutus-smart-contracts)
-      - [Step-by-Step Guide to make transactions with the examples](#step-by-step-guide-to-make-transactions-with-the-examples)
-    - [Using Other Environments](#using-other-environments)
+    - [Choosing your Environment](#choosing-your-environment)
+      - [Docker Compose](#docker-compose)
       - [Dev Container](#dev-container)
       - [Local Execution](#local-execution)
       - [Set Up Local Environment for Compiling Cabal Projects](#set-up-local-environment-for-compiling-cabal-projects)
@@ -42,7 +37,11 @@ This repository provides a comprehensive suite of tools and examples for develop
         - [Install GHC, Cabal, and HLS](#install-ghc-cabal-and-hls)
         - [Update cabal](#update-cabal)
         - [Download and install stylish-haskell](#download-and-install-stylish-haskell)
-      - [Using a Terminal](#using-a-terminal)
+    - [Step-by-Step Guide: Running the Example CLI](#step-by-step-guide-running-the-example-cli)
+      - [Step-by-Step Guide to build and test the examples](#step-by-step-guide-to-build-and-test-the-examples)
+      - [Step-by-Step Guide to deploy the compiled Plutus smart contracts](#step-by-step-guide-to-deploy-the-compiled-plutus-smart-contracts)
+      - [Step-by-Step Guide to make transactions with the examples](#step-by-step-guide-to-make-transactions-with-the-examples)
+    - [Using a Terminal](#using-a-terminal)
   - [Requirements](#requirements)
 
 
@@ -113,7 +112,186 @@ This directory `./examples` contains a collection of examples for Plutus validat
   #### Validator CheckSignature
   - See README file: [Validator CheckSignature](./Validators/CheckSignature/README.md)
 
+### Choosing your Environment
+
+You can work with the examples using different environments according to your preference and setup.
+
+Each of these environments allows you to work with the examples in a way that best suits your development workflow, ensuring flexibility whether you're using a containerized setup or working locally.
+
+#### Docker Compose
+
+You must have the **Plutus Developments Container** created and running.
+
+Follow this instructions to set-up:
+- [COMPOSE](../docs/README_SCRIPT.md#docker-compose-menu)
+- [USE] (../docs/README_SCRIPT.md#plutus-development-tools)
+
+Once the container is created you can work from a **terminal** outside or within the container and run the main **CLI** script bash.
+
+See [Step-by-Step Guide: Running the Example CLI](#step-by-step-guide-running-the-example-cli)
+
+But you also can perform commands in the terminal within the container: [Using a Terminal](#using-a-terminal)
+
+#### Dev Container
+
+The `devcontainer/` folder within the examples directory provides a ready-to-use development environment. This folder contains all the necessary configurations for using Visual Studio Code's Remote - Containers extension. This setup offers a consistent and isolated development environment for your Plutus smart contract projects.
+
+To use the Dev Container:
+1. **Open the examples folder in Visual Studio Code:**
+   ```
+   code ./examples
+   ```
+   
+2. **Use the Dev Container:**
+   - Follow the instructions in [Using the Development Container in VS Code](../docs/README_VSCODE.md) to start the container.
+   - Once inside the Dev Container, you can work with the examples directly from the **terminal** ([Using a Terminal](#using-a-terminal)), or use the integrated **CLI** script bash to manage tasks like compiling, testing, deploying, and making transactions with the examples as described in the [Running the Example CLI](#step-by-step-guide-running-the-example-cli) using the `7) Smart Contract Plutus Development` option.
+
+#### Local Execution
+
+If you prefer to work locally without containers:
+1. **Install all dependencies locally** as detailed in the [Set Up Local Environment for Compiling Cabal Projects](#set-up-local-environment-for-compiling-cabal-projects) section.
+2. **Use the terminal** to compile, test, and deploy the examples. Follow the steps provided in the [Using a Terminal](#using-a-terminal)
+
+#### Set Up Local Environment for Compiling Cabal Projects
+
+##### Set environment variables
+
+```
+export USER=$(whoami)
+export HOME=/home/${USER}
+export TEMPDir=/tmp
+
+#x86_64 | arm64
+export BUILDARCH=x86_64
+export IOKH_LIBSECP251_GIT_REV=ac83be33d0956faf6b7f61a60ab524ef7d6a473a
+export IOHK_LIBSODIUM_GIT_REV=66f017f16633f2060db25e17c170c2afa0f2a8a1
+export CABAL_VERSION=3.6.2.0
+export GHC_VERSION=8.10.7
+export HLS_VERSION=1.7.0.0
+```
+
+##### Install necessary packages
+
+```
+sudo add-apt-repository ppa:rmescandon/yq -y
+sudo apt-get update -y
+sudo apt-get install -y \
+    curl \
+    xz-utils \
+    automake \
+    build-essential \
+    g++ \
+    git \
+    jq \
+    libicu-dev \
+    libffi-dev \
+    libgmp-dev \
+    libncursesw5 \
+    libpq-dev \
+    libssl-dev \
+    libsystemd-dev \
+    libtinfo-dev \
+    libtool \
+    make \
+    pkg-config \
+    tmux \
+    wget \
+    zlib1g-dev \
+    libreadline-dev \
+    llvm \
+    libnuma-dev \
+    software-properties-common \
+    sudo \
+    vim \
+    apt-file \
+    liblzma-dev \
+    lsof \
+    grep \
+    coreutils \
+    yq
+```
+
+##### Download in Temp fodler
+
+```
+cd $TEMPDir
+```
+
+##### Clone and install secp256k1
+
+```
+git clone https://github.com/bitcoin-core/secp256k1
+cd secp256k1
+git fetch --all --tags
+git checkout ${IOKH_LIBSECP251_GIT_REV}
+./autogen.sh
+./configure --prefix=/usr --enable-module-schnorrsig --enable-experimental
+make
+sudo make install
+cd ..
+rm -rf secp256k1
+
+```
+
+###### Clone and install libsodium
+
+```
+git clone https://github.com/input-output-hk/libsodium.git
+cd libsodium
+git fetch --all --tags
+git checkout ${IOHK_LIBSODIUM_GIT_REV}
+./autogen.sh
+./configure --prefix=/usr
+make
+sudo make install
+cd ..
+rm -rf libsodium
+```
+
+##### Download ghcup
+
+```
+wget --secure-protocol=TLSv1_2 https://downloads.haskell.org/~ghcup/${BUILDARCH}-linux-ghcup
+chmod +x ${BUILDARCH}-linux-ghcup
+mv ${BUILDARCH}-linux-ghcup ${HOME}/.ghcup/bin/ghcup
+```
+
+##### Install GHC, Cabal, and HLS
+
+```
+sudo -u ${USER} -H bash -c "
+    mkdir -p ${HOME}/.ghcup/bin
+    export PATH=${PATH}:${HOME}/.ghcup/bin
+    ghcup config set cache true
+    ghcup install ghc ${GHC_VERSION}
+    ghcup install cabal ${CABL_VERSION}
+    ghcup set ghc ${GHC_VERSION}
+    ghcup install hls ${HLS_VERSION}
+    ghcup config set cache false
+    ghcup gc --cache
+"
+```
+
+##### Update cabal
+
+```
+sudo -u ${USER} -H bash -c "
+    export PATH=${PATH}:${HOME}/.ghcup/bin:${HOME}/.cabal/bin
+    cabal update
+"
+```
+
+##### Download and install stylish-haskell
+
+```
+wget https://github.com/rober-m/stylish-haskell/releases/download/v0.14.3.0/x86_64-linux-stylish-haskell
+chmod +x x86_64-linux-stylish-haskell
+sudo mv x86_64-linux-stylish-haskell /usr/bin/stylish-haskell
+```
+
 ### Step-by-Step Guide: Running the Example CLI
+
+Once you have a running **Plutus Development Container** or a local machine ready, follow this steps to run the master **CLI** script bash and follow the menus on the terminal.
 
 #### Step-by-Step Guide to build and test the examples
 
@@ -434,173 +612,9 @@ To test the examples, follow these steps:
    7) Create Burning Transaction
    ```
 
-### Using Other Environments
+### Using a Terminal
 
-You can work with the examples using different environments according to your preference and setup:
-
-Each of these environments allows you to work with the examples in a way that best suits your development workflow, ensuring flexibility whether you're using a containerized setup or working locally.
-
-#### Dev Container
-
-The `devcontainer/` folder within the examples directory provides a ready-to-use development environment. This folder contains all the necessary configurations for using Visual Studio Code's Remote - Containers extension. This setup offers a consistent and isolated development environment for your Plutus smart contract projects.
-
-To use the Dev Container:
-1. **Open the examples folder in Visual Studio Code:**
-   ```
-   code ./examples
-   ```
-   
-2. **Use the Dev Container:**
-   - Follow the instructions in [Using the Development Container in VS Code](../docs/README_VSCODE.md) to start the container.
-   - Once inside the Dev Container, you can work with the examples directly from the **terminal** ([Using a Terminal](#using-a-terminal)), or use the integrated **Master CLI** script to manage tasks like compiling, testing, deploying, and making transactions with the examples as described in the [Running the Example CLI](#step-by-step-guide-running-the-example-cli) using the `7) Smart Contract Plutus Development` option.
-
-#### Local Execution
-
-If you prefer to work locally without containers:
-1. **Install all dependencies locally** as detailed in the [Set Up Local Environment for Compiling Cabal Projects](#set-up-local-environment-for-compiling-cabal-projects) section.
-2. **Use the terminal** to compile, test, and deploy the examples. Follow the steps provided in the [Using a Terminal](#using-a-terminal)
-
-#### Set Up Local Environment for Compiling Cabal Projects
-
-##### Set environment variables
-
-```
-export USER=$(whoami)
-export HOME=/home/${USER}
-export TEMPDir=/tmp
-
-#x86_64 | arm64
-export BUILDARCH=x86_64
-export IOKH_LIBSECP251_GIT_REV=ac83be33d0956faf6b7f61a60ab524ef7d6a473a
-export IOHK_LIBSODIUM_GIT_REV=66f017f16633f2060db25e17c170c2afa0f2a8a1
-export CABAL_VERSION=3.6.2.0
-export GHC_VERSION=8.10.7
-export HLS_VERSION=1.7.0.0
-```
-
-##### Install necessary packages
-
-```
-sudo add-apt-repository ppa:rmescandon/yq -y
-sudo apt-get update -y
-sudo apt-get install -y \
-    curl \
-    xz-utils \
-    automake \
-    build-essential \
-    g++ \
-    git \
-    jq \
-    libicu-dev \
-    libffi-dev \
-    libgmp-dev \
-    libncursesw5 \
-    libpq-dev \
-    libssl-dev \
-    libsystemd-dev \
-    libtinfo-dev \
-    libtool \
-    make \
-    pkg-config \
-    tmux \
-    wget \
-    zlib1g-dev \
-    libreadline-dev \
-    llvm \
-    libnuma-dev \
-    software-properties-common \
-    sudo \
-    vim \
-    apt-file \
-    liblzma-dev \
-    lsof \
-    grep \
-    coreutils \
-    yq
-```
-
-##### Download in Temp fodler
-
-```
-cd $TEMPDir
-```
-
-##### Clone and install secp256k1
-
-```
-git clone https://github.com/bitcoin-core/secp256k1
-cd secp256k1
-git fetch --all --tags
-git checkout ${IOKH_LIBSECP251_GIT_REV}
-./autogen.sh
-./configure --prefix=/usr --enable-module-schnorrsig --enable-experimental
-make
-sudo make install
-cd ..
-rm -rf secp256k1
-
-```
-
-###### Clone and install libsodium
-
-```
-git clone https://github.com/input-output-hk/libsodium.git
-cd libsodium
-git fetch --all --tags
-git checkout ${IOHK_LIBSODIUM_GIT_REV}
-./autogen.sh
-./configure --prefix=/usr
-make
-sudo make install
-cd ..
-rm -rf libsodium
-```
-
-##### Download ghcup
-
-```
-wget --secure-protocol=TLSv1_2 https://downloads.haskell.org/~ghcup/${BUILDARCH}-linux-ghcup
-chmod +x ${BUILDARCH}-linux-ghcup
-mv ${BUILDARCH}-linux-ghcup ${HOME}/.ghcup/bin/ghcup
-```
-
-##### Install GHC, Cabal, and HLS
-
-```
-sudo -u ${USER} -H bash -c "
-    mkdir -p ${HOME}/.ghcup/bin
-    export PATH=${PATH}:${HOME}/.ghcup/bin
-    ghcup config set cache true
-    ghcup install ghc ${GHC_VERSION}
-    ghcup install cabal ${CABL_VERSION}
-    ghcup set ghc ${GHC_VERSION}
-    ghcup install hls ${HLS_VERSION}
-    ghcup config set cache false
-    ghcup gc --cache
-"
-```
-
-##### Update cabal
-
-```
-sudo -u ${USER} -H bash -c "
-    export PATH=${PATH}:${HOME}/.ghcup/bin:${HOME}/.cabal/bin
-    cabal update
-"
-```
-
-##### Download and install stylish-haskell
-
-```
-wget https://github.com/rober-m/stylish-haskell/releases/download/v0.14.3.0/x86_64-linux-stylish-haskell
-chmod +x x86_64-linux-stylish-haskell
-sudo mv x86_64-linux-stylish-haskell /usr/bin/stylish-haskell
-```
-
-
-#### Using a Terminal
-
-To use each contract example, follow these steps:
+Once you have a local machine ready with all required dependences (or within a **Plutus Development Container**), follow these steps:
 
 1. **Build the project**:
    ```bash
@@ -623,7 +637,6 @@ If you want to build and test all the examples in the `examples` directory, you 
   ```bash
   cabal test all
   ```
-
 
 
 
