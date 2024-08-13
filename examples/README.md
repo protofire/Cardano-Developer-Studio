@@ -11,23 +11,22 @@ This repository provides a comprehensive suite of tools and examples for develop
   - [Helpers Library](#helpers-library)
     - [Step-by-Step Guide: Using the Helpers Library](#step-by-step-guide-using-the-helpers-library)
   - [Testing Functions](#testing-functions)
-  - [Examples Directory](#examples-directory)
-    - [Examples](#examples)
-      - [Policy AlwaysFalse](#policy-alwaysfalse)
-      - [Policy AlwaysTrue](#policy-alwaystrue)
-      - [Policy CheckDate](#policy-checkdate)
-      - [Policy CheckSignature](#policy-checksignature)
-      - [Policy RedeemerFT](#policy-redeemerft)
-      - [Policy RedeemerNFT](#policy-redeemernft)
-      - [Validator AlwaysFalse](#validator-alwaysfalse)
-      - [Validator AlwaysTrue](#validator-alwaystrue)
-      - [Validator CheckDate](#validator-checkdate)
-      - [Validator CheckSignature](#validator-checksignature)
-    - [Choosing your Environment](#choosing-your-environment)
-      - [Docker Compose](#docker-compose)
-      - [Dev Container](#dev-container)
-      - [Local Execution](#local-execution)
-      - [Set Up Local Environment for Compiling Cabal Projects](#set-up-local-environment-for-compiling-cabal-projects)
+  - [Examples](#examples)
+    - [Policy AlwaysFalse](#policy-alwaysfalse)
+    - [Policy AlwaysTrue](#policy-alwaystrue)
+    - [Policy CheckDate](#policy-checkdate)
+    - [Policy CheckSignature](#policy-checksignature)
+    - [Policy RedeemerFT](#policy-redeemerft)
+    - [Policy RedeemerNFT](#policy-redeemernft)
+    - [Validator AlwaysFalse](#validator-alwaysfalse)
+    - [Validator AlwaysTrue](#validator-alwaystrue)
+    - [Validator CheckDate](#validator-checkdate)
+    - [Validator CheckSignature](#validator-checksignature)
+  - [Choosing your Environment](#choosing-your-environment)
+    - [Docker Compose](#docker-compose)
+    - [Dev Container](#dev-container)
+    - [Local Execution](#local-execution)
+      - [Set Up Local Environment](#set-up-local-environment)
         - [Set environment variables](#set-environment-variables)
         - [Install necessary packages](#install-necessary-packages)
         - [Download in Temp fodler](#download-in-temp-fodler)
@@ -37,10 +36,11 @@ This repository provides a comprehensive suite of tools and examples for develop
         - [Install GHC, Cabal, and HLS](#install-ghc-cabal-and-hls)
         - [Update cabal](#update-cabal)
         - [Download and install stylish-haskell](#download-and-install-stylish-haskell)
-    - [Step-by-Step Guide: Running the Example CLI](#step-by-step-guide-running-the-example-cli)
-      - [Step-by-Step Guide to build and test the examples](#step-by-step-guide-to-build-and-test-the-examples)
-      - [Step-by-Step Guide to deploy the compiled Plutus smart contracts](#step-by-step-guide-to-deploy-the-compiled-plutus-smart-contracts)
-      - [Step-by-Step Guide to make transactions with the examples](#step-by-step-guide-to-make-transactions-with-the-examples)
+  - [Step-by-Step Guides](#step-by-step-guides)
+    - [Running the Example CLI](#running-the-example-cli)
+      - [Build and test the examples](#build-and-test-the-examples)
+      - [Deploy the compiled Plutus smart contracts](#deploy-the-compiled-plutus-smart-contracts)
+      - [Make transactions with the examples](#make-transactions-with-the-examples)
     - [Using a Terminal](#using-a-terminal)
   - [Requirements](#requirements)
 
@@ -82,57 +82,54 @@ To use the Helpers Library in your Haskell project, follow these steps:
 
 The project also includes functions for testing resource usage and transaction sizes. These functions help ensure that your contracts are efficient and comply with the constraints of the Plutus platform.
 
-## Examples Directory
+## Examples
 
-This directory `./examples` contains a collection of examples for Plutus validator contracts and minting policies, along with their corresponding tests. Each contract example is organized into its own directory with the following structure:
+The directory `./examples` contains a collection of examples for Plutus validator contracts and minting policies, along with their corresponding tests. Each contract example is organized into its own directory with the following structure:
 
 - **`src/`**: Contains the Haskell source code for the validator contract or minting policy.
 - **`test/`**: Contains the Haskell source code for the tests related to the contract or policy.
 - **`.cabal`**: The Cabal configuration file for building and testing the project.
 
-### Examples
-  #### Policy AlwaysFalse
-  - See README file: [Policy AlwaysFalse](./Policies/AlwaysFalse/README.md)
-  #### Policy AlwaysTrue
-  - See README file: [Policy AlwaysTrue](./Policies/AlwaysTrue/README.md)
-  #### Policy CheckDate
-  - See README file: [Policy CheckDate](./Policies/CheckDate/README.md)
-  #### Policy CheckSignature
-  - See README file: [Policy CheckSignature](./Policies/CheckSignature/README.md)
-  #### Policy RedeemerFT
-  - See README file: [Policy RedeemerFT](./Policies/RedeemerFT/README.md)
-  #### Policy RedeemerNFT
-  - See README file: [Policy RedeemerNFT](./Policies/RedeemerNFT/README.md)
-  #### Validator AlwaysFalse
-  - See README file: [Validator AlwaysFalse](./Validators/AlwaysFalse/README.md)
-  #### Validator AlwaysTrue
-  - See README file: [Validator AlwaysTrue](./Validators/AlwaysTrue/README.md)
-  #### Validator CheckDate
-  - See README file: [Validator CheckDate](./Validators/CheckDate/README.md)
-  #### Validator CheckSignature
-  - See README file: [Validator CheckSignature](./Validators/CheckSignature/README.md)
+### Policy AlwaysFalse
+- See README file: [Policy AlwaysFalse](./Policies/AlwaysFalse/README.md)
+### Policy AlwaysTrue
+- See README file: [Policy AlwaysTrue](./Policies/AlwaysTrue/README.md)
+### Policy CheckDate
+- See README file: [Policy CheckDate](./Policies/CheckDate/README.md)
+### Policy CheckSignature
+- See README file: [Policy CheckSignature](./Policies/CheckSignature/README.md)
+### Policy RedeemerFT
+- See README file: [Policy RedeemerFT](./Policies/RedeemerFT/README.md)
+### Policy RedeemerNFT
+- See README file: [Policy RedeemerNFT](./Policies/RedeemerNFT/README.md)
+### Validator AlwaysFalse
+- See README file: [Validator AlwaysFalse](./Validators/AlwaysFalse/README.md)
+### Validator AlwaysTrue
+- See README file: [Validator AlwaysTrue](./Validators/AlwaysTrue/README.md)
+### Validator CheckDate
+- See README file: [Validator CheckDate](./Validators/CheckDate/README.md)
+### Validator CheckSignature
+- See README file: [Validator CheckSignature](./Validators/CheckSignature/README.md)
 
-### Choosing your Environment
+## Choosing your Environment
 
 You can work with the examples using different environments according to your preference and setup.
 
 Each of these environments allows you to work with the examples in a way that best suits your development workflow, ensuring flexibility whether you're using a containerized setup or working locally.
 
-#### Docker Compose
+### Docker Compose
 
 You must have the **Plutus Developments Container** created and running.
 
 Follow this instructions to set-up:
 - [COMPOSE](../docs/README_SCRIPT.md#docker-compose-menu)
-- [USE] (../docs/README_SCRIPT.md#plutus-development-tools)
+- [USE](../docs/README_SCRIPT.md#plutus-development-tools)
 
-Once the container is created you can work from a **terminal** outside or within the container and run the main **CLI** script bash.
-
-See [Step-by-Step Guide: Running the Example CLI](#step-by-step-guide-running-the-example-cli)
+Once the container is created you can work from a **terminal** outside or within the container and run the main **CLI** script bash. See [Running the Example CLI](#running-the-example-cli)
 
 But you also can perform commands in the terminal within the container: [Using a Terminal](#using-a-terminal)
 
-#### Dev Container
+### Dev Container
 
 The `devcontainer/` folder within the examples directory provides a ready-to-use development environment. This folder contains all the necessary configurations for using Visual Studio Code's Remote - Containers extension. This setup offers a consistent and isolated development environment for your Plutus smart contract projects.
 
@@ -144,15 +141,15 @@ To use the Dev Container:
    
 2. **Use the Dev Container:**
    - Follow the instructions in [Using the Development Container in VS Code](../docs/README_VSCODE.md) to start the container.
-   - Once inside the Dev Container, you can work with the examples directly from the **terminal** ([Using a Terminal](#using-a-terminal)), or use the integrated **CLI** script bash to manage tasks like compiling, testing, deploying, and making transactions with the examples as described in the [Running the Example CLI](#step-by-step-guide-running-the-example-cli) using the `7) Smart Contract Plutus Development` option.
+   - Once inside the Dev Container, you can work with the examples directly from the **terminal** ([Using a Terminal](#using-a-terminal)), or use the integrated **CLI** script bash to manage tasks like compiling, testing, deploying, and making transactions with the examples as described in the [Running the Example CLI](#running-the-example-cli) using the `7) Smart Contract Plutus Development` option.
 
-#### Local Execution
+### Local Execution
 
 If you prefer to work locally without containers:
-1. **Install all dependencies locally** as detailed in the [Set Up Local Environment for Compiling Cabal Projects](#set-up-local-environment-for-compiling-cabal-projects) section.
+1. **Install all dependencies locally** as detailed in the [Set Up Local Environment](#set-up-local-environment) section.
 2. **Use the terminal** to compile, test, and deploy the examples. Follow the steps provided in the [Using a Terminal](#using-a-terminal)
 
-#### Set Up Local Environment for Compiling Cabal Projects
+#### Set Up Local Environment
 
 ##### Set environment variables
 
@@ -289,11 +286,13 @@ chmod +x x86_64-linux-stylish-haskell
 sudo mv x86_64-linux-stylish-haskell /usr/bin/stylish-haskell
 ```
 
-### Step-by-Step Guide: Running the Example CLI
+## Step-by-Step Guides
+
+### Running the Example CLI
 
 Once you have a running **Plutus Development Container** or a local machine ready, follow this steps to run the master **CLI** script bash and follow the menus on the terminal.
 
-#### Step-by-Step Guide to build and test the examples
+#### Build and test the examples
 
 To build and test the examples, follow these steps:
 1. **Run the main script**:
@@ -354,7 +353,7 @@ To build and test the examples, follow these steps:
    ```
    If you seen a green OK in every test, everything's gonna be alright.
 
-#### Step-by-Step Guide to deploy the compiled Plutus smart contracts
+#### Deploy the compiled Plutus smart contracts
 
 To test the examples, follow these steps:
 1. **Run the main script**:
@@ -451,7 +450,7 @@ The JSON snippet you provided represents a data structure typically used in Card
       - **`{Contract Name}.plutus`**:The JSON object you provided is a representation of a Plutus V2 script in Cardano, encoded in CBOR (Concise Binary Object Representation) format.
       - **`{Contract Name}.symbol`**:The JSON object you provided is a representation of a unique identifier associated with a native token or a specific type of asset on the blockchain generated for this policy contract.
 
-#### Step-by-Step Guide to make transactions with the examples
+#### Make transactions with the examples
 
 To test the examples, follow these steps:
 1. **Run the main script**:
