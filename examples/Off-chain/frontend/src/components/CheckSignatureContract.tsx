@@ -201,7 +201,6 @@ export default function Stablecoin() {
           <input
             className="py-1 px-2 ml-3 border border-zinc-700 rounded"
             type="string"
-            // value={deadline}
             onChange={(e) => {
               // console.log(e);
               if (!e) return;
@@ -212,7 +211,7 @@ export default function Stablecoin() {
           <div className="w-full flex flex-row justify-center gap-4 mt-2">
           <button
             onClick={deployContract}
-            disabled={!lucid || !wAddr || !amountToLock}
+            disabled={!lucid || !wAddr || !amountToLock || !signature}
             className="w-full rounded-lg p-3 text-zinc-50 bg-zinc-800 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)] disabled:active:translate-y-0 disabled:active:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:bg-zinc-200  disabled:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:text-zinc-600 font-quicksand font-bold active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)]"
           >
             {" "}
