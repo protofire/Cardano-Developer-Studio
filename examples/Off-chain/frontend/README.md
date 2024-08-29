@@ -1,38 +1,51 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Example Web Application Using Blockfrost
 
-## Getting Started
+This project is an example web application that connects to the Cardano blockchain using the Blockfrost API. It is designed to help developers understand how to integrate Blockfrost into their own applications.
 
-First, run the development server:
+## What is Blockfrost?
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+Blockfrost is a robust API that allows developers to interact with the Cardano blockchain. It provides access to various blockchain data, enabling you to query information about blocks, transactions, addresses, and more. 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+To use Blockfrost, you'll need to generate an API key, which will authenticate your requests to the Blockfrost service.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Generating a Blockfrost API Key
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+To use this example application, you'll need to generate a Blockfrost API key for the `preview` environment:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+1. Visit the [Blockfrost Dashboard](https://blockfrost.io/dashboard).
+2. Create an account if you haven't already.
+3. Navigate to the "Projects" section.
+4. Create a new project and select the `preview` network.
+5. Copy the API key provided by Blockfrost.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+## Setup Instructions
 
-## Learn More
+To run the example application, follow these steps:
 
-To learn more about Next.js, take a look at the following resources:
+1. **Navigate to the project directory**:
+   ```bash
+   cd examples/Off-chain/frontend/
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. **Install the required dependencies**:
+   ```bash
+   npm install
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+3. **Configure the Blockfrost API key**:
+   - Open the `.env` file located in the `Examples/Off-chain/frontend/` directory.
+   - Find the line that starts with `BLOCKFROST_PREVIEW=`.
+   - Paste your Blockfrost API key after the equals sign, like so:
+     ```env
+     BLOCKFROST_PREVIEW=your_blockfrost_api_key_here
+     ```
 
-## Deploy on Vercel
+4. **Run the development server**:
+   ```bash
+   npm run dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+5. **Access the web application**:
+   - Open your web browser and go to [http://localhost:3000](http://localhost:3000).
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Now you can interact with the Cardano blockchain through the example application. 
