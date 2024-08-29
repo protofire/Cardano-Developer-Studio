@@ -52,6 +52,7 @@
   * [Examples](examples/README.md#examples)
   * [Choosing your Environment](examples/README.md#choosing-your-environment)
   * [Step-by-Step Guides](examples/README.md#step-by-step-guides)
+  * [Frontend](./examples/README.md#frontend)
   * [Requirements](examples/README.md#requirements)
 * [Contribution](README.md#contribution)
 * [License](README.md#license)

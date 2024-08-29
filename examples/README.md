@@ -2,9 +2,14 @@
 
 ## Overview
 
-This repository provides a comprehensive suite of tools and examples for developing and testing Plutus smart contracts. It includes the Helpers Library to streamline development, along with a variety of example contracts and their corresponding tests. The tools and examples are designed to assist developers in understanding, building, and deploying Plutus smart contracts effectively.
+This repository provides a comprehensive suite of tools and examples for
+developing and testing Plutus smart contracts. It includes the Helpers Library
+to streamline development, along with a variety of example contracts and their
+corresponding tests. The tools and examples are designed to assist developers in
+understanding, building, and deploying Plutus smart contracts effectively.
 
 ## Table of Contents
+
 - [Plutus Smart Contracts Examples and Helpers Library](#plutus-smart-contracts-examples-and-helpers-library)
   - [Overview](#overview)
   - [Table of Contents](#table-of-contents)
@@ -42,32 +47,47 @@ This repository provides a comprehensive suite of tools and examples for develop
       - [Deploy the compiled Plutus smart contracts](#deploy-the-compiled-plutus-smart-contracts)
       - [Make transactions with the examples](#make-transactions-with-the-examples)
     - [Using a Terminal](#using-a-terminal)
+  - [Frontend](#frontend)
+    - [Overview](#overview-1)
+    - [Key Features](#key-features)
+    - [Project](#project)
+    - [Additional Configuration](#additional-configuration)
   - [Requirements](#requirements)
-
 
 ## Helpers Library
 
-The Helpers Library, located in the directory `./examples/Helpers`  is a set of utility functions designed to simplify and streamline the development of smart contracts in Plutus. These functions cover common tasks and operations needed throughout the lifecycle of a smart contract, from input validation to building complex transactions. The library is divided into modules focusing on different aspects of development:
+The Helpers Library, located in the directory `./examples/Helpers` is a set of
+utility functions designed to simplify and streamline the development of smart
+contracts in Plutus. These functions cover common tasks and operations needed
+throughout the lifecycle of a smart contract, from input validation to building
+complex transactions. The library is divided into modules focusing on different
+aspects of development:
 
-- **On-Chain Helpers:** Functions that run on-chain, assisting with validations and the logic of smart contracts.
-- **Off-Chain Helpers:** Utilities that facilitate building transactions and communicating with the blockchain from an off-chain environment.
-- **Evaluation Helpers:** Tools for evaluating and simulating the execution of smart contracts, enabling thorough testing before deployment.
-  
+- **On-Chain Helpers:** Functions that run on-chain, assisting with validations
+  and the logic of smart contracts.
+- **Off-Chain Helpers:** Utilities that facilitate building transactions and
+  communicating with the blockchain from an off-chain environment.
+- **Evaluation Helpers:** Tools for evaluating and simulating the execution of
+  smart contracts, enabling thorough testing before deployment.
+
 ### Step-by-Step Guide: Using the Helpers Library
 
 To use the Helpers Library in your Haskell project, follow these steps:
 
-1. **Add the Helpers Library as a dependency in your Cabal file and cabal project**:
+1. **Add the Helpers Library as a dependency in your Cabal file and cabal
+   project**:
+
    ```cabal
    -- *.cabal
 
    build-depends: cardano-helpers
    ```
+
    ```cabal
    -- *.project
 
-   packages: 
-       Helpers 
+   packages:
+       Helpers
    ```
 
 2. **Import the Helpers Library in your Haskell code**:
@@ -75,79 +95,129 @@ To use the Helpers Library in your Haskell project, follow these steps:
    import qualified Helpers.OnChain                   as OnChainHelpers -- OnChain is just possibilities
    import qualified Helpers.OffChain                  as OffChainHelpers
    import qualified Helpers.OffChainEval              as OffChainEval
-
    ```
 
 ## Testing Functions
 
-The project also includes functions for testing resource usage and transaction sizes. These functions help ensure that your contracts are efficient and comply with the constraints of the Plutus platform.
+The project also includes functions for testing resource usage and transaction
+sizes. These functions help ensure that your contracts are efficient and comply
+with the constraints of the Plutus platform.
 
 ## Examples
 
-The directory `./examples` contains a collection of examples for Plutus validator contracts and minting policies, along with their corresponding tests. Each contract example is organized into its own directory with the following structure:
+The directory `./examples` contains a collection of examples for Plutus
+validator contracts and minting policies, along with their corresponding tests.
+Each contract example is organized into its own directory with the following
+structure:
 
-- **`src/`**: Contains the Haskell source code for the validator contract or minting policy.
-- **`test/`**: Contains the Haskell source code for the tests related to the contract or policy.
-- **`.cabal`**: The Cabal configuration file for building and testing the project.
+- **`src/`**: Contains the Haskell source code for the validator contract or
+  minting policy.
+- **`test/`**: Contains the Haskell source code for the tests related to the
+  contract or policy.
+- **`.cabal`**: The Cabal configuration file for building and testing the
+  project.
 
 ### Policy AlwaysFalse
+
 - See README file: [Policy AlwaysFalse](./Policies/AlwaysFalse/README.md)
+
 ### Policy AlwaysTrue
+
 - See README file: [Policy AlwaysTrue](./Policies/AlwaysTrue/README.md)
+
 ### Policy CheckDate
+
 - See README file: [Policy CheckDate](./Policies/CheckDate/README.md)
+
 ### Policy CheckSignature
+
 - See README file: [Policy CheckSignature](./Policies/CheckSignature/README.md)
+
 ### Policy RedeemerFT
+
 - See README file: [Policy RedeemerFT](./Policies/RedeemerFT/README.md)
+
 ### Policy RedeemerNFT
+
 - See README file: [Policy RedeemerNFT](./Policies/RedeemerNFT/README.md)
+
 ### Validator AlwaysFalse
+
 - See README file: [Validator AlwaysFalse](./Validators/AlwaysFalse/README.md)
+
 ### Validator AlwaysTrue
+
 - See README file: [Validator AlwaysTrue](./Validators/AlwaysTrue/README.md)
+
 ### Validator CheckDate
+
 - See README file: [Validator CheckDate](./Validators/CheckDate/README.md)
+
 ### Validator CheckSignature
-- See README file: [Validator CheckSignature](./Validators/CheckSignature/README.md)
+
+- See README file:
+  [Validator CheckSignature](./Validators/CheckSignature/README.md)
 
 ## Choosing your Environment
 
-You can work with the examples using different environments according to your preference and setup.
+You can work with the examples using different environments according to your
+preference and setup.
 
-Each of these environments allows you to work with the examples in a way that best suits your development workflow, ensuring flexibility whether you're using a containerized setup or working locally.
+Each of these environments allows you to work with the examples in a way that
+best suits your development workflow, ensuring flexibility whether you're using
+a containerized setup or working locally.
 
 ### Docker Compose
 
 You must have the **Plutus Developments Container** created and running.
 
 Follow this instructions to set-up:
+
 - [COMPOSE](../docs/README_SCRIPT.md#docker-compose-menu)
 - [USE](../docs/README_SCRIPT.md#plutus-development-tools)
 
-Once the container is created you can work from a **terminal** outside or within the container and run the main **CLI** script bash. See [Running the Example CLI](#running-the-example-cli)
+Once the container is created you can work from a **terminal** outside or within
+the container and run the main **CLI** script bash. See
+[Running the Example CLI](#running-the-example-cli)
 
-But you also can perform commands in the terminal within the container: [Using a Terminal](#using-a-terminal)
+But you also can perform commands in the terminal within the container:
+[Using a Terminal](#using-a-terminal)
 
 ### Dev Container
 
-The `devcontainer/` folder within the examples directory provides a ready-to-use development environment. This folder contains all the necessary configurations for using Visual Studio Code's Remote - Containers extension. This setup offers a consistent and isolated development environment for your Plutus smart contract projects.
+The `devcontainer/` folder within the examples directory provides a ready-to-use
+development environment. This folder contains all the necessary configurations
+for using Visual Studio Code's Remote - Containers extension. This setup offers
+a consistent and isolated development environment for your Plutus smart contract
+projects.
 
 To use the Dev Container:
+
 1. **Open the examples folder in Visual Studio Code:**
+
    ```
    code ./examples
    ```
-   
+
 2. **Use the Dev Container:**
-   - Follow the instructions in [Using the Development Container in VS Code](../docs/README_VSCODE.md) to start the container.
-   - Once inside the Dev Container, you can work with the examples directly from the **terminal** ([Using a Terminal](#using-a-terminal)), or use the integrated **CLI** script bash to manage tasks like compiling, testing, deploying, and making transactions with the examples as described in the [Running the Example CLI](#running-the-example-cli) using the `7) Smart Contract Plutus Development` option.
+   - Follow the instructions in
+     [Using the Development Container in VS Code](../docs/README_VSCODE.md) to
+     start the container.
+   - Once inside the Dev Container, you can work with the examples directly from
+     the **terminal** ([Using a Terminal](#using-a-terminal)), or use the
+     integrated **CLI** script bash to manage tasks like compiling, testing,
+     deploying, and making transactions with the examples as described in the
+     [Running the Example CLI](#running-the-example-cli) using the
+     `7) Smart Contract Plutus Development` option.
 
 ### Local Execution
 
 If you prefer to work locally without containers:
-1. **Install all dependencies locally** as detailed in the [Set Up Local Environment](#set-up-local-environment) section.
-2. **Use the terminal** to compile, test, and deploy the examples. Follow the steps provided in the [Using a Terminal](#using-a-terminal)
+
+1. **Install all dependencies locally** as detailed in the
+   [Set Up Local Environment](#set-up-local-environment) section.
+2. **Use the terminal** to compile, test, and deploy the examples. Follow the
+   steps provided in the [Using a Terminal](#using-a-terminal)
 
 #### Set Up Local Environment
 
@@ -227,7 +297,6 @@ make
 sudo make install
 cd ..
 rm -rf secp256k1
-
 ```
 
 ###### Clone and install libsodium
@@ -290,45 +359,52 @@ sudo mv x86_64-linux-stylish-haskell /usr/bin/stylish-haskell
 
 ### Running the Example CLI
 
-Once you have a running **Plutus Development Container** or a local machine ready, follow this steps to run the master **CLI** script bash and follow the menus on the terminal.
+Once you have a running **Plutus Development Container** or a local machine
+ready, follow this steps to run the master **CLI** script bash and follow the
+menus on the terminal.
 
 #### Build and test the examples
 
 To build and test the examples, follow these steps:
+
 1. **Run the main script**:
+
    ```bash
    ./script/run.sh
    ```
 
 2. **Choose the "Plutus Development Tools" option**:
-   ``` 
-      ----
-      Main Menu - Choose an option:
-      ----
-      1) Docker Compose Workflow
-      2) Cardano Node Tools
-      3) Cardano Wallet Tools
-      4) Cardano DB Sync Tools
-      5) Ogmios Tools
-      6) Kupo Tools
-      7) Plutus Development Tools
-      0) Exit
-      Enter your choice or 0 to exit: 7
-      ```
+
+   ```
+   ----
+   Main Menu - Choose an option:
+   ----
+   1) Docker Compose Workflow
+   2) Cardano Node Tools
+   3) Cardano Wallet Tools
+   4) Cardano DB Sync Tools
+   5) Ogmios Tools
+   6) Kupo Tools
+   7) Plutus Development Tools
+   0) Exit
+   Enter your choice or 0 to exit: 7
+   ```
 
 3. **Choose the a Cardano Development Container or use the local execution**:
-   ``` 
-   
+
+   ```
    Fetching list of cardano-development containers (including stopped)...
-   
+
    Available cardano-development Containers (0 to Return Main Menu)
    Default: Local machine
    1) cardano-development-cardano-development-1 - Up 17 seconds
-   Select a container [0-1]:  
+   Select a container [0-1]:
    ```
+
    For this example, I select run it i my local machine.
 
 4. **Choose the "Cabal Build All" option**:
+
    ```cabal
    ----
    MENU - Selected container: Local Machine
@@ -356,40 +432,45 @@ To build and test the examples, follow these steps:
 #### Deploy the compiled Plutus smart contracts
 
 To test the examples, follow these steps:
+
 1. **Run the main script**:
+
    ```bash
    ./script/run.sh
    ```
 
 2. **Choose the "Plutus Development Tools" option**:
-   ``` 
-      ----
-      Main Menu - Choose an option:
-      ----
-      1) Docker Compose Workflow
-      2) Cardano Node Tools
-      3) Cardano Wallet Tools
-      4) Cardano DB Sync Tools
-      5) Ogmios Tools
-      6) Kupo Tools
-      7) Plutus Development Tools
-      0) Exit
-      Enter your choice or 0 to exit: 7
-      ```
+
+   ```
+   ----
+   Main Menu - Choose an option:
+   ----
+   1) Docker Compose Workflow
+   2) Cardano Node Tools
+   3) Cardano Wallet Tools
+   4) Cardano DB Sync Tools
+   5) Ogmios Tools
+   6) Kupo Tools
+   7) Plutus Development Tools
+   0) Exit
+   Enter your choice or 0 to exit: 7
+   ```
 
 3. **Choose the a Cardano Development Container or use the local execution**:
-  ``` 
-   
-   Fetching list of cardano-development containers (including stopped)...
-   
-   Available cardano-development Containers (0 to Return Main Menu)
-   Default: Local machine
-   1) cardano-development-cardano-development-1 - Up 17 seconds
-   Select a container [0-1]:  
-  ```
-   For this example, I select run it i my local machine.
+
+```
+Fetching list of cardano-development containers (including stopped)...
+
+Available cardano-development Containers (0 to Return Main Menu)
+Default: Local machine
+1) cardano-development-cardano-development-1 - Up 17 seconds
+Select a container [0-1]:
+```
+
+For this example, I select run it i my local machine.
 
 4. **Choose the "Run Example Contract CLI" option**:
+
    ```cabal
    ----
    MENU - Selected container: Local Machine
@@ -402,7 +483,8 @@ To test the examples, follow these steps:
    ```
 
 5. **Choose the desire contract type to deploy**:
-   ``` 
+
+   ```
    ----
    MENU - Selected Type of Contract
    ----
@@ -410,10 +492,11 @@ To test the examples, follow these steps:
    2) Validators Contract Examples CLI
    Enter your choice or 0 to exit: 2
    ```
+
    For this example, I select validators type.
 
 6. **Choose the desire contract to deploy**:
-   ``` 
+   ```
    ----
    MENU - Selected Validators Example
    ----
@@ -425,7 +508,8 @@ To test the examples, follow these steps:
    ```
    For this example, I select Always True.
 7. **Choose "deploy" option**:
-   ``` 
+
+   ```
    ----
    Main Menu - AlwaysTrueValidator - Choose an option:
    ----
@@ -435,58 +519,78 @@ To test the examples, follow these steps:
    0) Exit
    Enter your choice or 0 to exit: 2
    ```
-   Then will ask you for the folder name of the deploy.
-   Finally, the deploy will be find in:
+
+   Then will ask you for the folder name of the deploy. Finally, the deploy will
+   be find in:
 
    - **`Cardano-Developer-Studio/export/{Contract Name}Validator/{Folder Name}/`**
-      - **`{Contract Name}-HEX.addr`**:
-The JSON snippet you provided represents a data structure typically used in Cardano or similar blockchain platforms to describe an address's credentials. 
-      - **`{Contract Name}-Mainnet.addr`**: Is a Bech32-encoded Cardano address of the contract for Mainnet.
-      - **`{Contract Name}-Testnet.addr`**: Is a Bech32-encoded Cardano address of the contract for Testnet.
-      - **`{Contract Name}.hash`**: This byte sequence could be used in scripts or smart contracts, where it might represent an identifier, a reference to a particular key or script, or other data that has been encoded into a compact format.
-      - **`{Contract Name}.plutus`**:The JSON object you provided is a representation of a Plutus V2 script in Cardano, encoded in CBOR (Concise Binary Object Representation) format. 
-   
+
+     - **`{Contract Name}-HEX.addr`**: The JSON snippet you provided represents
+       a data structure typically used in Cardano or similar blockchain
+       platforms to describe an address's credentials.
+     - **`{Contract Name}-Mainnet.addr`**: Is a Bech32-encoded Cardano address
+       of the contract for Mainnet.
+     - **`{Contract Name}-Testnet.addr`**: Is a Bech32-encoded Cardano address
+       of the contract for Testnet.
+     - **`{Contract Name}.hash`**: This byte sequence could be used in scripts
+       or smart contracts, where it might represent an identifier, a reference
+       to a particular key or script, or other data that has been encoded into a
+       compact format.
+     - **`{Contract Name}.plutus`**:The JSON object you provided is a
+       representation of a Plutus V2 script in Cardano, encoded in CBOR (Concise
+       Binary Object Representation) format.
+
    - **`Cardano-Developer-Studio/export/{Contract Name}Policy/{Folder Name}/`**
-      - **`{Contract Name}.plutus`**:The JSON object you provided is a representation of a Plutus V2 script in Cardano, encoded in CBOR (Concise Binary Object Representation) format.
-      - **`{Contract Name}.symbol`**:The JSON object you provided is a representation of a unique identifier associated with a native token or a specific type of asset on the blockchain generated for this policy contract.
+     - **`{Contract Name}.plutus`**:The JSON object you provided is a
+       representation of a Plutus V2 script in Cardano, encoded in CBOR (Concise
+       Binary Object Representation) format.
+     - **`{Contract Name}.symbol`**:The JSON object you provided is a
+       representation of a unique identifier associated with a native token or a
+       specific type of asset on the blockchain generated for this policy
+       contract.
 
 #### Make transactions with the examples
 
 To test the examples, follow these steps:
+
 1. **Run the main script**:
+
    ```bash
    ./script/run.sh
    ```
 
 2. **Choose the "Plutus Development Tools" option**:
-   ``` 
-      ----
-      Main Menu - Choose an option:
-      ----
-      1) Docker Compose Workflow
-      2) Cardano Node Tools
-      3) Cardano Wallet Tools
-      4) Cardano DB Sync Tools
-      5) Ogmios Tools
-      6) Kupo Tools
-      7) Plutus Development Tools
-      0) Exit
-      Enter your choice or 0 to exit: 7
-      ```
+
+   ```
+   ----
+   Main Menu - Choose an option:
+   ----
+   1) Docker Compose Workflow
+   2) Cardano Node Tools
+   3) Cardano Wallet Tools
+   4) Cardano DB Sync Tools
+   5) Ogmios Tools
+   6) Kupo Tools
+   7) Plutus Development Tools
+   0) Exit
+   Enter your choice or 0 to exit: 7
+   ```
 
 3. **Choose the a Cardano Development Container or use the local execution**:
-   ``` 
-   
+
+   ```
    Fetching list of cardano-development containers (including stopped)...
-   
+
    Available cardano-development Containers (0 to Return Main Menu)
    Default: Local machine
    1) cardano-development-cardano-development-1 - Up 17 seconds
-   Select a container [0-1]:  
+   Select a container [0-1]:
    ```
+
    For this example, I select run it i my local machine.
 
 4. **Choose the "Run Example Contract CLI" option**:
+
    ```cabal
    ----
    MENU - Selected container: Local Machine
@@ -499,7 +603,8 @@ To test the examples, follow these steps:
    ```
 
 5. **Choose the desire contract type to use**:
-   ``` 
+
+   ```
    ----
    MENU - Selected Type of Contract
    ----
@@ -507,10 +612,11 @@ To test the examples, follow these steps:
    2) Validators Contract Examples CLI
    Enter your choice or 0 to exit: 2
    ```
+
    For this example, I select validators type.
 
 6. **Choose the desire contract to use**:
-   ``` 
+   ```
    ----
    MENU - Selected Validators Example
    ----
@@ -522,7 +628,7 @@ To test the examples, follow these steps:
    ```
    For this example, I select Always True.
 7. **Choose "Create Transactions" option**:
-   ``` 
+   ```
    ----
    Main Menu - AlwaysTrueValidator - Choose an option:
    ----
@@ -533,25 +639,29 @@ To test the examples, follow these steps:
    Enter your choice or 0 to exit: 3
    ```
 8. **Choose "Create Transactions" option**:
+
    ```
    ----
    Transaction Menu - AlwaysTrueValidator - Choose an option:
    ----
-   1) Select Container with Node - Selected: 
-   2) Select Smart Contract Files - Selected: 
-   3) Select Wallet Files - Selected: 
+   1) Select Container with Node - Selected:
+   2) Select Smart Contract Files - Selected:
+   3) Select Wallet Files - Selected:
    4) UTXOs in Wallet
    5) UTXOs in Smart Contracts
    6) Create UTXO for Collateral in Wallet
    7) Create Vesting Transaction
    8) Create Claiming Transaction
    0) Return to Main Menu
-   Enter your choice or 0 to return: 
+   Enter your choice or 0 to return:
    ```
-   In this instance, you will need to have a Node container running, along with a wallet and the smart contract deployed beforehand.
 
-9. **Select the node container, the smart contract and wallet files**:
-   For the node selection:
+   In this instance, you will need to have a Node container running, along with
+   a wallet and the smart contract deployed beforehand.
+
+9. **Select the node container, the smart contract and wallet files**: For the
+   node selection:
+
    ```
    Enter your choice or 0 to return: 1
    Selecting container with node...
@@ -560,10 +670,11 @@ To test the examples, follow these steps:
    ----
    Available cardano-node-container Containers (0 to Return Main Menu)
    1) cardano-node-container-9.0.0-preprod - Up 19 hours (healthy)
-   Select a container [0-1]: 
+   Select a container [0-1]:
    ```
-   
+
    For the smart contract selection:
+
    ```
    Enter your choice or 0 to return: 2
    Selecting smart contract files...
@@ -573,10 +684,11 @@ To test the examples, follow these steps:
    1) 2024-08-09-20-11
    2) 2024-08-09-20-46
    0) None (Exit)
-   Select a folder [1-2] or 0 to exit:  
+   Select a folder [1-2] or 0 to exit:
    ```
-   
+
    For the smart contract selection:
+
    ```
    Enter your choice or 0 to return: 3
    Selecting wallet files...
@@ -586,36 +698,43 @@ To test the examples, follow these steps:
    1) test1
    2) test2
    0) None (Exit)
-   Select a folder [1-2] or 0 to exit: 
+   Select a folder [1-2] or 0 to exit:
    ```
-10. **Try it by your self**:
-   ``` 
-   Transaction Menu - AlwaysTrueValidator - Choose an option:
-   ----
-   1) Select Container with Node - Selected: cardano-node-container-9.0.0-preprod
-   2) Select Smart Contract Files - Selected: 2024-08-09-20-11
-   3) Select Wallet Files - Selected: test1
-   4) UTXOs in Wallet
-   5) UTXOs in Smart Contracts
-   6) Create UTXO for Collateral in Wallet
-   7) Create Vesting Transaction
-   8) Create Claiming Transaction
-   0) Return to Main Menu
-   Enter your choice or 0 to return: 
-   ```
-   Explore by your self the options in this menu. In it you can Vest and Claim the contracts and consults por the UTxOs in it.
 
-   Note: In policies case, the options 6) and 7) are changed for:
-   ```
-   6) Create Minting Transaction
-   7) Create Burning Transaction
-   ```
+10. **Try it by your self**:
+
+```
+Transaction Menu - AlwaysTrueValidator - Choose an option:
+----
+1) Select Container with Node - Selected: cardano-node-container-9.0.0-preprod
+2) Select Smart Contract Files - Selected: 2024-08-09-20-11
+3) Select Wallet Files - Selected: test1
+4) UTXOs in Wallet
+5) UTXOs in Smart Contracts
+6) Create UTXO for Collateral in Wallet
+7) Create Vesting Transaction
+8) Create Claiming Transaction
+0) Return to Main Menu
+Enter your choice or 0 to return:
+```
+
+Explore by your self the options in this menu. In it you can Vest and Claim the
+contracts and consults por the UTxOs in it.
+
+Note: In policies case, the options 6) and 7) are changed for:
+
+```
+6) Create Minting Transaction
+7) Create Burning Transaction
+```
 
 ### Using a Terminal
 
-Once you have a local machine ready with all required dependences (or within a **Plutus Development Container**), follow these steps:
+Once you have a local machine ready with all required dependences (or within a
+**Plutus Development Container**), follow these steps:
 
 1. **Build the project**:
+
    ```bash
    cabal build
    ```
@@ -625,9 +744,11 @@ Once you have a local machine ready with all required dependences (or within a *
    cabal test
    ```
 
-If you want to build and test all the examples in the `examples` directory, you can use the following commands:
+If you want to build and test all the examples in the `examples` directory, you
+can use the following commands:
 
 - **Build all examples**:
+
   ```bash
   cabal build all
   ```
@@ -637,8 +758,44 @@ If you want to build and test all the examples in the `examples` directory, you 
   cabal test all
   ```
 
+## Frontend
 
+This section provides guidance on setting up and integrating the frontend
+interface with the Plutus smart contracts. The frontend serves as the user
+interface for interacting with the deployed contracts, making it easier to
+create and submit transactions on the Cardano blockchain.
 
+### Overview
+
+The frontend is developed using React and communicates with the Cardano
+blockchain through Blockfrost. It enables users to interact with the smart
+contracts by providing an intuitive interface for sending transactions, checking
+contract states, and viewing blockchain data.
+
+### Key Features
+
+- **User-Friendly Interface:** Simplifies interaction with Plutus smart
+  contracts.
+- **Blockfrost Integration:** Seamlessly connects to the Cardano blockchain
+  using the Blockfrost API.
+- **Transaction Management:** Allows users to create, sign, and submit
+  transactions directly from the frontend.
+
+### Project
+
+The project includes a frontend example located in the
+`/examples/Off-chain/frontend` directory.
+
+This example demonstrates how to interact with Plutus smart contracts using the
+Lucid library. For detailed instructions and more information, please refer to
+the [Frontend README](./Off-chain/frontend/README.md) file.
+
+### Additional Configuration
+
+- **Customizing the UI:** Modify the React components in the `src` directory to
+  customize the look and feel of the frontend.
+- **Extending Functionality:** Add new features or integrate additional APIs to
+  extend the functionality of the frontend as needed.
 
 ## Requirements
 
@@ -647,4 +804,5 @@ Make sure you have the following installed to build and test the projects:
 - [GHC 8.10.7](https://www.haskell.org/ghc/)
 - [Cabal 3.10.3](https://www.haskell.org/cabal/)
 
-If you encounter any issues or need further assistance, please refer to the Plutus documentation or seek help from the Plutus community.
+If you encounter any issues or need further assistance, please refer to the
+Plutus documentation or seek help from the Plutus community.
