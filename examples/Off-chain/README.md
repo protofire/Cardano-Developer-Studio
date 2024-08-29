@@ -40,7 +40,7 @@ To run the example application, follow these steps:
 1. **Navigate to the project directory**:
 
    ```bash
-   cd examples/Off-chain/frontend/
+   cd examples/Off-chain/
    ```
 
 2. **Install the required dependencies**:
@@ -51,7 +51,7 @@ To run the example application, follow these steps:
 
 3. **Configure the Blockfrost API key**:
 
-   - Open the `.env` file located in the `Examples/Off-chain/frontend/`
+   - Open the `.env` file located in the `Examples/Off-chain/`
      directory.
    - Find the line that starts with `BLOCKFROST_PREVIEW=`.
    - Paste your Blockfrost API key after the equals sign, like so:

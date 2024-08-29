@@ -784,11 +784,11 @@ contract states, and viewing blockchain data.
 ### Project
 
 The project includes a frontend example located in the
-`/examples/Off-chain/frontend` directory.
+`/examples/Off-chain` directory.
 
 This example demonstrates how to interact with Plutus smart contracts using the
 Lucid library. For detailed instructions and more information, please refer to
-the [Frontend README](./Off-chain/frontend/README.md) file.
+the [Frontend README](./Off-chain/README.md) file.
 
 ### Additional Configuration
 
