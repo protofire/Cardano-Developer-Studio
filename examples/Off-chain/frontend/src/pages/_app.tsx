@@ -5,9 +5,7 @@ import {
   Lucid,
   MintingPolicy,
   PolicyId,
-  ScriptHash,
   SpendingValidator,
-  TxHash,
   Unit,
   UTxO,
 } from "lucid-cardano";
@@ -71,33 +69,11 @@ export type AppState = {
   nftTokenNameHex?: string;
   nftAssetClassHex?: Unit;
   nftPolicy?: MintingPolicy;
-  // Stablecoin Policy
-  scPolicyIdHex?: PolicyId;
-  scTokenNameHex?: string;
-  scAssetClassHex?: Unit;
-  scPolicy?: MintingPolicy;
-  minPercent?: number;
-  mintingPolRefScrUTxO?: UTxO;
-  mintingPolRefScrUTxORef?: string;
-  // Oracle
-  oracleScript?: SpendingValidator;
-  oracleScriptHash?: ScriptHash;
-  oracleWithNftUTxO?: UTxO;
-  oracleUtxoWithNFTRef?: string;
-  // Collateral
-  collateralScript: SpendingValidator;
-  collateralScriptHash?: ScriptHash;
-  collatealAddr?: Address;
-  collateralRefScrUTxO?: UTxO;
-  collateralRefScrUTxORef?: string;
   UTxOToClaim?: UTxO;
   UnlockUTxORef?: string;
-  // Reference Scripts
-  txScriptsDeployment?: TxHash;
 };
 
 const initialAppState: AppState = {
-  collateralScript: alwaysTrueScript,
   contractType: "undefined",
   contractClass: "alwaysTrue",
 

@@ -26,8 +26,7 @@ export default function Stablecoin() {
   } = appState;
   const [tokenName, setTokenName] = useState("");
   const [signature, setSignature] = useState("");
-  const [amountToMint, setAmountToMint] = useState(10n);
-  const [amountToBurn, setAmountToBurn] = useState(10n);
+  const [amount, setAmount] = useState(10n);
   const [amountToLock, setValueToLock] = useState(15n);
   ///////////////////////////////////////////////////////////////////////////////////////////////
   ////////////////////////////////// HELPER FUNCTIONS ///////////////////////////////////////////
@@ -74,14 +73,14 @@ export default function Stablecoin() {
     const policyId: PolicyId = lucid!.utils.mintingPolicyToId(policyScript);
     const unit: Unit = policyId + tn;
 
-    if (!wAddr || !lucid || amountToMint < 0n) return;
+    if (!wAddr || !lucid || amount < 0n) return;
     const pkh: string = getAddressDetails(wAddr!).paymentCredential?.hash || "";
 
     console.log(tokenName, "   ", tn, "  ", unit);
 
     const tx = await lucid!
       .newTx()
-      .mintAssets({ [unit]: amountToMint }, Data.to(new Constr(0, [])))
+      .mintAssets({ [unit]: amount }, Data.to(new Constr(0, [])))
       .attachMintingPolicy(policyScript)
       .addSignerKey(pkh)
       .complete();
@@ -104,12 +103,12 @@ export default function Stablecoin() {
     const policyId: PolicyId = lucid!.utils.mintingPolicyToId(policyScript);
     const unit: Unit = policyId + tn;
 
-    if (!wAddr || !lucid || amountToBurn < 0n) return;
+    if (!wAddr || !lucid || amount < 0n) return;
     const pkh: string = getAddressDetails(wAddr!).paymentCredential?.hash || "";
 
     const tx = await lucid!
       .newTx()
-      .mintAssets({ [unit]: -amountToBurn }, Data.to(new Constr(0, [])))
+      .mintAssets({ [unit]: -amount }, Data.to(new Constr(0, [])))
       .attachMintingPolicy(policyScript)
       .addSignerKey(pkh)
       .complete();
@@ -271,43 +270,30 @@ export default function Stablecoin() {
                 setTokenName(am);
               }}
             />
-          </div>
-          <div className="w-full flex flex-row justify-center gap-4 mt-2">
-            <p>Tokens to mint (units):</p>
+            <p>Tokens amount (units):</p>
             <input
               className="w-16 py-1 px-2 ml-2 border border-zinc-700 rounded"
               type="number"
-              value={Number(amountToMint)}
+              value={Number(amount)}
               onChange={(e) => {
                 const am = safeStringToBigInt(e.target.value);
                 if (!am) return;
-                setAmountToMint(am);
+                setAmount(am);
               }}
             />
+          </div>
+          <div className="w-full flex flex-row justify-center gap-4 mt-2">
             <button
               onClick={mintSC}
-              disabled={!lucid || !wAddr || !amountToMint || !tokenName}
+              disabled={!lucid || !wAddr || !amount || !tokenName}
               className="w-full rounded-lg p-3 text-zinc-50 bg-zinc-800 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)] disabled:active:translate-y-0 disabled:active:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:bg-zinc-200  disabled:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:text-zinc-600 font-quicksand font-bold active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)]"
             >
               {" "}
               Mint Tokens
             </button>
-          </div>
-          <div className="w-full flex flex-row justify-center gap-4 mt-2">
-            <p>Tokens to burn (units):</p>
-            <input
-              className="w-16 py-1 px-2 ml-2 border border-zinc-700 rounded"
-              type="number"
-              value={Number(amountToBurn)}
-              onChange={(e) => {
-                const am = safeStringToBigInt(e.target.value);
-                if (!am) return;
-                setAmountToBurn(am);
-              }}
-            />
             <button
               onClick={burnSC}
-              disabled={!lucid || !wAddr || !amountToBurn || !tokenName}
+              disabled={!lucid || !wAddr || !amount || !tokenName}
               className="w-full rounded-lg p-3 text-zinc-50 bg-zinc-800 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)] disabled:active:translate-y-0 disabled:active:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:bg-zinc-200  disabled:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:text-zinc-600 font-quicksand font-bold active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)]"
             >
               {" "}

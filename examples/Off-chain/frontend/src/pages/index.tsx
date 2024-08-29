@@ -4,10 +4,12 @@ import {
   ContractClass,
   ContractType,
 } from "./_app";
-import { ExplorerLink} from "@/components/ExplorerLinks";
+import { ExplorerLink } from "@/components/ExplorerLinks";
 import AlwaysContract from "@/components/AlwaysContract";
 import CheckDateContract from "@/components/CheckDateContract";
 import CheckSignatureContract from "@/components/CheckSignatureContract";
+import FTPolicy from "@/components/FTPolicy";
+import NFTPolicy from "@/components/NFTPolicy";
 import { HiUserCircle } from "react-icons/hi";
 import { IoReloadCircleSharp } from "react-icons/io5";
 
@@ -254,7 +256,9 @@ export default function Home() {
         {contractType != "undefined" && (
           (((contractClass == "alwaysTrue") || (contractClass == "alwaysFalse")) && <AlwaysContract />) ||
           ((contractClass == "checkDate")  && <CheckDateContract />) ||
-          ((contractClass == "checkSignature")  && <CheckSignatureContract />)
+          ((contractClass == "checkSignature")  && <CheckSignatureContract />) ||
+          ((contractClass == "FT")  && <FTPolicy/>) ||
+          ((contractClass == "NFT")  && <NFTPolicy/>)
         )
         }
       </div>
