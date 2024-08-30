@@ -1,9 +1,5 @@
 import { useContext } from "react";
-import {
-  AppStateContext,
-  ContractClass,
-  ContractType,
-} from "./_app";
+import { AppStateContext, ContractClass, ContractType } from "./_app";
 import { ExplorerLink } from "@/components/ExplorerLinks";
 import AlwaysContract from "@/components/AlwaysContract";
 import CheckDateContract from "@/components/CheckDateContract";
@@ -138,41 +134,37 @@ export default function Home() {
           </button>
           <button
             onClick={() => handleClickContractClass("alwaysTrue")}
-            className={`${
-              contractClass == "alwaysTrue"
+            className={`${contractClass == "alwaysTrue"
                 ? "bg-zinc-100 text-zinc-800 shadow-[0_5px_0px_0px_rgba(255,251,251,0.6)]"
                 : "bg-zinc-900 text-zinc-50 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)]"
-            }  font-quicksand text-lg font-bold py-3 px-8 rounded-lg active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)] `}
+              }  font-quicksand text-lg font-bold py-3 px-8 rounded-lg active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)] `}
           >
             Always true
           </button>
           <button
             onClick={() => handleClickContractClass("alwaysFalse")}
-            className={`${
-              contractClass == "alwaysFalse"
+            className={`${contractClass == "alwaysFalse"
                 ? "bg-zinc-100 text-zinc-800 shadow-[0_5px_0px_0px_rgba(255,251,251,0.6)]"
                 : "bg-zinc-900 text-zinc-50 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)]"
-            }  font-quicksand text-lg font-bold py-3 px-8 rounded-lg active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)] `}
+              }  font-quicksand text-lg font-bold py-3 px-8 rounded-lg active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)] `}
           >
             Always false
           </button>
           <button
             onClick={() => handleClickContractClass("checkDate")}
-            className={`${
-              contractClass == "checkDate"
+            className={`${contractClass == "checkDate"
                 ? "bg-zinc-100 text-zinc-800 shadow-[0_5px_0px_0px_rgba(255,251,251,0.6)]"
                 : "bg-zinc-900 text-zinc-50 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)]"
-            }  font-quicksand text-lg font-bold py-3 px-8 rounded-lg active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)] `}
+              }  font-quicksand text-lg font-bold py-3 px-8 rounded-lg active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)] `}
           >
             Check date
           </button>
           <button
             onClick={() => handleClickContractClass("checkSignature")}
-            className={`${
-              contractClass == "checkSignature"
+            className={`${contractClass == "checkSignature"
                 ? "bg-zinc-100 text-zinc-800 shadow-[0_5px_0px_0px_rgba(255,251,251,0.6)]"
                 : "bg-zinc-900 text-zinc-50 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)]"
-            }  font-quicksand text-lg font-bold py-3 px-8 rounded-lg active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)] `}
+              }  font-quicksand text-lg font-bold py-3 px-8 rounded-lg active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)] `}
           >
             Check signature
           </button>
@@ -188,61 +180,55 @@ export default function Home() {
           </button>
           <button
             onClick={() => handleClickContractClass("alwaysTrue")}
-            className={`${
-              contractClass == "alwaysTrue"
+            className={`${contractClass == "alwaysTrue"
                 ? "bg-zinc-100 text-zinc-800 shadow-[0_5px_0px_0px_rgba(255,251,251,0.6)]"
                 : "bg-zinc-900 text-zinc-50 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)]"
-            }  font-quicksand text-lg font-bold py-3 px-8 rounded-lg active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)] `}
+              }  font-quicksand text-lg font-bold py-3 px-8 rounded-lg active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)] `}
           >
             Always true
           </button>
           <button
             onClick={() => handleClickContractClass("alwaysFalse")}
-            className={`${
-              contractClass == "alwaysFalse"
+            className={`${contractClass == "alwaysFalse"
                 ? "bg-zinc-100 text-zinc-800 shadow-[0_5px_0px_0px_rgba(255,251,251,0.6)]"
                 : "bg-zinc-900 text-zinc-50 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)]"
-            }  font-quicksand text-lg font-bold py-3 px-8 rounded-lg active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)] `}
+              }  font-quicksand text-lg font-bold py-3 px-8 rounded-lg active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)] `}
           >
             Always false
           </button>
           <button
             onClick={() => handleClickContractClass("checkDate")}
-            className={`${
-              contractClass == "checkDate"
+            className={`${contractClass == "checkDate"
                 ? "bg-zinc-100 text-zinc-800 shadow-[0_5px_0px_0px_rgba(255,251,251,0.6)]"
                 : "bg-zinc-900 text-zinc-50 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)]"
-            }  font-quicksand text-lg font-bold py-3 px-8 rounded-lg active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)] `}
+              }  font-quicksand text-lg font-bold py-3 px-8 rounded-lg active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)] `}
           >
             Check date
           </button>
           <button
             onClick={() => handleClickContractClass("checkSignature")}
-            className={`${
-              contractClass == "checkSignature"
+            className={`${contractClass == "checkSignature"
                 ? "bg-zinc-100 text-zinc-800 shadow-[0_5px_0px_0px_rgba(255,251,251,0.6)]"
                 : "bg-zinc-900 text-zinc-50 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)]"
-            }  font-quicksand text-lg font-bold py-3 px-8 rounded-lg active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)] `}
+              }  font-quicksand text-lg font-bold py-3 px-8 rounded-lg active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)] `}
           >
             Check signature
           </button>
           <button
             onClick={() => handleClickContractClass("FT")}
-            className={`${
-              contractClass == "FT"
+            className={`${contractClass == "FT"
                 ? "bg-zinc-100 text-zinc-800 shadow-[0_5px_0px_0px_rgba(255,251,251,0.6)]"
                 : "bg-zinc-900 text-zinc-50 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)]"
-            }  font-quicksand text-lg font-bold py-3 px-8 rounded-lg active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)] `}
+              }  font-quicksand text-lg font-bold py-3 px-8 rounded-lg active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)] `}
           >
             Mint/Burn FT
           </button>
           <button
             onClick={() => handleClickContractClass("NFT")}
-            className={`${
-              contractClass == "NFT"
+            className={`${contractClass == "NFT"
                 ? "bg-zinc-100 text-zinc-800 shadow-[0_5px_0px_0px_rgba(255,251,251,0.6)]"
                 : "bg-zinc-900 text-zinc-50 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)]"
-            }  font-quicksand text-lg font-bold py-3 px-8 rounded-lg active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)] `}
+              }  font-quicksand text-lg font-bold py-3 px-8 rounded-lg active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)] `}
           >
             Mint/Burn NFT
           </button>
@@ -250,17 +236,56 @@ export default function Home() {
       )}
 
       {/* ACTIONS SECTION */}
-      <div className="flex flex-col items-center gap-8  h-full py-10 bg-zinc-50 w-4/5 rounded-2xl">
+      <div className="flex flex-col items-center gap-8 h-full py-10 bg-zinc-50 w-4/5 rounded-2xl">
         {/* ORACLE ACTIONS */}
         {/* OWNER ACTIONS */}
-        {contractType != "undefined" && (
-          (((contractClass == "alwaysTrue") || (contractClass == "alwaysFalse")) && <AlwaysContract />) ||
-          ((contractClass == "checkDate")  && <CheckDateContract />) ||
-          ((contractClass == "checkSignature")  && <CheckSignatureContract />) ||
-          ((contractClass == "FT")  && <FTPolicy/>) ||
-          ((contractClass == "NFT")  && <NFTPolicy/>)
-        )
-        }
+        {contractType == "undefined" && (
+          <div className="content flex flex-col gap-8 h-full py-10 bg-zinc-50 w-4/5 rounded-2xl" style={{ color: "black", backgroundColor: "white" }} >
+            <h1 className="text-2xl font-bold">Frontend Overview</h1>
+            <p className="mt-2">
+              This frontend example demonstrates how to interact with Plutus
+              smart contracts using a web interface. It is designed to provide a
+              simple yet powerful way to test and deploy smart contracts on the
+              Cardano blockchain.
+            </p>
+            <h2 className="text-xl font-semibold mt-4">Key Features</h2>
+            <ul className="list-disc ml-6 mt-2">
+              <li>Integration with Plutus smart contracts.</li>
+              <li>Lucid library for handling blockchain interactions.</li>
+              <li>
+                User-friendly interface for deploying and interacting with
+                contracts.
+              </li>
+            </ul>
+            <h2 className="text-xl font-semibold mt-4">File Structure</h2>
+            <p className="mt-2">
+              The frontend example is located in the{" "}
+              <code className="bg-gray-200 p-1 rounded">
+                /examples/Off-chain/frontend
+              </code>{" "}
+              directory. Inside this directory, you'll find a file named{" "}
+              <code className="bg-gray-200 p-1 rounded">lucid</code>, which is
+              crucial for managing interactions with the blockchain.
+            </p>
+            <h2 className="text-xl font-semibold mt-4">Further Information</h2>
+            <p className="mt-2">
+              For more detailed instructions on setting up and using the
+              frontend, please refer to the <a
+                href="https://github.com/Fran-cio/Cardano-Developer-Studio/blob/main/examples/Off-chain/README.md"
+                className="text-blue-500 underline"
+              >
+                README.md
+              </a>{"  "} file located in the frontend directory.
+            </p>
+          </div>
+        )}
+        {contractType != "undefined" &&
+          (((contractClass == "alwaysTrue" ||
+            contractClass == "alwaysFalse") && <AlwaysContract />) ||
+            (contractClass == "checkDate" && <CheckDateContract />) ||
+            (contractClass == "checkSignature" && <CheckSignatureContract />) ||
+            (contractClass == "FT" && <FTPolicy />) ||
+            (contractClass == "NFT" && <NFTPolicy />))}
       </div>
     </main>
   );
