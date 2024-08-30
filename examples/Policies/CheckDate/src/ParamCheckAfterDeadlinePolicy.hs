@@ -58,3 +58,13 @@ plutonomyPolicy deadline =
         $$(PlutusTx.compile [|| mkParamCheckAfterDeadlinePolicy ||])
         `PlutusTx.applyCode` PlutusTx.liftCode deadline
 
+--------------------------------------------------------------------------------
+--
+{-# INLINEABLE mkWrappedPolicy #-}
+mkWrappedPolicy :: PlutusTx.BuiltinData -> PlutusTx.BuiltinData -> PlutusTx.BuiltinData -> ()
+mkWrappedPolicy deadlineData = mkParamCheckAfterDeadlinePolicy deadline 
+    where
+        deadline = PlutusTx.unsafeFromBuiltinData deadlineData :: LedgerApiV2.POSIXTime
+
+paramCheckAfterDeadlinePolicyCode :: PlutusTx.CompiledCode (PlutusTx.BuiltinData -> PlutusTx.BuiltinData -> PlutusTx.BuiltinData -> ())
+paramCheckAfterDeadlinePolicyCode = Plutonomy.optimizeUPLC $$(PlutusTx.compile [||mkWrappedPolicy||])

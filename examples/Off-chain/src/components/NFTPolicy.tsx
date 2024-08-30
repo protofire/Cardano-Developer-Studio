@@ -56,7 +56,6 @@ export default function Stablecoin() {
     setAppState({
       ...appState,
       nftPolicyIdHex: policyId,
-      nftTokenNameHex: tn,
       nftAssetClassHex: unit,
       nftPolicy: policyScript,
     });

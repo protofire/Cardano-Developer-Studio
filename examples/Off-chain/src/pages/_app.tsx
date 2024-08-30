@@ -64,6 +64,20 @@ export type AppState = {
   checkDateAfterAddress?: Address;
   checkDateBeforeAddress?: Address;
   checkSignatureAddress?: Address;
+  // Check Signature Policy
+  tokenCheckDateNameHex?: string;
+  tokenCheckDateBeforeIdHex?: PolicyId;
+  tokenCheckDateBeforeAssetClassHex?: Unit;
+  tokenCheckDateBeforePolicy?: MintingPolicy;
+
+  tokenCheckDateAfterIdHex?: PolicyId;
+  tokenCheckDateAfterAssetClassHex?: Unit;
+  tokenCheckDateAfterPolicy?: MintingPolicy;
+  // Check Signature Policy
+  tokenSignatureIdHex?: PolicyId;
+  tokenSignatureNameHex?: string;
+  tokenSignatureAssetClassHex?: Unit;
+  tokenSignaturePolicy?: MintingPolicy;
   // NFT Policy
   nftPolicyIdHex?: PolicyId;
   nftTokenNameHex?: string;
