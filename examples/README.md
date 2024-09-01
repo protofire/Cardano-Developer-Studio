@@ -139,7 +139,7 @@ structure:
 
 ### Policy RedeemerNFT
 
-- See README file: [Policy RedeemerNFT](./Policies/RedeemerNFT/README.md)
+- See README file: [Policy RedeemerNFT](/examples/Policies/RedeemerNFT/README.md)
 
 ### Validator AlwaysFalse
 
@@ -156,7 +156,7 @@ structure:
 ### Validator CheckSignature
 
 - See README file:
-  [Validator CheckSignature](./Validators/CheckSignature/README.md)
+  [Validator CheckSignature](/examples/Validators/CheckSignature/README.md)
 
 ## Choosing your Environment
 
@@ -788,7 +788,7 @@ The project includes a frontend example located in the
 
 This example demonstrates how to interact with Plutus smart contracts using the
 Lucid library. For detailed instructions and more information, please refer to
-the [Frontend README](./Off-chain/README.md) file.
+the [Frontend README](/examples/Off-chain/README.md) file.
 
 ### Additional Configuration
 
