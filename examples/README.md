@@ -808,6 +808,26 @@ Lucid library. For detailed instructions and more information, please refer to
 - the [Frontend README](/examples/Off-chain) file.
 - the [Frontend README](/examples/off-chain) file.
 
+- the [Frontend README](./off2-chain/README.md) file.
+- the [Frontend README](./off2-chain/README) file.
+- the [Frontend README](./off2-chain) file.
+- the [Frontend README](./off2-chain) file.
+
+- the [Frontend README](off2-chain/README.md) file.
+- the [Frontend README](off2-chain/README) file.
+- the [Frontend README](off2-chain) file.
+- the [Frontend README](off2-chain) file.
+
+- the [Frontend README](/off2-chain/README.md) file.
+- the [Frontend README](/off2-chain/README) file.
+- the [Frontend README](/off2-chain) file.
+- the [Frontend README](/off2-chain) file.
+
+- the [Frontend README](/examples/off2-chain/README.md) file.
+- the [Frontend README](/examples/off2-chain/README) file.
+- the [Frontend README](/examples/off2-chain) file.
+- the [Frontend README](/examples/off2-chain) file.
+
 ### Additional Configuration
 
 - **Customizing the UI:** Modify the React components in the `src` directory to
