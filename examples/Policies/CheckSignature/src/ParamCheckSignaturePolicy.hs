@@ -13,10 +13,10 @@ module ParamCheckSignaturePolicy where
 
 import qualified Plutonomy
 import qualified Plutus.V2.Ledger.Api as LedgerApiV2
+import qualified Plutus.V2.Ledger.Contexts as LedgerContextsV2
 import qualified PlutusTx
 
-import           PlutusTx.Prelude     (($), Bool, traceIfFalse, error, BuiltinByteString)
-import qualified Plutus.V2.Ledger.Contexts as LedgerContextsV2
+import           PlutusTx.Prelude     (($), Bool, traceIfFalse, error)
 
 -- | 'Parameter' is a type alias for 'LedgerApiV2.PubKeyHash', which represents the public key hash required to sign the transaction.
 type Parameter = LedgerApiV2.PubKeyHash
