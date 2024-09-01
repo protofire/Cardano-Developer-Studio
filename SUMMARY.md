@@ -63,4 +63,3 @@
 - the [Frontend README1](./examples/off2-chain/README.md) file.
 
 
-- the [Frontend README1](./examples/Off-chain/README.md) file.
