@@ -1,3 +1,20 @@
+### Table of Contents
+- [Table of Contents](#table-of-contents)
+- [Introduction](#introduction)
+- [How to Use `run.sh`](#how-to-use-runsh)
+- [Main Menu](#main-menu)
+- [Docker Compose Menu](#docker-compose-menu)
+- [Cardano Node Tools Menu](#cardano-node-tools-menu)
+- [Cardano Wallet Tools Menu](#cardano-wallet-tools-menu)
+- [Cardano DB Sync Tools Menu](#cardano-db-sync-tools-menu)
+- [Cardano Development Tools Menu](#cardano-development-tools-menu)
+  - [Validators Contract Examples CLI](#validators-contract-examples-cli)
+  - [Policies Contract Examples CLI](#policies-contract-examples-cli)
+- [Note to Users](#note-to-users)
+  - [Initial Requirements Checks by the Script](#initial-requirements-checks-by-the-script)
+    - [What the Script Checks](#what-the-script-checks)
+
+### Introduction
 
 To streamline the setup and execution of the Cardano Developer Studio tools, we provide a utility script, `run.sh`, located in the `scripts` directory. This script simplifies the management of Docker Compose workflows, allowing for an intuitive selection of different configurations for development purposes.
 

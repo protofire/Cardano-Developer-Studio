@@ -1,3 +1,18 @@
+### Table of Contents
+- [Table of Contents](#table-of-contents)
+- [Introduction](#introduction)
+- [Why Choose the DevContainer Method?](#why-choose-the-devcontainer-method)
+- [Updating Bash and Installing Package Managers](#updating-bash-and-installing-package-managers)
+  - [In Windows](#in-windows)
+  - [In Mac](#in-mac)
+  - [In Ubuntu (and other Linux Distributions)](#in-ubuntu-and-other-linux-distributions)
+- [Note on Package Managers](#note-on-package-managers)
+- [Running Bash Scripts](#running-bash-scripts)
+  - [On Windows](#on-windows)
+  - [On Mac](#on-mac)
+
+### Introduction
+
 Traditionally, setting up a development environment for a project involves several steps: installing dependencies, configuring software, and ensuring that all developers are working within a consistent environment. This process can be time-consuming and prone to variations across different machines.
 
 We've streamlined this process by introducing a `Development Container for Visual Studio Code` users. If you're using VS Code as your IDE, you can now avoid the manual setup of your development environment by utilizing our DevContainer configuration. This method ensures that you're instantly ready to start developing, with all necessary tools and dependencies preconfigured in an isolated Docker container.

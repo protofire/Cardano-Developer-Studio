@@ -1,3 +1,14 @@
+### Table of Contents
+- [Table of Contents](#table-of-contents)
+- [Cardano Node](#cardano-node)
+- [Cardano Wallet](#cardano-wallet)
+- [Cardano DB Sync](#cardano-db-sync)
+- [Helpers Library](#helpers-library)
+- [Example Suite](#example-suite)
+- [Testing Suite](#testing-suite)
+- [Script Menus and Tools](#script-menus-and-tools)
+- [Dockerized Tools Ready for Use](#dockerized-tools-ready-for-use)
+
 ### [Cardano Node](https://github.com/intersectmbo/cardano-node/)
 
 Knowing how to operate a Cardano Node is fundamental for developers because it serves as your gateway to the Cardano blockchain. With it, you can create and submit transactions, query the blockchain state, and participate in consensus. For dApp development, it provides the infrastructure needed to interact with the blockchain, ensuring your applications are well-integrated within the Cardano ecosystem. Additionally, understanding the node's workings is crucial for optimizing network participation, whether for personal projects or running a stake pool.

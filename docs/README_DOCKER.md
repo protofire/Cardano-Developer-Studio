@@ -1,4 +1,10 @@
-Our scripts require Docker to run successfully, as it plays a critical role in creating isolated and reproducible environments for development and testing.
+
+### Table of Contents
+- [Table of Contents](#table-of-contents)
+- [What is Docker?](#what-is-docker)
+- [Why Docker for Our Scripts?](#why-docker-for-our-scripts)
+- [Getting Started with Docker](#getting-started-with-docker)
+- [Note to Users](#note-to-users)
 
 ### What is Docker?
 
@@ -7,6 +13,8 @@ Docker is a platform that uses containerization technology to package an applica
 Containers are isolated from one another and the host system, yet can communicate with each other through well-defined channels. Unlike virtual machines, containers do not bundle a full operating system—only libraries and settings required to make the software work are needed. This makes for efficient, lightweight, self-contained systems and guarantees that software will always run the same, regardless of where it’s deployed.
 
 ### Why Docker for Our Scripts?
+
+Our scripts require Docker to run successfully, as it plays a critical role in creating isolated and reproducible environments for development and testing.
 
 Using Docker, we can easily create separate containers for each version of the Cardano node and network, as well as for the Cardano wallet and Cardano DB Sync. This allows us to:
 

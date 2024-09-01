@@ -16,7 +16,7 @@ efficiently on the Cardano platform.
   - [What is included](#what-is-included)
   - [Installation and Setup](#installation-and-setup)
   - [Docker Containers](#docker-containers)
-  - [Using the Development Container in VS Code](#using-the-development-container-in-vs-code)
+  - [Development Container in VS Code](#development-container-in-vs-code)
   - [Running the CLI Main Script](#running-the-cli-main-script)
   - [Using the Docker Containers](#using-the-docker-containers)
   - [Plutus Smart Contracts Examples and Helpers Library](#plutus-smart-contracts-examples-and-helpers-library)
@@ -64,17 +64,17 @@ See [Installation and Setup](./docs/README_INSTALLATION.md)
 
 See [Docker Containers](./docs/README_DOCKER.md)
 
-## Using the Development Container in VS Code
+## Development Container in VS Code
 
-See [Development Container](./docs/README_VSCODE.md)
+See [Development Container in VS Code](./docs/README_VSCODE.md)
 
 ## Running the CLI Main Script
 
-See [Running the CLI](./docs/README_SCRIPT.md)
+See [Running the CLI Main Script](./docs/README_SCRIPT.md)
 
 ## Using the Docker Containers
 
-See [Docker Containers](./docs/README_CONTAINERS.md)
+See [Using the Docker Containers](./docs/README_CONTAINERS.md)
 
 ## Plutus Smart Contracts Examples and Helpers Library
 

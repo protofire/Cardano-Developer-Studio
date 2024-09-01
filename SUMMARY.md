@@ -23,7 +23,7 @@
   * [Why Docker for Our Scripts?](./docs/README_DOCKER.md#why-docker-for-our-scripts)
   * [Getting Started with Docker](./docs/README_DOCKER.md#getting-started-with-docker)
   * [Note to Users](./docs/README_DOCKER.md#note-to-users)
-* [Using the Development Container in VS Code](./docs/README_VSCODE.md)
+* [Development Container in VS Code](./docs/README_VSCODE.md)
   * [Introduction](./docs/README_VSCODE.md#introduction)
   * [Prerequisites](./docs/README_VSCODE.md#prerequisites)
   * [Open Your Project in VS Code](./docs/README_VSCODE.md#open-your-project-in-vs-code)
@@ -53,11 +53,6 @@
   * [Choosing your Environment](./examples/README.md#choosing-your-environment)
   * [Step-by-Step Guides](./examples/README.md#step-by-step-guides)
   * [Frontend](./examples/README.md#frontend)
-* [Contribution](./README.md#contribution)
-* [License](./README.md#license)
-* [Acknowledgements](./README.md#acknowledgements)
-* [Ongoing Progress](./README.md#ongoing-progress)
-
 * Aditional READMES
   * [Policy AlwaysFalse](./examples/Policies/AlwaysFalse/README.md)
   * [Policy AlwaysTrue](./examples/Policies/AlwaysTrue/README.md)
@@ -70,6 +65,12 @@
   * [Validator CheckDate](./examples/Validators/CheckDate/README.md)
   * [Validator CheckSignature](./examples/Validators/CheckSignature/README.md)
   * [Frontend README](./examples/Off-chain/README.md)
+* [Contribution](./README.md#contribution)
+* [License](./README.md#license)
+* [Acknowledgements](./README.md#acknowledgements)
+* [Ongoing Progress](./README.md#ongoing-progress)
+
+
 
 
 

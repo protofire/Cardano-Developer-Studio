@@ -1,3 +1,13 @@
+### Table of Contents
+- [Table of Contents](#table-of-contents)
+- [Introduction](#introduction)
+- [Prerequisites](#prerequisites)
+- [Open Your Project in VS Code](#open-your-project-in-vs-code)
+- [Start the Development Container](#start-the-development-container)
+- [Work Inside the Container](#work-inside-the-container)
+- [Stop the Development Container](#stop-the-development-container)
+- [Next Steps](#next-steps)
+
 ### Introduction
 
 A Development Container, or DevContainer, is a fully configured and isolated development environment running inside a Docker container. The concept leverages Docker to create a consistent, portable, and reproducible environment for developing software. This means that all the necessary tools, extensions, and dependencies required for your project are bundled and run inside the container. By doing so, it eliminates the "it works on my machine" problem, as every developer working on the project uses an identical development environment, regardless of the host operating system or local configurations.
