@@ -788,36 +788,7 @@ The project includes a frontend example located in the
 
 This example demonstrates how to interact with Plutus smart contracts using the
 Lucid library. For detailed instructions and more information, please refer to
-- the [Frontend README](./Off-chain/README.md) file.
-- the [Frontend README](./Off-chain) file.
-
-- the [Frontend README](Off-chain/README.md) file.
-- the [Frontend README](Off-chain) file.
-
-
-- the [Frontend README](/examples/Off-chain) file.
-
-- the [Frontend README](./off2-chain/README.md) file.
-
-
-- the [Frontend README](/examples/off2-chain/README.md) file.
-- the [Frontend README](/examples/off2-chain) file.
-- the [Frontend README](/examples/off2-chain) file.
-
-- 
-- the [Frontend README3](/examples/off2-chain/README.md) file.
-- the [Frontend README4](/examples/off2\-chain/README.md) file.
-
-
-
-- the [Frontend README3](/examples/Off-chain/README.md) file.
-- the [Frontend README4](/examples/Off\-chain/README.md) file.
-
-- the [Frontend README1](./off2-chain/README.md) file.
-- the [Frontend README2](./off2\-chain/README.md) file.
-
-- the [Frontend README1](./Off-chain/README.md) file.
-- the [Frontend README2](./Off\-chain/README.md) file.
+the [Frontend README](./Off-chain/README.md) file.
 
 ### Additional Configuration
 
