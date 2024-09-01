@@ -16,7 +16,7 @@ ARG BUILDARCH=x86_64
 ###
 ARG IOKH_LIBSECP251_GIT_REV=ac83be33d0956faf6b7f61a60ab524ef7d6a473a
 ARG IOHK_LIBSODIUM_GIT_REV=66f017f16633f2060db25e17c170c2afa0f2a8a1
-ARG BLST_VERSION='v0.3.11'
+# ARG BLST_VERSION='v0.3.11'
 ARG CABAL_VERSION=3.6.2.0
 ARG GHC_VERSION=8.10.7
 ARG HLS_VERSION=1.7.0.0
@@ -109,36 +109,36 @@ FROM system_deps as system_deps_download_libblst
 
 # NUEVA DEPENDENCIA libblst-any
 
-ARG BLST_VERSION
+# ARG BLST_VERSION
 
-# Install dependencies
-RUN apt-get update && \
-    apt-get install -y git build-essential && \
-    rm -rf /var/lib/apt/lists/*
+# # Install dependencies
+# RUN apt-get update && \
+#     apt-get install -y git build-essential && \
+#     rm -rf /var/lib/apt/lists/*
 
-# Clone the repository, build blst, and install it
-RUN git clone --depth 1 --branch ${BLST_VERSION} https://github.com/supranational/blst && \
-    cd blst && \
-    ./build.sh && \
-    echo "prefix=/usr/local\n\
-exec_prefix=\${prefix}\n\
-libdir=\${exec_prefix}/lib\n\
-includedir=\${prefix}/include\n\
-\n\
-Name: libblst\n\
-Description: Multilingual BLS12-381 signature library\n\
-URL: https://github.com/supranational/blst\n\
-Version: ${BLST_VERSION#v}\n\
-Cflags: -I\${includedir}\n\
-Libs: -L\${libdir} -lblst" > libblst.pc && \
-    mkdir -p "/usr/local/lib/pkgconfig/" \
-    cp libblst.pc /usr/local/lib/pkgconfig/ && \
-    cp bindings/blst_aux.h bindings/blst.h bindings/blst.hpp /usr/local/include/ && \
-    cp libblst.a /usr/local/lib && \
-    chmod u=rw,go=r /usr/local/lib/libblst.a /usr/local/lib/pkgconfig/libblst.pc /usr/local/include/blst.h /usr/local/include/blst.hpp /usr/local/include/blst_aux.h
+# # Clone the repository, build blst, and install it
+# RUN git clone --depth 1 --branch ${BLST_VERSION} https://github.com/supranational/blst && \
+#     cd blst && \
+#     ./build.sh && \
+#     echo "prefix=/usr/local\n\
+# exec_prefix=\${prefix}\n\
+# libdir=\${exec_prefix}/lib\n\
+# includedir=\${prefix}/include\n\
+# \n\
+# Name: libblst\n\
+# Description: Multilingual BLS12-381 signature library\n\
+# URL: https://github.com/supranational/blst\n\
+# Version: ${BLST_VERSION#v}\n\
+# Cflags: -I\${includedir}\n\
+# Libs: -L\${libdir} -lblst" > libblst.pc && \
+#     mkdir -p "/usr/local/lib/pkgconfig/" \
+#     cp libblst.pc /usr/local/lib/pkgconfig/ && \
+#     cp bindings/blst_aux.h bindings/blst.h bindings/blst.hpp /usr/local/include/ && \
+#     cp libblst.a /usr/local/lib && \
+#     chmod u=rw,go=r /usr/local/lib/libblst.a /usr/local/lib/pkgconfig/libblst.pc /usr/local/include/blst.h /usr/local/include/blst.hpp /usr/local/include/blst_aux.h
 
-# Clean up
-RUN rm -rf /blst
+# # Clean up
+# RUN rm -rf /blst
 
 # Ensure pkg-config can find the installed library
 # ENV PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
