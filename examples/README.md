@@ -5,7 +5,9 @@
 This repository provides a comprehensive suite of tools and examples for
 developing and testing Plutus smart contracts. It includes the Helpers Library
 to streamline development, along with a variety of example contracts and their
-corresponding tests. The tools and examples are designed to assist developers in
+corresponding tests, and a frontend application for interacting with the smart contracts. 
+
+The tools and examples are designed to assist developers in
 understanding, building, and deploying Plutus smart contracts effectively.
 
 ## Table of Contents
@@ -15,8 +17,7 @@ understanding, building, and deploying Plutus smart contracts effectively.
   - [Table of Contents](#table-of-contents)
   - [Helpers Library](#helpers-library)
     - [Step-by-Step Guide: Using the Helpers Library](#step-by-step-guide-using-the-helpers-library)
-  - [Testing Functions](#testing-functions)
-  - [Examples](#examples)
+  - [Smart Contract Examples](#smart-contract-examples)
     - [Policy AlwaysFalse](#policy-alwaysfalse)
     - [Policy AlwaysTrue](#policy-alwaystrue)
     - [Policy CheckDate](#policy-checkdate)
@@ -27,8 +28,12 @@ understanding, building, and deploying Plutus smart contracts effectively.
     - [Validator AlwaysTrue](#validator-alwaystrue)
     - [Validator CheckDate](#validator-checkdate)
     - [Validator CheckSignature](#validator-checksignature)
-  - [Requirements](#requirements)
+  - [Frontend Application](#frontend-application)
+    - [Key Features](#key-features)
+    - [Project](#project)
   - [Choosing your Environment](#choosing-your-environment)
+    - [Available Environments](#available-environments)
+    - [Core Requirements](#core-requirements)
     - [Docker Compose](#docker-compose)
     - [Dev Container](#dev-container)
     - [Local Execution](#local-execution)
@@ -42,17 +47,12 @@ understanding, building, and deploying Plutus smart contracts effectively.
         - [Install GHC, Cabal, and HLS](#install-ghc-cabal-and-hls)
         - [Update cabal](#update-cabal)
         - [Download and install stylish-haskell](#download-and-install-stylish-haskell)
-  - [Step-by-Step Guides](#step-by-step-guides)
+  - [Working with the Examples](#working-with-the-examples)
     - [Running the Example CLI](#running-the-example-cli)
       - [Build and test the examples](#build-and-test-the-examples)
       - [Deploy the compiled Plutus smart contracts](#deploy-the-compiled-plutus-smart-contracts)
       - [Make transactions with the examples](#make-transactions-with-the-examples)
     - [Using a Terminal](#using-a-terminal)
-  - [Frontend](#frontend)
-    - [Overview](#overview-1)
-    - [Key Features](#key-features)
-    - [Project](#project)
-    - [Additional Configuration](#additional-configuration)
 
 ## Helpers Library
 
@@ -97,16 +97,10 @@ To use the Helpers Library in your Haskell project, follow these steps:
    import qualified Helpers.OffChainEval              as OffChainEval
    ```
 
-## Testing Functions
+## Smart Contract Examples
 
-The project also includes functions for testing resource usage and transaction
-sizes. These functions help ensure that your contracts are efficient and comply
-with the constraints of the Plutus platform.
-
-## Examples
-
-The directory `./examples` contains a collection of examples for Plutus
-validator contracts and minting policies, along with their corresponding tests.
+The directories `./examples/Policies` and `./examples/Validators` contains a collection of examples 
+for Plutus minting policies and validator contracts, along with their corresponding tests.
 Each contract example is organized into its own directory with the following
 structure:
 
@@ -158,24 +152,46 @@ structure:
 - See README file:
   [Validator CheckSignature](./Validators/CheckSignature/README.md)
 
-## Requirements
+## Frontend Application
 
-Make sure you have the following installed to build and test the projects:
+The frontend application demonstrates how to interact with the Plutus smart contracts using a web interface.
 
-- [GHC 8.10.7](https://www.haskell.org/ghc/)
-- [Cabal 3.10.3](https://www.haskell.org/cabal/)
+### Key Features
 
-If you encounter any issues or need further assistance, please refer to the
-Plutus documentation or seek help from the Plutus community.
+- **User-Friendly Interface:** Simplifies interaction with Plutus smart
+  contracts.
+- **Blockfrost Integration:** Seamlessly connects to the Cardano blockchain
+  using the Blockfrost API.
+- **Transaction Management:** Allows users to create, sign, and submit
+  transactions directly from the frontend.
 
+
+### Project
+
+The project is located in the `/examples/Off-chain` directory.
+
+For detailed instructions and more information, please refer to
+the [Frontend README](./Off-chain/README.md) file.
+  
 ## Choosing your Environment
 
-You can work with the examples using different environments according to your
-preference and setup.
+We have set up multiple working environments to accommodate different development preferences and setups. 
+Regardless of the environment you choose, the core requirement is to use Cabal to compile the projects.
 
-Each of these environments allows you to work with the examples in a way that
-best suits your development workflow, ensuring flexibility whether you're using
-a containerized setup or working locally.
+### Available Environments
+
+- **Docker Compose**: A containerized setup that includes all necessary dependencies.
+- **Dev Container**: A pre-configured development environment that can be used with Visual Studio Code.
+- **Local Environment**: A step-by-step guide to install all required tools on your local machine.
+
+### Core Requirements
+
+Regardless of your chosen environment, you'll need:
+
+GHC 8.10.7
+Cabal 3.10.3
+
+These are already set up in the Docker and Dev Container environments. If you're using a local setup, make sure to install these versions.
 
 ### Docker Compose
 
@@ -365,7 +381,10 @@ chmod +x x86_64-linux-stylish-haskell
 sudo mv x86_64-linux-stylish-haskell /usr/bin/stylish-haskell
 ```
 
-## Step-by-Step Guides
+## Working with the Examples
+
+Once your environment is set up, you can work with the Smart Contract examples (build, deploy, and test) using Cabal commands or run the master **CLI** script. 
+The process is the same regardless of your chosen environment.
 
 ### Running the Example CLI
 
@@ -768,41 +787,3 @@ can use the following commands:
   cabal test all
   ```
 
-## Frontend
-
-This section provides guidance on setting up and integrating the frontend
-interface with the Plutus smart contracts. The frontend serves as the user
-interface for interacting with the deployed contracts, making it easier to
-create and submit transactions on the Cardano blockchain.
-
-### Overview
-
-The frontend is developed using React and communicates with the Cardano
-blockchain through Blockfrost. It enables users to interact with the smart
-contracts by providing an intuitive interface for sending transactions, checking
-contract states, and viewing blockchain data.
-
-### Key Features
-
-- **User-Friendly Interface:** Simplifies interaction with Plutus smart
-  contracts.
-- **Blockfrost Integration:** Seamlessly connects to the Cardano blockchain
-  using the Blockfrost API.
-- **Transaction Management:** Allows users to create, sign, and submit
-  transactions directly from the frontend.
-
-### Project
-
-The project includes a frontend example located in the
-`/examples/Off-chain` directory.
-
-This example demonstrates how to interact with Plutus smart contracts using the
-Lucid library. For detailed instructions and more information, please refer to
-the [Frontend README](./Off-chain/README.md) file.
-
-### Additional Configuration
-
-- **Customizing the UI:** Modify the React components in the `src` directory to
-  customize the look and feel of the frontend.
-- **Extending Functionality:** Add new features or integrate additional APIs to
-  extend the functionality of the frontend as needed.
