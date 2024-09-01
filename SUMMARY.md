@@ -61,12 +61,6 @@
 
 
 - the [Frontend README1](./examples/off2-chain/README.md) file.
-- the [Frontend README2](./examples/off2\-chain/README.md) file.
-- the [Frontend README3](/examples/off2-chain/README.md) file.
-- the [Frontend README4](/examples/off2\-chain/README.md) file.
 
 
 - the [Frontend README1](./examples/Off-chain/README.md) file.
-- the [Frontend README2](./examples/Off\-chain/README.md) file.
-- the [Frontend README3](/examples/Off-chain/README.md) file.
-- the [Frontend README4](/examples/Off\-chain/README.md) file.
