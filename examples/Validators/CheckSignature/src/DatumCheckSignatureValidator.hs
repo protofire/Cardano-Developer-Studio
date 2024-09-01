@@ -16,7 +16,9 @@ import qualified Plutus.V2.Ledger.Api as LedgerApiV2
 import qualified Plutus.V2.Ledger.Contexts as LedgerContextsV2
 import qualified PlutusTx
 
-import           PlutusTx.Prelude     (($), Bool, traceIfFalse, error)
+import           PlutusTx.Prelude     (($), Bool, traceIfFalse, error, (&&))
+
+import qualified Helpers.OnChain as OnChainHelpers
 
 -- | This module defines a validator that checks if a transaction is signed
 -- by a specific beneficiary whose public key hash is provided in the datum.

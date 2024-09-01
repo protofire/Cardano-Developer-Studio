@@ -8,7 +8,7 @@ copyright:          © 2024 Manuel Padilla
 license:            Apache-2.0
 
 common common-all
-    build-depends:    base ^>=4.14.3.0
+    build-depends:    base
                     , aeson
                     , bytestring
                     , containers
@@ -60,7 +60,7 @@ library
         , bech32
         , directory
         , filepath
-        , freer-extras
+        -- , freer-extras
         , flat
         , hex-text
         , lens
@@ -69,21 +69,21 @@ library
         , utf8-string
         , base64-bytestring
     build-depends:
-        plutus-ledger
-        , cardano-addresses
-        , cardano-binary
-        , cardano-crypto-class
-        , cardano-ledger-alonzo
-        , cardano-ledger-babbage
-        , cardano-ledger-core
-        , cardano-node-emulator
-        , playground-common
-        , plutus-chain-index-core
-        , plutus-contract
+        -- plutus-ledger
+        -- , cardano-addresses
+        -- , cardano-binary
+        -- , cardano-crypto-class
+        -- , cardano-ledger-alonzo
+        -- , cardano-ledger-babbage
+        -- , cardano-ledger-core
+        -- , cardano-node-emulator
+        -- , playground-common
+        -- , plutus-chain-index-core
+        -- , plutus-contract
         , plutus-core
-        , plutus-ledger-constraints
-        , plutus-script-utils
-        , plutus-tx-constraints
+        -- , plutus-ledger-constraints
+        -- , plutus-script-utils
+        -- , plutus-tx-constraints
 
 test-suite HelpersTest
     import:             common-all-tests

@@ -9,7 +9,7 @@ license:            Apache-2.0
 
 common common-all
 
-    build-depends:    base ^>=4.14.3.0
+    build-depends:    base
                     , aeson
                     , bytestring
                     , containers
