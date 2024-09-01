@@ -119,23 +119,23 @@ structure:
 
 ### Policy AlwaysFalse
 
-- See README file: [Policy AlwaysFalse](./Policies/AlwaysFalse/README.md)
+- See README file: [Policy AlwaysFalse](/examples/Policies/AlwaysFalse/README.md)
 
 ### Policy AlwaysTrue
 
-- See README file: [Policy AlwaysTrue](./Policies/AlwaysTrue/README.md)
+- See README file: [Policy AlwaysTrue](/examples/Policies/AlwaysTrue/README.md)
 
 ### Policy CheckDate
 
-- See README file: [Policy CheckDate](./Policies/CheckDate/README.md)
+- See README file: [Policy CheckDate](/examples/Policies/CheckDate/README.md)
 
 ### Policy CheckSignature
 
-- See README file: [Policy CheckSignature](./Policies/CheckSignature/README.md)
+- See README file: [Policy CheckSignature](/examples/Policies/CheckSignature/README.md)
 
 ### Policy RedeemerFT
 
-- See README file: [Policy RedeemerFT](./Policies/RedeemerFT/README.md)
+- See README file: [Policy RedeemerFT](/examples/Policies/RedeemerFT/README.md)
 
 ### Policy RedeemerNFT
 
@@ -143,15 +143,15 @@ structure:
 
 ### Validator AlwaysFalse
 
-- See README file: [Validator AlwaysFalse](./Validators/AlwaysFalse/README.md)
+- See README file: [Validator AlwaysFalse](/examples/Validators/AlwaysFalse/README.md)
 
 ### Validator AlwaysTrue
 
-- See README file: [Validator AlwaysTrue](./Validators/AlwaysTrue/README.md)
+- See README file: [Validator AlwaysTrue](/examples/Validators/AlwaysTrue/README.md)
 
 ### Validator CheckDate
 
-- See README file: [Validator CheckDate](./Validators/CheckDate/README.md)
+- See README file: [Validator CheckDate](/examples/Validators/CheckDate/README.md)
 
 ### Validator CheckSignature
 
