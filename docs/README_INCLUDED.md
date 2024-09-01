@@ -9,17 +9,23 @@
 - [Script Menus and Tools](#script-menus-and-tools)
 - [Dockerized Tools Ready for Use](#dockerized-tools-ready-for-use)
 
-### [Cardano Node](https://github.com/intersectmbo/cardano-node/)
+### Cardano Node
 
 Knowing how to operate a Cardano Node is fundamental for developers because it serves as your gateway to the Cardano blockchain. With it, you can create and submit transactions, query the blockchain state, and participate in consensus. For dApp development, it provides the infrastructure needed to interact with the blockchain, ensuring your applications are well-integrated within the Cardano ecosystem. Additionally, understanding the node's workings is crucial for optimizing network participation, whether for personal projects or running a stake pool.
 
-### [Cardano Wallet](https://github.com/cardano-foundation/cardano-wallet/releases)
+See [Github](https://github.com/intersectmbo/cardano-node/)
+
+### Cardano Wallet
 
 The wallet is more than just a way to store cryptocurrency; it's a critical component for any application needing to handle ADA transactions or manage staking operations. For developers, integrating wallet functionalities into your applications can significantly enhance user experience by providing secure and seamless transaction capabilities. Moreover, understanding wallet operations, such as key management and wallet restoration, is vital for building robust and secure applications on the Cardano platform.
 
-### [Cardano DB Sync](https://github.com/intersectmbo/cardano-db-sync/pkgs/container/cardano-db-sync)
+See [Github](https://github.com/cardano-foundation/cardano-wallet/releases)
+
+### Cardano DB Sync
 
 Data is king in the modern world, and Cardano DB Sync allows developers to harness blockchain data efficiently. Whether you're building financial tools, exploring chain analytics, or creating user-friendly interfaces for interacting with the blockchain, DB Sync provides the data backbone for these applications. By enabling complex queries and easy access to historical data, it allows for deep insights into blockchain operations and user transactions. This can inform business decisions, provide analytics services, or enhance application functionalities with rich data features.
+
+See [Github](https://github.com/intersectmbo/cardano-db-sync/pkgs/container/cardano-db-sync)
 
 ### Helpers Library
 

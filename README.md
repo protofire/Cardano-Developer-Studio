@@ -1,4 +1,6 @@
-# Welcome to Cardano Developer Studio
+# Cardano Developer Studio
+
+## Overview
 
 This repository is the home of the Cardano Developer Studio, an all-in-one suite
 designed to streamline the development process for Cardano blockchain
@@ -8,7 +10,8 @@ efficiently on the Cardano platform.
 
 ## Table of Contents
 
-- [Welcome to Cardano Developer Studio](#welcome-to-cardano-developer-studio)
+- [Cardano Developer Studio](#cardano-developer-studio)
+  - [Overview](#overview)
   - [Table of Contents](#table-of-contents)
   - [Documentation](#documentation)
   - [Features](#features)
