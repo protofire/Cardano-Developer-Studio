@@ -12,90 +12,14 @@ efficiently on the Cardano platform.
   - [Table of Contents](#table-of-contents)
   - [Documentation](#documentation)
   - [Features](#features)
-  - [What is included](./docs/README_INCLUDED.md#what-is-included)
-    - [Cardano Node](./docs/README_INCLUDED.md#cardano-node)
-    - [Cardano Wallet](./docs/README_INCLUDED.md#cardano-wallet)
-    - [Cardano DB Sync](./docs/README_INCLUDED.md#cardano-db-sync)
-    - [Helpers Library](./docs/README_INCLUDED.md#helpers-library)
-    - [Examples Suite](./docs/README_INCLUDED.md#example-suite)
-    - [Testing Suite](./docs/README_INCLUDED.md#testing-suite)
-    - [Script Menus and Tools](./docs/README_INCLUDED.md#script-menus-and-tools)
-    - [Dockerized Tools Ready for Use](./docs/README_INCLUDED.md#dockerized-tools-ready-for-use)
-  - [Why Developers Need to Experiment with These Tools](./docs/README_INCLUDED.md#why-developers-need-to-experiment-with-these-tools)
-  - [Installation and Setup](./docs/README_INSTALLATION.md)
-    - [Why Choose the DevContainer Method?](./docs/README_INSTALLATION.md#why-choose-the-devcontainer-method)
-    - [Updating Bash and Installing Package Managers](./docs/README_INSTALLATION.md#updating-bash-and-installing-package-managers)
-      - [In Windows](./docs/README_INSTALLATION.md#in-windows)
-      - [In Mac](./docs/README_INSTALLATION.md#in-mac)
-      - [In Ubuntu (and other Linux Distributions)](./docs/README_INSTALLATION.md#in-ubuntu-and-other-linux-distributions)
-  - [Note on Package Managers](./docs/README_INSTALLATION.md#note-on-package-managers)
-  - [Running Bash Scripts](./docs/README_INSTALLATION.md#running-bash-scripts)
-    - [On Windows](./docs/README_INSTALLATION.md#on-windows)
-    - [On Mac](./docs/README_INSTALLATION.md#on-mac)
-  - [Docker Containers](./docs/README_DOCKER.md)
-    - [What is Docker?](./docs/README_DOCKER.md#what-is-docker)
-    - [Why Docker for Our Scripts?](./docs/README_DOCKER.md#why-docker-for-our-scripts)
-    - [Getting Started with Docker](./docs/README_DOCKER.md#getting-started-with-docker)
-    - [Note to Users](./docs/README_DOCKER.md#note-to-users)
-  - [Using the Dev Container in VS Code](./docs/README_VSCODE.md)
-    - [Introduction](./docs/README_VSCODE.md#introduction)
-    - [Prerequisites](./docs/README_VSCODE.md#prerequisites)
-    - [Open Your Project in VS Code](./docs/README_VSCODE.md#open-your-project-in-vs-code)
-    - [Start the Development Container](./docs/README_VSCODE.md#start-the-development-container)
-    - [Work Inside the Container](./docs/README_VSCODE.md#work-inside-the-container)
-    - [Stop the Development Container](./docs/README_VSCODE.md#stop-the-development-container)
-    - [Next Steps](./docs/README_VSCODE.md#next-steps)
-  - [Initial Requirements Checks by the Script](./docs/README_VSCODE.md#initial-requirements-checks-by-the-script)
-    - [What the Script Checks](./docs/README_VSCODE.md#what-the-script-checks)
-  - [Running the Main Script](./docs/README_SCRIPT.md)
-    - [How to Use `run.sh`](./docs/README_SCRIPT.md#how-to-use-runsh)
-    - [Main Menu](./docs/README_SCRIPT.md#main-menu)
-    - [Docker Compose Menu](./docs/README_SCRIPT.md#docker-compose-menu)
-    - [Cardano Node Tools Menu](./docs/README_SCRIPT.md#cardano-node-tools-menu)
-    - [Cardano Wallet Tools Menu](./docs/README_SCRIPT.md#cardano-wallet-tools-menu)
-    - [Cardano DB Sync Tools Menu](./docs/README_SCRIPT.md#cardano-db-sync-tools-menu)
-    - [Cardano Development Tools Menu](./docs/README_SCRIPT.md#cardano-development-tools-menu)
-      - [Validators Contract Examples CLI](./docs/README_SCRIPT.md#validators-contract-examples-cli)
-      - [Policies Contract Examples CLI](./docs/README_SCRIPT.md#policies-contract-examples-cli)
-    - [Note to Users](./docs/README_SCRIPT.md#note-to-users)
-  - [Using the Docker Containers](./docs/README_CONTAINERS.md)
-    - [Cardano Node Container](./docs/README_CONTAINERS.md#cardano-node-container)
-    - [Cardano Wallet Server Container](./docs/README_CONTAINERS.md#cardano-wallet-server-container)
-      - [Importing API Collections into Postman](./docs/README_CONTAINERS.md#importing-api-collections-into-postman)
-    - [Cardano DB Sync Container](./docs/README_CONTAINERS.md#cardano-db-sync-container)
-    - [Plutus Development Tools](./docs/README_CONTAINERS.md#plutus-development-tools)
-  - [Plutus Smart Contracts Examples and Helpers Library](./examples/README.md#plutus-smart-contracts-examples-and-helpers-library)
-    - [Helpers Library](./examples/README.md#helpers-library)
-      - [Step-by-Step Guide: Using the Helpers Library](./examples/README.md#step-by-step-guide-using-the-helpers-library)
-    - [Testing Functions](./examples/README.md#testing-functions)
-    - [Examples](./examples/README.md#examples)
-      - [Policy AlwaysFalse](./examples/README.md#policy-alwaysfalse)
-      - [Policy AlwaysTrue](./examples/README.md#policy-alwaystrue)
-      - [Policy CheckDate](./examples/README.md#policy-checkdate)
-      - [Policy CheckSignature](./examples/README.md#policy-checksignature)
-      - [Policy RedeemerFT](./examples/README.md#policy-redeemerft)
-      - [Policy RedeemerNFT](./examples/README.md#policy-redeemernft)
-      - [Validator AlwaysFalse](./examples/README.md#validator-alwaysfalse)
-      - [Validator AlwaysTrue](./examples/README.md#validator-alwaystrue)
-      - [Validator CheckDate](./examples/README.md#validator-checkdate)
-      - [Validator CheckSignature](./examples/README.md#validator-checksignature)
-    - [Choosing your Environment](./examples/README.md#choosing-your-environment)
-      - [Docker Compose](./examples/README.md#docker-compose)
-      - [Dev Container](./examples/README.md#dev-container)
-      - [Local Execution](./examples/README.md#local-execution)
-        - [Set Up Local Environment](./examples/README.md#set-up-local-environment)
-    - [Step-by-Step Guides](./examples/README.md#step-by-step-guides)
-      - [Running the Example CLI](./examples/README.md#running-the-example-cli)
-        - [Build and test the examples](./examples/README.md#build-and-test-the-examples)
-        - [Deploy the compiled Plutus smart contracts](./examples/README.md#deploy-the-compiled-plutus-smart-contracts)
-        - [Make transactions with the examples](./examples/README.md#make-transactions-with-the-examples)
-      - [Using a Terminal](./examples/README.md#using-a-terminal)
-      - [Frontend](./examples/README.md#frontend)
-        - [Overview](./examples/README.md#overview-1)
-        - [Key Features](./examples/README.md#key-features)
-        - [Project](./examples/README.md#project)
-        - [Additional Configuration](./examples/README.md#additional-configuration)
-    - [Requirements](./examples/README.md#requirements)
+  - [Why Developers Need to Experiment with These Tools](#why-developers-need-to-experiment-with-these-tools)
+  - [What is included](#what-is-included)
+  - [Installation and Setup](#installation-and-setup)
+  - [Docker Containers](#docker-containers)
+  - [Using the Development Container in VS Code](#using-the-development-container-in-vs-code)
+  - [Running the CLI Main Script](#running-the-cli-main-script)
+  - [Using the Docker Containers](#using-the-docker-containers)
+  - [Plutus Smart Contracts Examples and Helpers Library](#plutus-smart-contracts-examples-and-helpers-library)
   - [Contribution](#contribution)
   - [License](#license)
   - [Acknowledgements](#acknowledgements)
@@ -121,6 +45,40 @@ https://protofire-docs.gitbook.io/developer-studio/
   Plutus constraints.
 - Dockerized Tools Ready for Use: All tools are dockerized, ensuring a
   consistent and streamlined development environment across different setups.
+
+## Why Developers Need to Experiment with These Tools
+
+Experimentation leads to innovation. By getting hands-on experience with the Cardano Node, Wallet, and DB Sync, developers can push the boundaries of what's possible within the Cardano ecosystem. It's not just about building applications; it's about understanding the intricacies of blockchain technology and leveraging that knowledge to create solutions that are secure, efficient, and user-friendly.
+
+For instance, experimenting with the Cardano Node can help developers optimize transaction fees, understand block propagation, and secure their applications against common blockchain threats. Learning the ins and outs of the Cardano Wallet can lead to the development of new wallet features, improved user security practices, and the integration of ADA payments into e-commerce platforms. And with Cardano DB Sync, the possibilities for blockchain data analytics, reporting tools, and real-time monitoring services are endless.
+
+## What is included
+
+See [What is included](./docs/README_INCLUDED.md)
+
+## Installation and Setup
+
+See [Installation and Setup](./docs/README_INSTALLATION.md)
+
+## Docker Containers
+
+See [Docker Containers](./docs/README_DOCKER.md)
+
+## Using the Development Container in VS Code
+
+See [Development Container](./docs/README_VSCODE.md)
+
+## Running the CLI Main Script
+
+See [Running the CLI](./docs/README_SCRIPT.md)
+
+## Using the Docker Containers
+
+See [Docker Containers](./docs/README_CONTAINERS.md)
+
+## Plutus Smart Contracts Examples and Helpers Library
+
+See  [Examples and Helpers Library](./examples/README.md)
 
 ## Contribution
 

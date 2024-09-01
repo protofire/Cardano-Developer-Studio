@@ -1,5 +1,3 @@
-## What is included
-
 ### [Cardano Node](https://github.com/intersectmbo/cardano-node/)
 
 Knowing how to operate a Cardano Node is fundamental for developers because it serves as your gateway to the Cardano blockchain. With it, you can create and submit transactions, query the blockchain state, and participate in consensus. For dApp development, it provides the infrastructure needed to interact with the blockchain, ensuring your applications are well-integrated within the Cardano ecosystem. Additionally, understanding the node's workings is crucial for optimizing network participation, whether for personal projects or running a stake pool.
@@ -41,9 +39,3 @@ To facilitate interaction with Cardano Node, Wallet, and DB Sync, we have provid
 ### Dockerized Tools Ready for Use
 
 All these tools are fully dockerized and ready to be used, whether you choose to run them through Visual Studio Code or any other compatible IDE. This setup ensures a streamlined and consistent development environment, allowing you to focus on building and testing your applications with ease.
-
-## Why Developers Need to Experiment with These Tools
-
-Experimentation leads to innovation. By getting hands-on experience with the Cardano Node, Wallet, and DB Sync, developers can push the boundaries of what's possible within the Cardano ecosystem. It's not just about building applications; it's about understanding the intricacies of blockchain technology and leveraging that knowledge to create solutions that are secure, efficient, and user-friendly.
-
-For instance, experimenting with the Cardano Node can help developers optimize transaction fees, understand block propagation, and secure their applications against common blockchain threats. Learning the ins and outs of the Cardano Wallet can lead to the development of new wallet features, improved user security practices, and the integration of ADA payments into e-commerce platforms. And with Cardano DB Sync, the possibilities for blockchain data analytics, reporting tools, and real-time monitoring services are endless.

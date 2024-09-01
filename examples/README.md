@@ -27,6 +27,7 @@ understanding, building, and deploying Plutus smart contracts effectively.
     - [Validator AlwaysTrue](#validator-alwaystrue)
     - [Validator CheckDate](#validator-checkdate)
     - [Validator CheckSignature](#validator-checksignature)
+  - [Requirements](#requirements)
   - [Choosing your Environment](#choosing-your-environment)
     - [Docker Compose](#docker-compose)
     - [Dev Container](#dev-container)
@@ -52,7 +53,6 @@ understanding, building, and deploying Plutus smart contracts effectively.
     - [Key Features](#key-features)
     - [Project](#project)
     - [Additional Configuration](#additional-configuration)
-  - [Requirements](#requirements)
 
 ## Helpers Library
 
@@ -157,6 +157,16 @@ structure:
 
 - See README file:
   [Validator CheckSignature](./Validators/CheckSignature/README.md)
+
+## Requirements
+
+Make sure you have the following installed to build and test the projects:
+
+- [GHC 8.10.7](https://www.haskell.org/ghc/)
+- [Cabal 3.10.3](https://www.haskell.org/cabal/)
+
+If you encounter any issues or need further assistance, please refer to the
+Plutus documentation or seek help from the Plutus community.
 
 ## Choosing your Environment
 
@@ -796,13 +806,3 @@ the [Frontend README](./Off-chain/README.md) file.
   customize the look and feel of the frontend.
 - **Extending Functionality:** Add new features or integrate additional APIs to
   extend the functionality of the frontend as needed.
-
-## Requirements
-
-Make sure you have the following installed to build and test the projects:
-
-- [GHC 8.10.7](https://www.haskell.org/ghc/)
-- [Cabal 3.10.3](https://www.haskell.org/cabal/)
-
-If you encounter any issues or need further assistance, please refer to the
-Plutus documentation or seek help from the Plutus community.

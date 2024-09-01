@@ -39,24 +39,3 @@ Your container will stop, and VS Code will return to being a local editor. Your 
 
 To start working in the container again, simply reopen your project in VS Code and repeat the steps to reopen your project in the container.
 
-## Initial Requirements Checks by the Script
-
-The main script starts by performing several checks to ensure the environment meets all necessary requirements for successful execution. These checks include verifying the presence of a package manager, installing required commands, and confirming that the versions of Bash, Docker, and Docker Compose are sufficient.
-
-### What the Script Checks
-
-1. Package Manager: The script checks if a recognized package manager is available on the system. This is crucial for installing other required packages.
-   
-2. Required Commands: The script automatically installs the following essential commands if they are not already present:
-- jq
-- lz4
-- curl
-- grep
-- sed
-- gawk
-- cut
-
-3. Software Versions: The script verifies that the installed versions of Bash, Docker, and Docker Compose meet the minimum requirements:
-- Bash version 4.0 or newer
-- Docker version 19.03 or newer
-- Docker Compose version 1.25 or newer

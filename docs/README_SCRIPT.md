@@ -1,3 +1,4 @@
+
 To streamline the setup and execution of the Cardano Developer Studio tools, we provide a utility script, `run.sh`, located in the `scripts` directory. This script simplifies the management of Docker Compose workflows, allowing for an intuitive selection of different configurations for development purposes.
 
 ### How to Use `run.sh`
@@ -94,7 +95,30 @@ After selecting the type of contract example to run, you will be presented with 
 - `6) Mint/Burn NFT CLI`: Run the Mint/Burn NFT policy example.
 
 For each selection, you can choose to run the scripts inside the container or in the local environment, depending on your setup.
+
 ### Note to Users
 
 - Before running the `run.sh` script, ensure Docker is installed and running on your system. Follow the installation instructions provided in the previous sections for your respective operating system.
 - The `compose.sh` script, invoked by `run.sh`, handles the intricacies of configuring and starting the Docker Compose services based on your selections. It automatically sets necessary environment variables and permissions to ensure a smooth setup experience.
+  
+#### Initial Requirements Checks by the Script
+
+The main script starts by performing several checks to ensure the environment meets all necessary requirements for successful execution. These checks include verifying the presence of a package manager, installing required commands, and confirming that the versions of Bash, Docker, and Docker Compose are sufficient.
+
+##### What the Script Checks
+
+1. Package Manager: The script checks if a recognized package manager is available on the system. This is crucial for installing other required packages.
+   
+2. Required Commands: The script automatically installs the following essential commands if they are not already present:
+- jq
+- lz4
+- curl
+- grep
+- sed
+- gawk
+- cut
+
+3. Software Versions: The script verifies that the installed versions of Bash, Docker, and Docker Compose meet the minimum requirements:
+- Bash version 4.0 or newer
+- Docker version 19.03 or newer
+- Docker Compose version 1.25 or newer
