@@ -63,17 +63,20 @@
   * [Validator CheckSignature](./cardano-smart-contracts-examples/Validators/CheckSignature/README.md)
 * [Cardano Web3 Frontend Template](./cardano-web3-frontend-template/README.md)
   * [Quick Start](./cardano-web3-frontend-template/README.md#quick-start)
+  * [Prerequisites](./cardano-web3-frontend-template/README.md#prerequisites)
   * [Key Features](./cardano-web3-frontend-template/README.md#key-features)
   * [What is Blockfrost?](./cardano-web3-frontend-template/README.md#what-is-blockfrost)
   * [Wallet Integration](./cardano-web3-frontend-template/README.md#wallet-integration)
+  * [Project Structure](./cardano-web3-frontend-template/README.md#project-structure)
   * [Website Usage](./cardano-web3-frontend-template/README.md#website-usage)
-  * [CI/CD Pipeline](./cardano-web3-frontend-template/README.md#cicd-pipeline)
+  * [Development](./cardano-web3-frontend-template/README.md#development)
+  * [CI and CD Pipeline](./cardano-web3-frontend-template/README.md#ci-and-cd-pipeline)
   * [Detailed Usage Guide](./cardano-web3-frontend-template/README.md#detailed-usage-guide)
+  * [CI and CD Setup](./cardano-web3-frontend-template/README.md#ci-and-cd-setup)
+  * [Building and Pushing Docker Images](./cardano-web3-frontend-template/README.md#building-and-pushing-docker-images)
+  * [Deploying Your Application](./cardano-web3-frontend-template/README.md#deploying-your-application)
+  * [Troubleshooting](./cardano-web3-frontend-template/README.md#troubleshooting)
 * [Contribution](./README.md#contribution)
 * [License](./README.md#license)
 * [Acknowledgements](./README.md#acknowledgements)
 * [Ongoing Progress](./README.md#ongoing-progress)
-
-
-
-
