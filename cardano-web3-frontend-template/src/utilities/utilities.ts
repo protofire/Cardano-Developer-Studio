@@ -38,10 +38,8 @@ export const findUTxO = async (lucid: Lucid, ref: string) => {
             outputIndex: Number(ix),
         },
     ]);
-    alert( toJson (utxos[0]))
     return utxos[0];
 };
-
 
 export function isEmptyObject(obj: any, swOnlyDefined: boolean = false) {
     for (let key in obj) {
@@ -54,7 +52,6 @@ export function isEmptyObject(obj: any, swOnlyDefined: boolean = false) {
 export function isObject(object: any) {
     return object !== null && typeof object === 'object' && object.hasOwnProperty !== undefined;
 }
-
 
 //for printing pretty any object
 export function toJson(data: any, space?: string | number): string {
