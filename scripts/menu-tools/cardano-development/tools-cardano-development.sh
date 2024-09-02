@@ -139,7 +139,7 @@ policy_selector(){
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Policies/AlwaysFalse/scripts/cli.sh"
       else
         if [[ -z $INSIDE_DEV_CONTAINER ]]; then
-          bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Policies/AlwaysFalse/scripts/cli.sh"
+          bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/cardano-smart-contracts-examples/Policies/AlwaysFalse/scripts/cli.sh"
         else
           bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Policies/AlwaysFalse/scripts/cli.sh"
         fi
@@ -150,7 +150,7 @@ policy_selector(){
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Policies/AlwaysTrue/scripts/cli.sh"
       else
         if [[ -z $INSIDE_DEV_CONTAINER ]]; then
-          bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Policies/AlwaysTrue/scripts/cli.sh"
+          bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/cardano-smart-contracts-examples/Policies/AlwaysTrue/scripts/cli.sh"
         else
           bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Policies/AlwaysTrue/scripts/cli.sh"
         fi      
@@ -161,7 +161,7 @@ policy_selector(){
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Policies/CheckDate/scripts/cli.sh"
       else
         if [[ -z $INSIDE_DEV_CONTAINER ]]; then
-          bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Policies/CheckDate/scripts/cli.sh"
+          bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/cardano-smart-contracts-examples/Policies/CheckDate/scripts/cli.sh"
         else
           bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Policies/CheckDate/scripts/cli.sh"
         fi       
@@ -172,7 +172,7 @@ policy_selector(){
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Policies/CheckSignature/scripts/cli.sh"
       else
         if [[ -z $INSIDE_DEV_CONTAINER ]]; then
-          bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Policies/CheckSignature/scripts/cli.sh"
+          bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/cardano-smart-contracts-examples/Policies/CheckSignature/scripts/cli.sh"
         else
           bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Policies/CheckSignature/scripts/cli.sh"
         fi       
@@ -183,7 +183,7 @@ policy_selector(){
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Policies/RedeemerFT/scripts/cli.sh"
       else
         if [[ -z $INSIDE_DEV_CONTAINER ]]; then
-          bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Policies/RedeemerFT/scripts/cli.sh"
+          bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/cardano-smart-contracts-examples/Policies/RedeemerFT/scripts/cli.sh"
         else
           bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Policies/RedeemerFT/scripts/cli.sh"
         fi 
@@ -194,7 +194,7 @@ policy_selector(){
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Policies/RedeemerNFT/scripts/cli.sh"
       else
         if [[ -z $INSIDE_DEV_CONTAINER ]]; then
-          bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Policies/RedeemerNFT/scripts/cli.sh"
+          bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/cardano-smart-contracts-examples/Policies/RedeemerNFT/scripts/cli.sh"
         else
           bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Policies/RedeemerNFT/scripts/cli.sh"
         fi       fi       
@@ -223,7 +223,7 @@ validator_selector(){
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/AlwaysFalse/scripts/cli.sh"
       else
         if [[ -z $INSIDE_DEV_CONTAINER ]]; then
-          bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Validators/AlwaysFalse/scripts/cli.sh"
+          bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/cardano-smart-contracts-examples/Validators/AlwaysFalse/scripts/cli.sh"
         else
           bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/AlwaysFalse/scripts/cli.sh"
         fi
@@ -234,7 +234,7 @@ validator_selector(){
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/AlwaysTrue/scripts/cli.sh"
       else
         if [[ -z $INSIDE_DEV_CONTAINER ]]; then
-          bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Validators/AlwaysTrue/scripts/cli.sh"
+          bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/cardano-smart-contracts-examples/Validators/AlwaysTrue/scripts/cli.sh"
         else
           bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/AlwaysTrue/scripts/cli.sh"
         fi
@@ -245,7 +245,7 @@ validator_selector(){
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/CheckDate/scripts/cli.sh"
       else
         if [[ -z $INSIDE_DEV_CONTAINER ]]; then
-          bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Validators/CheckDate/scripts/cli.sh"
+          bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/cardano-smart-contracts-examples/Validators/CheckDate/scripts/cli.sh"
         else
           bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckDate/scripts/cli.sh"
         fi      
@@ -256,7 +256,7 @@ validator_selector(){
         docker exec -it "$selected_container" bash -c "export INSIDE_DEV_CONTAINER=1 && cd ~/workspace && bash ./Validators/CheckSignature/scripts/cli.sh"
       else
         if [[ -z $INSIDE_DEV_CONTAINER ]]; then
-          bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/examples/Validators/CheckSignature/scripts/cli.sh"
+          bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/cardano-smart-contracts-examples/Validators/CheckSignature/scripts/cli.sh"
         else
           bash "$WORKSPACE_ROOT_DIR_ABSOLUTE/Validators/CheckSiganture/scripts/cli.sh"
         fi      

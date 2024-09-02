@@ -245,7 +245,7 @@ Choose the Cardano Plutus Development Tools container from the list.
 
 Once inside the container, you can run various commands.
 
-You can read more in [Getting Started section](../examples/README.md)
+You can read more in [Plutus Smart Contracts Examples and Helpers Library](../cardano-smart-contracts-examples/README.md)
 
 **Basic Cabal Commands:**
 

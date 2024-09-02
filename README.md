@@ -23,6 +23,7 @@ efficiently on the Cardano platform.
   - [Running the CLI Main Script](#running-the-cli-main-script)
   - [Using the Docker Containers](#using-the-docker-containers)
   - [Plutus Smart Contracts Examples and Helpers Library](#plutus-smart-contracts-examples-and-helpers-library)
+  - [Cardano Web3 Frontend Template](#cardano-web3-frontend-template)
   - [Contribution](#contribution)
   - [License](#license)
   - [Acknowledgements](#acknowledgements)
@@ -36,18 +37,20 @@ https://protofire-docs.gitbook.io/developer-studio/
 
 ## Features
 
-- Docker Compose Configurations: Simplify setup and integration of all necessary
+- **Docker Compose Configurations**: Simplify setup and integration of all necessary
   tools.
-- Script Tool with Menus: Navigate, configure, and run various tools through an
+- **Script Tool with Menus**: Navigate, configure, and run various tools through an
   intuitive menu system.
-- Pre-built Smart Contract Examples: Access a suite of example contracts that
+- **Pre-built Smart Contract Examples**: Access a suite of example contracts that
   demonstrate various functionalities in Plutus, helping you get started
   quickly.
-- Comprehensive Testing Tools: Utilize testing tools for resource consumption,
+- **Comprehensive Testing Tools**: Utilize testing tools for resource consumption,
   transaction size analysis, and contract evaluation to ensure compliance with
   Plutus constraints.
-- Dockerized Tools Ready for Use: All tools are dockerized, ensuring a
+- **Dockerized Tools Ready for Use**: All tools are dockerized, ensuring a
   consistent and streamlined development environment across different setups.
+- **Continuous Integration and Deployment (CI/CD)**: Automated build, test, and deployment processes for smart contracts and frontend applications.
+- **Docker Integration**: Production-ready Docker images for easy deployment and scaling.
 
 ## Why Developers Need to Experiment with These Tools
 
@@ -81,7 +84,11 @@ See [Using the Docker Containers](./docs/README_CONTAINERS.md)
 
 ## Plutus Smart Contracts Examples and Helpers Library
 
-See  [Examples and Helpers Library](./examples/README.md)
+See [Examples and Helpers Library](./cardano-smart-contracts-examples/README.md)
+
+## Cardano Web3 Frontend Template
+
+See [Cardano Web3 Frontend Template](./cardano-web3-frontend-template/README.md)
 
 ## Contribution
 
@@ -103,6 +110,9 @@ For more details on the proposal and its progress, please visit our proposal
 page on [IdeaScale](https://cardano.ideascale.com/c/idea/110047).
 
 ## Ongoing Progress
+
+TODO:
+
 
 Welcome to the beginning of a journey! You're looking at the first milestone and
 release of our Cardano Developer Studio, where the foundations are set, but the

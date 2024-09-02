@@ -1,10 +1,32 @@
-# FrontEnd Application 
-
-This project is an example web application that connects to the Cardano blockchain using the Blockfrost API. It is designed to help developers understand how to integrate Blockfrost into their own applications and interact with Plutus smart contracts.
+# Cardano Web3 Frontend Template
 
 ## Overview
 
-The frontend is developed using React and communicates with the Cardano blockchain through Blockfrost. It enables users to interact with smart contracts by providing an intuitive interface for sending transactions, checking contract states, and viewing blockchain data.
+This project is an example web application that connects to the Cardano blockchain. It is designed to help developers understand how to develop their own applications and interact with Plutus smart contracts.
+
+The frontend is developed using React and communicates with the Cardano blockchain through Blockfrost. It provides an intuitive interface for sending transactions, checking contract states, and viewing blockchain data.
+
+## Table of Contents
+
+- [Cardano Web3 Frontend Template](#cardano-web3-frontend-template)
+  - [Overview](#overview)
+  - [Table of Contents](#table-of-contents)
+  - [Acknowledgements](#acknowledgements)
+  - [Prerequisites](#prerequisites)
+    - [Installing a Compatible Wallet Extension](#installing-a-compatible-wallet-extension)
+    - [Obtaining Testnet ADA](#obtaining-testnet-ada)
+  - [What is Blockfrost?](#what-is-blockfrost)
+    - [Generating a Blockfrost API Key](#generating-a-blockfrost-api-key)
+  - [Key Features](#key-features)
+  - [Setup Instructions](#setup-instructions)
+  - [Project Structure](#project-structure)
+  - [Usage](#usage)
+  - [Development](#development)
+    - [Development](#development-1)
+  - [Troubleshooting](#troubleshooting)
+  - [Additional Resources](#additional-resources)
+  - [Contributing](#contributing)
+  - [License](#license)
 
 ## Acknowledgements
 
@@ -21,10 +43,12 @@ Before setting up the frontend, ensure that you have the following installed:
 - A Blockfrost API key
 - Compatible wallet extension (Nami or Eternl)
 - Testnet ADA for transactions
-
+- Docker (for containerized deployment)
+- Git (for version control and CI/CD integration)
+  
 ### Installing a Compatible Wallet Extension
 
-To interact with the Cardano blockchain, you'll need a compatible wallet extension. We recommend either Nami or Eternl:
+To interact with the Cardano blockchain, you'll need a compatible wallet extension. Some recomendatios are:
 
 1. **Nami Wallet**:
    - Visit the [Nami Wallet Chrome Extension page](https://chromewebstore.google.com/detail/nami/lpfcbjknijpeeillifnkikgncikgfhdo)
@@ -73,7 +97,9 @@ To use this example application, you'll need to generate a Blockfrost API key fo
 - **Transaction Management**: Allows users to create, sign, and submit transactions directly from the frontend.
 - **Lucid Library Integration**: Demonstrates how to interact with Plutus smart contracts using the Lucid library.
 - **Wallet Compatibility**: Works with popular Cardano wallet extensions like Nami and Eternl.
-
+- **CI/CD Integration**: Automated build, test, and deployment processes using GitHub Actions.
+- **Docker Support**: Production-ready Docker images for easy deployment and scaling.
+  
 ## Setup Instructions
 
 To run the example application, follow these steps:
@@ -81,7 +107,7 @@ To run the example application, follow these steps:
 1. **Navigate to the project directory**:
 
    ```bash
-   cd examples/Off-chain/
+   cd cardano-web3-frontend-template
    ```
 
 2. **Install the required dependencies**:
@@ -97,7 +123,7 @@ To run the example application, follow these steps:
    ```
 
 3. **Configure the Blockfrost API key**:
-   - Copy `.env.example` located in the `examples/Off-chain/` directory to `.env.local`
+   - Copy `.env.example` located in the `cardano-web3-frontend-template/` directory to `.env.local`
 
    ```bash
    cp .env.example .env.local
@@ -126,7 +152,7 @@ Now you can interact with the Cardano blockchain through the example application
 ## Project Structure
 
 ```
-/examples/Off-chain
+/cardano-web3-frontend-template/
 ├── src/
 │   ├── components/
 │   ├── pages/
@@ -134,35 +160,39 @@ Now you can interact with the Cardano blockchain through the example application
 │   ├── App.js
 │   └── index.js
 ├── public/
+├── .github/
+│   └── workflows/
+│       ├── ci.yml
+│       └── cd.yml
+├── Dockerfile
+├── docker-compose.yml
 ├── .env
 └── package.json
 ```
 
 ## Usage
 
-1. Ensure your wallet extension (Nami or Eternl) is installed and set to the testnet network.
+1. Ensure your wallet extension is installed and set to the testnet network.
 2. Connect your wallet using the provided interface in the application.
 3. View your ADA balance and other blockchain data.
 4. Interact with deployed Plutus smart contracts.
 5. Create, sign, and submit transactions using your testnet ADA.
 
-## Additional Configuration
+## Development
 
 - **Customizing the UI**: Modify the React components in the `src` directory to customize the look and feel of the frontend.
 - **Extending Functionality**: Add new features or integrate additional APIs to extend the functionality of the frontend as needed.
-- **Wallet Integration**: The application is set up to work with Nami and Eternl wallets. If you want to add support for other wallets, you'll need to modify the wallet connection logic in the relevant components.
+- **Wallet Integration**: The application is set up to work with compatible known wallets. If you want to add support for other wallets, you'll need to modify the wallet connection logic in the relevant components.
 
-## Development
-
+### Development
 - To customize the UI, modify React components in `src/components/`.
 - Add new pages in `src/pages/` for additional functionality.
 - Use `src/utils/` for helper functions and API calls.
-- When testing transactions, always use small amounts of testnet ADA to avoid any potential issues.
 
 ## Troubleshooting
 
 - Ensure your Blockfrost API key is correctly set in the `.env` file.
-- Verify that the wallet extension (Nami or Eternl) is properly installed and set up in your browser.
+- Verify that the wallet extension is properly installed and set up in your browser.
 - Check that your wallet is connected to the correct testnet network.
 - Confirm you have sufficient testnet ADA in your wallet for transactions.
 - Check the browser console for any error messages if you encounter issues.

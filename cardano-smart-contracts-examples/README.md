@@ -5,7 +5,7 @@
 This repository provides a comprehensive suite of tools and examples for
 developing and testing Plutus smart contracts. It includes the Helpers Library
 to streamline development, along with a variety of example contracts and their
-corresponding tests, and a frontend application for interacting with the smart contracts. 
+corresponding tests. 
 
 The tools and examples are designed to assist developers in
 understanding, building, and deploying Plutus smart contracts effectively.
@@ -28,9 +28,6 @@ understanding, building, and deploying Plutus smart contracts effectively.
     - [Validator AlwaysTrue](#validator-alwaystrue)
     - [Validator CheckDate](#validator-checkdate)
     - [Validator CheckSignature](#validator-checksignature)
-  - [Frontend Application](#frontend-application)
-    - [Key Features](#key-features)
-    - [Project](#project)
   - [Choosing your Environment](#choosing-your-environment)
     - [Available Environments](#available-environments)
     - [Core Requirements](#core-requirements)
@@ -56,7 +53,7 @@ understanding, building, and deploying Plutus smart contracts effectively.
 
 ## Helpers Library
 
-The Helpers Library, located in the directory `./examples/Helpers` is a set of
+The Helpers Library, located in the directory `./cardano-smart-contracts-examples/Helpers` is a set of
 utility functions designed to simplify and streamline the development of smart
 contracts in Plutus. These functions cover common tasks and operations needed
 throughout the lifecycle of a smart contract, from input validation to building
@@ -99,8 +96,8 @@ To use the Helpers Library in your Haskell project, follow these steps:
 
 ## Smart Contract Examples
 
-The directories `./examples/Policies` and `./examples/Validators` contains a collection of examples 
-for Plutus minting policies and validator contracts, along with their corresponding tests.
+The directories `./cardano-smart-contracts-examples/Policies` and `./cardano-smart-contracts-examples/Validators` 
+contains a collection of examples for Plutus minting policies and validator contracts, along with their corresponding tests.
 Each contract example is organized into its own directory with the following
 structure:
 
@@ -152,27 +149,6 @@ structure:
 - See README file:
   [Validator CheckSignature](./Validators/CheckSignature/README.md)
 
-## Frontend Application
-
-The frontend application demonstrates how to interact with the Plutus smart contracts using a web interface.
-
-### Key Features
-
-- **User-Friendly Interface:** Simplifies interaction with Plutus smart
-  contracts.
-- **Blockfrost Integration:** Seamlessly connects to the Cardano blockchain
-  using the Blockfrost API.
-- **Transaction Management:** Allows users to create, sign, and submit
-  transactions directly from the frontend.
-
-
-### Project
-
-The project is located in the `/examples/Off-chain` directory.
-
-For detailed instructions and more information, please refer to
-the [Frontend README](./Off-chain/README.md) file.
-  
 ## Choosing your Environment
 
 We have set up multiple working environments to accommodate different development preferences and setups. 

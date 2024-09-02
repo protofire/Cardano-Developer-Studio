@@ -272,10 +272,11 @@ export default function Home() {
               </li>
             </ul>
             <h2 className="text-xl font-semibold mt-4">File Structure</h2>
+            {/* // TODO: actualizar esto*/}
             <p className="mt-2">
               The frontend example is located in the{" "}
               <code className="bg-gray-200 p-1 rounded">
-                /examples/Off-chain/frontend
+                /cardano-smart-contracts-examples/Off-chain/frontend
               </code>{" "}
               directory. Inside this directory, you&apos;ll find a file named{" "}
               <code className="bg-gray-200 p-1 rounded">lucid</code>, which is
@@ -285,7 +286,7 @@ export default function Home() {
             <p className="mt-2">
               For more detailed instructions on setting up and using the
               frontend, please refer to the <a
-                href="https://github.com/Fran-cio/Cardano-Developer-Studio/blob/main/examples/Off-chain/README.md"
+                href="https://github.com/Fran-cio/Cardano-Developer-Studio/blob/main/cardano-smart-contracts-examples/Off-chain/README.md"
                 className="text-blue-500 underline"
               >
                 README.md
