@@ -23,7 +23,7 @@ The frontend is developed using React and communicates with the Cardano blockcha
   - [Project Structure](#project-structure)
   - [Website Usage](#website-usage)
   - [Development](#development)
-  - [CI/CD Pipeline](#cicd-pipeline)
+  - [CI / CD Pipeline](#ci--cd-pipeline)
     - [Continuous Integration (CI)](#continuous-integration-ci)
     - [Continuous Deployment (CD)](#continuous-deployment-cd)
     - [Important Notes on Environment Variables](#important-notes-on-environment-variables)
@@ -34,7 +34,7 @@ The frontend is developed using React and communicates with the Cardano blockcha
       - [Step 2: Copy the Template to a New Directory](#step-2-copy-the-template-to-a-new-directory)
       - [Step 3: Initialize a New Git Repository](#step-3-initialize-a-new-git-repository)
       - [Step 4: Set Up Project](#step-4-set-up-project)
-  - [CI/CD Setup](#cicd-setup)
+  - [CI / CD Setup](#ci--cd-setup)
     - [Step 1: Verify Workflow Files](#step-1-verify-workflow-files)
     - [Step 2: Configure Docker Hub and GitHub Secrets](#step-2-configure-docker-hub-and-github-secrets)
     - [Step 3: Understanding CI Workflow](#step-3-understanding-ci-workflow)
@@ -229,13 +229,13 @@ Remember, testnet ADA has no real-world value and is only for testing purposes.
 - Use `src/utils/` for helper functions and API calls.
 - When testing transactions, always use small amounts of testnet ADA.
 
-## CI\/CD Pipeline
+## CI / CD Pipeline
 
 Note: The CI/CD pipeline is only functional when this template is used as a standalone project, not within the Cardano Developer Studio repository.
 
 This project uses GitHub Actions for Continuous Integration and Continuous Deployment (CI/CD) when set up as a standalone repository.
 
-Follow [Using the Template as a Standalone Project](#using-the-template-as-a-standalone-project) and then [CI/CD Setup](#cicd-setup).
+Follow [Using the Template as a Standalone Project](#using-the-template-as-a-standalone-project) and then [CI / CD Setup](#ci--cd-setup).
 
 ### Continuous Integration (CI)
 
@@ -351,7 +351,7 @@ To use this template with CI/CD capabilities:
 
 Follow the [Quick Start](#quick-start) guide from step 2 to set up and run your project locally.
 
-## CI\/CD Setup
+## CI / CD Setup
 
 ### Step 1: Verify Workflow Files
 
