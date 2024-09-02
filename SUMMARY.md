@@ -45,7 +45,7 @@
   * [Cardano Wallet Server Container](./docs/README_CONTAINERS.md#cardano-wallet-server-container)
   * [Cardano DB Sync Container](./docs/README_CONTAINERS.md#cardano-db-sync-container)
   * [Cardano Development Container](./docs/README_CONTAINERS.md#cardano-development-container)
-* [Plutus Smart Contracts Examples and Helpers Library](./cardano-smart-contracts-examples/README.md)
+* [Smart Contracts Examples and Helpers Library](./cardano-smart-contracts-examples/README.md)
   * [Helpers Library](./cardano-smart-contracts-examples/README.md#helpers-library)
   * [Smart Contract Examples](./cardano-smart-contracts-examples/README.md#smart-contract-examples)
   * [Choosing your Environment](./cardano-smart-contracts-examples/README.md#choosing-your-environment)

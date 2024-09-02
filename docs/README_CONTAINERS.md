@@ -232,16 +232,16 @@ select pool_id, sum (amount) from epoch_stake group by pool_id ;
 ### Cardano Development Container
 This container includes a comprehensive suite of tools, libraries, and examples to assist in Plutus smart contract development. It is equipped with `cabal` and `GHC`, which are essential for compiling and testing Haskell code, making it an ideal environment for Plutus development.
 
-To interact with the Cardano Development container, you can open a shell within the container using Visual Studio Code (VS Code).
+To interact with the Cardano Development Container, you can open a shell within the container using Visual Studio Code (VS Code).
 
 1. Install the "Remote - Containers" extension in VS Code.
 2. Open the project folder in VS Code.
 3. Click on the green "><" button in the bottom-left corner of VS Code and select "Attach to Running Container".
-4. Choose the Cardano Development container from the list.
+4. Choose the Cardano Development Container from the list.
 
 Once inside the container, you can run various commands to build and test your smart contracts using `cabal` and `GHC`.
 
-You can read more in [Plutus Smart Contracts Examples and Helpers Library](../cardano-smart-contracts-examples/README.md)
+You can read more in [Smart Contracts Examples and Helpers Library](../cardano-smart-contracts-examples/README.md)
 
 **Basic Cabal Commands:**
 

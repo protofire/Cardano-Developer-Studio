@@ -1,4 +1,4 @@
-# Plutus Smart Contracts Examples and Helpers Library
+# Smart Contracts Examples and Helpers Library
 
 ## Overview
 
@@ -12,7 +12,7 @@ understanding, building, and deploying Plutus smart contracts effectively.
 
 ## Table of Contents
 
-- [Plutus Smart Contracts Examples and Helpers Library](#plutus-smart-contracts-examples-and-helpers-library)
+- [Smart Contracts Examples and Helpers Library](#smart-contracts-examples-and-helpers-library)
   - [Overview](#overview)
   - [Table of Contents](#table-of-contents)
   - [Helpers Library](#helpers-library)
@@ -171,7 +171,7 @@ These are already set up in the Docker and Dev Container environments. If you're
 
 ### Docker Compose
 
-You must have the **Smart Contract Plutus Development** container created and running.
+You must have the **Cardano Development Container** created and running.
 
 Follow this instructions to set-up:
 
@@ -210,7 +210,7 @@ To use the Dev Container:
      integrated **Toolbox CLI** to manage tasks like compiling, testing,
      deploying, and making transactions with the examples as described in the
      [Running the Example CLI](#running-the-example-cli) using the
-     `7) Smart Contract Plutus Development` option.
+     `7) Cardano Development Tools` option.
 
 ### Local Execution
 
@@ -364,7 +364,7 @@ The process is the same regardless of your chosen environment.
 
 ### Running the Example CLI
 
-Once you have a running **Cardano Development container** or a local machine
+Once you have a running **Cardano Development Container** or a local machine
 ready, follow this steps to run the **Toolbox CLI** and follow the
 menus on the terminal.
 
@@ -395,7 +395,7 @@ To build and test the examples, follow these steps:
    Enter your choice or 0 to exit: 7
    ```
 
-3. **Choose the a Cardano Development container or use the local execution**:
+3. **Choose the a Cardano Development Container or use the local execution**:
 
    ```
    Fetching list of cardano-development containers (including stopped)...
@@ -461,7 +461,7 @@ To test the examples, follow these steps:
    Enter your choice or 0 to exit: 7
    ```
 
-3. **Choose the a Cardano Development container or use the local execution**:
+3. **Choose the a Cardano Development Container or use the local execution**:
 
    ```
    Fetching list of cardano-development containers (including stopped)...
@@ -581,7 +581,7 @@ To test the examples, follow these steps:
    Enter your choice or 0 to exit: 7
    ```
 
-3. **Choose the a Cardano Development container or use the local execution**:
+3. **Choose the a Cardano Development Container or use the local execution**:
 
    ```
    Fetching list of cardano-development containers (including stopped)...

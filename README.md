@@ -23,7 +23,7 @@ efficiently on the Cardano platform.
   - [Development Container in VS Code](#development-container-in-vs-code)
   - [Using the Toolbox CLI](#using-the-toolbox-cli)
   - [Using the Docker Containers](#using-the-docker-containers)
-  - [Plutus Smart Contracts Examples and Helpers Library](#plutus-smart-contracts-examples-and-helpers-library)
+  - [Smart Contracts Examples and Helpers Library](#smart-contracts-examples-and-helpers-library)
   - [Cardano Web3 Frontend Template](#cardano-web3-frontend-template)
   - [Contribution](#contribution)
   - [License](#license)
@@ -40,7 +40,7 @@ https://protofire-docs.gitbook.io/developer-studio/
 
 ## Features of Developer Studio
 
-- **Seamless Docker Compose Configurations**: Effortlessly set up and integrate all essential tools with Docker Compose, providing a consistent development environment across different platforms. Our configuration includes containers for the Cardano Node, DB Sync, Wallet Server, Kupo, Ogmios, and a specialized Cardano Development container equipped with Cabal and GHC, tailored to compile Haskell code for smart contracts.
+- **Seamless Docker Compose Configurations**: Effortlessly set up and integrate all essential tools with Docker Compose, providing a consistent development environment across different platforms. Our configuration includes containers for the Cardano Node, DB Sync, Wallet Server, Kupo, Ogmios, and a specialized Cardano Development Container equipped with Cabal and GHC, tailored to compile Haskell code for smart contracts.
 - **Intuitive Toolbox CLI**: Our easy-to-use Toolbox CLI offers a menu-driven interface to navigate, configure, and run a wide array of tools directly from the terminal, making development and deployment processes more efficient.
 - **Real-World Smart Contract Examples**: Dive into a collection of practical Plutus smart contract examples, tailored for real-world applications on the Cardano blockchain. These examples help you understand and implement various functionalities quickly and effectively.
 - **Robust Testing Tools**: Leverage our comprehensive testing suite designed for evaluating resource consumption, transaction sizes, and contract compliance with Plutus constraints, ensuring your smart contracts are optimized for performance and security.
@@ -79,9 +79,9 @@ See [Using the Toolbox CLI](./docs/README_SCRIPT.md)
 
 See [Using the Docker Containers](./docs/README_CONTAINERS.md)
 
-## Plutus Smart Contracts Examples and Helpers Library
+## Smart Contracts Examples and Helpers Library
 
-See [Examples and Helpers Library](./cardano-smart-contracts-examples/README.md)
+See [Smart Contracts Examples and Helpers Library](./cardano-smart-contracts-examples/README.md)
 
 ## Cardano Web3 Frontend Template
 

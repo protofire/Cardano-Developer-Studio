@@ -302,7 +302,7 @@ set_ogmios_kupo_env_variables() {
 
 set_cardano_development_env_variables() {
     echo "----"
-    echo "Setting up Smart Contract Plutus environment..."
+    echo "Setting up Cardano Development environment..."
     # echo "Checking for existing Docker volumes. If found, you'll have the option to delete them. Should you choose not to delete, ensure that your specified values (pattern) align with those of the existing setup."
     # force_delete_docker_volume "cardano_development"
     DOCKER_GID=$(getent group docker | cut -d ':' -f3)
@@ -318,7 +318,7 @@ show_menu() {
     echo "2) Cardano Wallet"
     echo "3) Cardano DB Sync"
     echo "4) Ogmios and Kupo"
-    echo "5) Smart Contract Plutus Development"
+    echo "5) Cardano Development"
     echo "0) Return Main Menu"
     read -p "Enter your choice or 0 to exit: " choice
     main_choice=$choice

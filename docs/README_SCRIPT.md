@@ -50,7 +50,7 @@ After selecting the Docker Compose Workflow, you will see options to run specifi
 - `2) Cardano Wallet`: Initiates the Cardano Wallet container.
 - `3) Cardano DB Sync`: Starts the Cardano DB Sync container.
 - `4) Ogmios and Kupo`: Launches the Ogmios and Kupo containers, providing a lightweight bridge and a scalable Cardano indexer.
-- `5) Smart Contract Plutus Development`: Starts the development environment for building and testing Plutus smart contracts.
+- `5) Cardano Development`: Starts the development environment for building and testing Plutus smart contracts.
 - `0) Return Main Menu`: Returns to the main menu.
 
 For each selection, you will be prompted to enter environment variables such as `CARDANO_NODE_VERSION`, `CARDANO_NETWORK`, and `CARDANO_NODE_PORT`. Default values are provided, but you may customize them as needed.
@@ -94,7 +94,7 @@ By choosing option `4` from the main menu, the DB Sync tools menu provides:
 
 ### Cardano Development Tools Menu
 
-Selecting option `7` from the main menu, you can interact with the Cardano Development container:
+Selecting option `7` from the main menu, you can interact with the Cardano Development Container:
 
 - `1) Cabal Build All`: Build all components using Cabal inside the selected container.
 - `2) Cabal Test All`: Run all tests using Cabal inside the selected container.
