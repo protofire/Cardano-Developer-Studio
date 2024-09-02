@@ -37,10 +37,10 @@ The frontend is developed using React and communicates with the Cardano blockcha
     - [Set Up CI/CD for the Standalone Project](#set-up-cicd-for-the-standalone-project)
       - [Step 1: Verify Workflow Files](#step-1-verify-workflow-files)
       - [Step 2: Configure Docker Hub and GitHub Secrets](#step-2-configure-docker-hub-and-github-secrets)
-    - [Step 3: Triggering CI Workflow](#step-3-triggering-ci-workflow)
-    - [Step 4: Triggering CD Workflow](#step-4-triggering-cd-workflow)
-    - [Step 5: Manual Docker Image Creation (Optional)](#step-5-manual-docker-image-creation-optional)
-    - [Step 6: Using the Docker Image](#step-6-using-the-docker-image)
+      - [Step 3: Triggering CI Workflow](#step-3-triggering-ci-workflow)
+      - [Step 4: Triggering CD Workflow](#step-4-triggering-cd-workflow)
+      - [Step 5: Manual Docker Image Creation (Optional)](#step-5-manual-docker-image-creation-optional)
+      - [Step 6: Using the Docker Image](#step-6-using-the-docker-image)
   - [Troubleshooting](#troubleshooting)
   - [Additional Resources](#additional-resources)
   - [Contributing](#contributing)
@@ -261,11 +261,25 @@ Benefits of CD:
 
 - **Environment Variables Not Included in Docker Image**: The Docker image built during the CD process does not include environment variables, such as the Blockfrost API key stored in `.env.local`, since this file is listed in `.gitignore` and is not included in the repository or the Docker image.
   
-- **Adding Environment Variables at Bulding image and at Runtime**: To ensure that the application functions correctly when building and running the Docker container, you must provide the necessary environment variables. Use the `-e` flag to pass environment variables when starting the container:
+- **Adding Environment Variables at Build Time and Runtime**: To ensure the application functions correctly, you must provide the necessary environment variables both when building and running the Docker container.
+   
+   **For Building the Docker Image**: 
+   The Continuous Deployment (CD) workflow uses GitHub Secrets to securely pass environment variables needed for the build. 
 
-    ```
-    docker run -p 3000:3000 -e BLOCKFROST_PREVIEW=your_blockfrost_key $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest
-    ```
+   **For Building the Docker Image (Manual Build)**: 
+   Use the `--build-arg` flag to pass the environment variable during the Docker image build process: 
+   ```
+   docker build -t $DOCKERHUB_USERNAME/$DOCKERHUB_REPO --build-arg BLOCKFROST_PREVIEW=your_blockfrost_key
+   ``` 
+   This ensures the `BLOCKFROST_PREVIEW` environment variable is set during the image build process.
+
+   **For Running the Docker Container**:
+
+   Use the `-e` flag to pass environment variables when starting the container:
+   ```
+   docker run -p 3000:3000 -e BLOCKFROST_PREVIEW=your_blockfrost_key $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest
+   ```
+   This sets the `BLOCKFROST_PREVIEW` environment variable at runtime, ensuring the application has the necessary configuration.
 
 ## Detailed Usage Guide
 
@@ -349,7 +363,7 @@ Ensure that the `.github/workflows` directory is at the root of your new reposit
    - `DOCKERHUB_REPO`: Your Docker Hub repository name.
    - `BLOCKFROST_PREVIEW`: Your Blockfrost Preview Key. See: [Generating a Blockfrost API Key](#generating-a-blockfrost-api-key)
 
-### Step 3: Triggering CI Workflow
+#### Step 3: Triggering CI Workflow
 
 The Continuous Integration (CI) workflow is triggered automatically on:
 - Every push to the `main` branch
@@ -366,7 +380,7 @@ To view CI results:
 2. Click on the "Actions" tab
 3. You'll see a list of workflow runs. Click on a specific run to view details.
 
-### Step 4: Triggering CD Workflow
+#### Step 4: Triggering CD Workflow
 
 To trigger the Continuous Deployment (CD) workflow:
 
@@ -385,7 +399,7 @@ To trigger the Continuous Deployment (CD) workflow:
 
 2. This action will trigger the CD pipeline, building and pushing the Docker image to Docker Hub.
 
-### Step 5: Manual Docker Image Creation (Optional)
+#### Step 5: Manual Docker Image Creation (Optional)
 
 To manually create and push a Docker image:
 
@@ -399,7 +413,7 @@ To manually create and push a Docker image:
    ```
    docker build -t $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest --build-arg BLOCKFROST_PREVIEW=your_blockfrost_key
    ```
-   Replace `$DOCKERHUB_REPO` with your actual Docker Hub repository name.
+   Replace `$DOCKERHUB_REPO` and `your_blockfrost_key` with your actual Docker Hub repository name and Blockfrost API key, respectively.
 
 3. Push the image to Docker Hub:
    ```
@@ -408,7 +422,7 @@ To manually create and push a Docker image:
 
 Note: This manual process mimics the automated CD workflow but requires you to handle secrets manually.
 
-### Step 6: Using the Docker Image
+#### Step 6: Using the Docker Image
 
 1. After the Docker image is pushed to Docker Hub (either via CD or manually), you can deploy it. Make sure to include the necessary environment variables, such as the Blockfrost API key:
 
