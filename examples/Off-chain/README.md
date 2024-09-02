@@ -6,6 +6,12 @@ This project is an example web application that connects to the Cardano blockcha
 
 The frontend is developed using React and communicates with the Cardano blockchain through Blockfrost. It enables users to interact with smart contracts by providing an intuitive interface for sending transactions, checking contract states, and viewing blockchain data.
 
+## Acknowledgements
+
+This project is inspired by and reuses a significant amount of code from the Plutus Pioneer Program by Input Output HK (IOHK). We want to express our gratitude to the IOHK team for their invaluable contributions to the Cardano ecosystem and for making their code available to the community. All credit for the original concepts and implementations goes to the Plutus Pioneer Program and its contributors.
+
+https://github.com/input-output-hk/plutus-pioneer-program
+
 ## Prerequisites
 
 Before setting up the frontend, ensure that you have the following installed:
@@ -181,3 +187,5 @@ Contributions to improve this example are welcome! Please feel free to submit is
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 For any questions or support, please open an issue in the GitHub repository.
+
+
