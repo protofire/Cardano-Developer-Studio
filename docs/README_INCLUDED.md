@@ -6,7 +6,7 @@
 - [Helpers Library](#helpers-library)
 - [Example Suite](#example-suite)
 - [Testing Suite](#testing-suite)
-- [Script Menus and Tools](#script-menus-and-tools)
+- [CLI Script with Menus and Tools](#cli-script-with-menus-and-tools)
 - [Dockerized Tools Ready for Use](#dockerized-tools-ready-for-use)
 
 ### Cardano Node
@@ -49,12 +49,13 @@ The **Testing Suite** includes a range of functions for testing resource usage a
 - **Resource Testing**: Evaluates the resource consumption of contracts, helping to optimize their execution and ensure they fit within the blockchain's limits.
 - **Transaction Size Testing**: Analyzes the size of generated transactions to ensure they do not exceed the allowed limits, preventing issues when submitting them to the network.
 
-TODO:
+<!-- TODO:
+- agregar sobre front end
+- y sobre ci cd y docker for containerized deployment. -->
 - **CI/CD Pipeline**: GitHub Actions workflows for automated testing, building, and deploying of smart contracts and frontend applications.
 - **Docker Support**: Dockerfiles and docker-compose configurations for containerized deployment.
 
-
-### Script Menus and Tools
+### CLI Script with Menus and Tools
 
 To facilitate interaction with Cardano Node, Wallet, and DB Sync, we have provided scripts that include menus for easy navigation and tool execution. 
 

@@ -164,19 +164,19 @@ Regardless of the environment you choose, the core requirement is to use Cabal t
 
 Regardless of your chosen environment, you'll need:
 
-GHC 8.10.7
+GHC 8.10.7  
 Cabal 3.10.3
 
 These are already set up in the Docker and Dev Container environments. If you're using a local setup, make sure to install these versions.
 
 ### Docker Compose
 
-You must have the **Plutus Developments Container** created and running.
+You must have the **Smart Contract Plutus Development** container created and running.
 
 Follow this instructions to set-up:
 
 - [COMPOSE](../docs/README_SCRIPT.md#docker-compose-menu)
-- [USE](../docs/README_SCRIPT.md#plutus-development-tools)
+- [USE](../docs/README_SCRIPT.md#cardano-development-tools-menu))
 
 Once the container is created you can work from a **terminal** outside or within
 the container and run the main **CLI** script bash. See

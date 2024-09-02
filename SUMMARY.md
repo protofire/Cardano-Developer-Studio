@@ -5,6 +5,7 @@
 * [Features](./README.md#features)
 * [Why Developers Need to Experiment with These Tools](./README.md#why-developers-need-to-experiment-with-these-tools)
 * [What is included](./docs/README_INCLUDED.md)
+<!-- TODO: agregar en que esta includo lo del front y lo de cicd -->
   * [Cardano Node](./docs/README_INCLUDED.md#cardano-node)
   * [Cardano Wallet](./docs/README_INCLUDED.md#cardano-wallet)
   * [Cardano DB Sync](./docs/README_INCLUDED.md#cardano-db-sync)
@@ -12,6 +13,7 @@
   * [Examples Suite](./docs/README_INCLUDED.md#example-suite)
   * [Testing Suite](./docs/README_INCLUDED.md#testing-suite)
   * [Script Menus and Tools](./docs/README_INCLUDED.md#script-menus-and-tools)
+<!-- TODO: que es esto del dockerized? re escribir este readme -->
   * [Dockerized Tools Ready for Use](./docs/README_INCLUDED.md#dockerized-tools-ready-for-use)
 * [Installation and Setup](./docs/README_INSTALLATION.md)
   * [Why Choose the DevContainer Method?](./docs/README_INSTALLATION.md#why-choose-the-devcontainer-method)

@@ -111,7 +111,7 @@ page on [IdeaScale](https://cardano.ideascale.com/c/idea/110047).
 
 ## Ongoing Progress
 
-TODO:
+<!-- TODO: comentar que es el ultimo milestone -->
 
 
 Welcome to the beginning of a journey! You're looking at the first milestone and
