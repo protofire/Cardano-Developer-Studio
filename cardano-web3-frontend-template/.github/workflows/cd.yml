@@ -23,9 +23,9 @@ jobs:
     - name: Build and push Docker image
       uses: docker/build-push-action@v2
       with:
-        context: ./
+        context: .
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/cardano-web3-frontend:${{ github.ref_name }}
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:${{ github.ref_name }}
         
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}

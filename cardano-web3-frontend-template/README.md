@@ -12,10 +12,8 @@ The frontend is developed using React and communicates with the Cardano blockcha
   - [Overview](#overview)
   - [Table of Contents](#table-of-contents)
   - [Quick Start](#quick-start)
-  - [Detailed Usage Guide](#detailed-usage-guide)
-    - [Using the Template within Developer Studio](#using-the-template-within-developer-studio)
-    - [Using the Template as a Standalone Project](#using-the-template-as-a-standalone-project)
   - [Prerequisites](#prerequisites)
+    - [Account Setup](#account-setup)
   - [Key Features](#key-features)
   - [What is Blockfrost?](#what-is-blockfrost)
     - [Generating a Blockfrost API Key](#generating-a-blockfrost-api-key)
@@ -23,11 +21,25 @@ The frontend is developed using React and communicates with the Cardano blockcha
     - [Installing a Compatible Wallet Extension](#installing-a-compatible-wallet-extension)
     - [Obtaining Testnet ADA](#obtaining-testnet-ada)
   - [Project Structure](#project-structure)
-  - [Usage](#usage)
+  - [Website Usage](#website-usage)
   - [Development](#development)
   - [CI/CD Pipeline](#cicd-pipeline)
-  - [Docker Integration](#docker-integration)
-  - [Deploying Your Application](#deploying-your-application)
+    - [Continuous Integration (CI)](#continuous-integration-ci)
+    - [Continuous Deployment (CD)](#continuous-deployment-cd)
+  - [Detailed Usage Guide](#detailed-usage-guide)
+    - [Using the Template within Developer Studio](#using-the-template-within-developer-studio)
+    - [Using the Template as a Standalone Project](#using-the-template-as-a-standalone-project)
+      - [Step 1: Clone the Cardano Developer Studio Repository](#step-1-clone-the-cardano-developer-studio-repository)
+      - [Step 2: Copy the Template to a New Directory](#step-2-copy-the-template-to-a-new-directory)
+      - [Step 3: Initialize a New Git Repository](#step-3-initialize-a-new-git-repository)
+      - [Step 4: Set Up Project](#step-4-set-up-project)
+    - [Set Up CI/CD for the Standalone Project](#set-up-cicd-for-the-standalone-project)
+      - [Step 1: Verify Workflow Files](#step-1-verify-workflow-files)
+      - [Step 2: Configure Docker Hub and GitHub Secrets](#step-2-configure-docker-hub-and-github-secrets)
+    - [Step 3: Triggering CI Workflow](#step-3-triggering-ci-workflow)
+    - [Step 4: Triggering CD Workflow](#step-4-triggering-cd-workflow)
+    - [Step 5: Manual Docker Image Creation (Optional)](#step-5-manual-docker-image-creation-optional)
+    - [Step 6: Using the Docker Image](#step-6-using-the-docker-image)
   - [Troubleshooting](#troubleshooting)
   - [Additional Resources](#additional-resources)
   - [Contributing](#contributing)
@@ -35,75 +47,46 @@ The frontend is developed using React and communicates with the Cardano blockcha
 
 ## Quick Start
 
-1. Clone the repository:
+This quick start guide assumes you're using the template within the Cardano Developer Studio repository. For standalone usage, see the [Detailed Usage Guide](#detailed-usage-guide).
+
+1. Clone the Cardano Developer Studio repository:
+
    ```
    git clone https://github.com/protofire/Cardano-Developer-Studio.git
    cd Cardano-Developer-Studio/cardano-web3-frontend-template
    ```
 
 2. Install dependencies:
+
    ```
    npm install
    ```
+
    or if you're using Yarn:
+
    ```
    yarn install
    ```
 
 3. Set up your Blockfrost API key in `.env.local` (see [Generating a Blockfrost API Key](#generating-a-blockfrost-api-key))
-   - Copy `.env.example` to `.env.local`:
-     ```
-     cp .env.example .env.local
-     ```
-   - Open the `.env.local` file
-   - Find the line `BLOCKFROST_PREVIEW=YOUR_PREVIEW_KEY_HERE`.
-   - Replace `YOUR_PREVIEW_KEY_HERE` with your Blockfrost API key.
 
 4. Run the development server:
+
    ```
    npm run dev
    ```
+
    or with Yarn:
+
    ```
    yarn dev
    ```
 
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Detailed Usage Guide
+6. See [Website Usage](#website-usage) 
 
-### Using the Template within Developer Studio
-
-1. Navigate to the GitHub repository: [https://github.com/protofire/Cardano-Developer-Studio](https://github.com/protofire/Cardano-Developer-Studio)
-2. Clone the repository:
-   ```
-   git clone https://github.com/protofire/Cardano-Developer-Studio.git
-   cd Cardano-Developer-Studio/cardano-web3-frontend-template
-   ```
-3. Follow the [Quick Start](#quick-start) guide from step 2
-
-Note: The CI/CD pipeline is configured to trigger only when changes are made in the `cardano-web3-frontend-template` folder.
-
-### Using the Template as a Standalone Project
-
-1. Navigate to the GitHub repository: [https://github.com/protofire/Cardano-Developer-Studio](https://github.com/protofire/Cardano-Developer-Studio)
-2. Click on the "Use this template" button
-3. Choose a name for your new repository and create it
-4. Clone your new repository:
-   ```
-   git clone https://github.com/your-username/your-new-repo.git
-   cd your-new-repo
-   ```
-5. If you want to keep only the frontend template:
-   ```
-   mv cardano-web3-frontend-template/* .
-   mv cardano-web3-frontend-template/.* .
-   rm -rf cardano-web3-frontend-template
-   ```
-6. Update the CI/CD configuration:
-   - Edit `.github/workflows/ci.yml` and `.github/workflows/cd.yml`
-   - Remove the `paths` filter and the `working-directory` setting
-7. Follow the [Quick Start](#quick-start) guide from step 2
+Note: The CI/CD pipeline is not active when using the template within the Cardano Developer Studio repository.
 
 ## Prerequisites
 
@@ -112,20 +95,25 @@ Note: The CI/CD pipeline is configured to trigger only when changes are made in 
 - A Blockfrost API key
 - Compatible wallet extension (e.g., Nami, Eternl, Flint, Yoroi, Typhon, Nufi)
 - Testnet ADA for transactions
-- Docker (for containerized deployment)
-- Docker account (for pushing and pulling Docker images)
-- Git (for version control and CI/CD integration)
-- GitHub account (for repository management and CI/CD)
+- Docker (for containerized deployment when using as a standalone project)
+- Git (for version control)
+- GitHub account (for repository management and CI/CD when using as a standalone project)
+- Docker Hub account (for storing Docker images)
+
+### Account Setup
+
+1. **GitHub Account**: Required for version control and CI/CD workflows. If you don't have one, create it [here](https://github.com/).
+2. **Docker Hub Account**: Required for storing and managing Docker images. If you don't have one, create it [here](https://hub.docker.com/).
 
 ## Key Features
 
 - **User-Friendly Interface**: Simplifies interaction with Plutus smart contracts.
 - **Blockfrost Integration**: Seamlessly connects to the Cardano blockchain using the Blockfrost API.
-- **Transaction Management**: Allows users to create, sign, and submit transactions directly from the frontend.
+- **Transaction Management**: Allows users to create, sign and submit transactions directly from the frontend.
 - **Lucid Library Integration**: Demonstrates how to interact with Plutus smart contracts using the Lucid library.
 - **Multi-Wallet Compatibility**: Works with multiple popular Cardano wallet extensions.
-- **CI/CD Integration**: Automated build, test, and deployment processes using GitHub Actions.
-- **Docker Support**: Production-ready Docker images for easy deployment and scaling.
+- **CI/CD Integration**: Automated build, test, and deployment processes using GitHub Actions (when used as a standalone project).
+- **Docker Support**: Production-ready Docker images for easy deployment and scaling (when used as a standalone project).
 
 ## What is Blockfrost?
 
@@ -142,6 +130,16 @@ To use this example application, you'll need to generate a Blockfrost API key fo
 3. Navigate to the "Projects" section.
 4. Create a new project and select the `preview` network.
 5. Copy the API key provided by Blockfrost.
+6. Create a `.env.local` file in the project root:
+
+   ```
+   cp .env.example .env.local
+   ```
+
+7. Add your Blockfrost API key:
+   - Open the `.env.local` file.
+   - Find the line `BLOCKFROST_PREVIEW=YOUR_PREVIEW_KEY_HERE`.
+   - Replace `YOUR_PREVIEW_KEY_HERE` with your Blockfrost API key.
 
 ## Wallet Integration
 
@@ -154,21 +152,21 @@ This template supports multiple Cardano wallets. The wallet connector component 
 - Typhon
 - Nufi
 
-Users can easily connect their wallet or install a new one directly from the application interface.
+The application provides an "Install" button for each wallet, which directs users to the appropriate extension page for easy installation.
 
 ### Installing a Compatible Wallet Extension
 
-To interact with the Cardano blockchain, you'll need a compatible wallet extension. Some recomendatios are:
+To interact with the Cardano blockchain, you'll need a compatible wallet extension. Some recommendations are:
 
 1. **Nami Wallet**:
-   - Visit the [Nami Wallet Chrome Extension page](https://chromewebstore.google.com/detail/nami/lpfcbjknijpeeillifnkikgncikgfhdo)
-   - Click "Add to Chrome" and follow the installation prompts
-   - Once installed, click the extension icon and follow the setup instructions to create or import a wallet
+   - Visit the [Nami Wallet Chrome Extension page](https://chromewebstore.google.com/detail/nami/lpfcbjknijpeeillifnkikgncikgfhdo).
+   - Click "Add to Chrome" and follow the installation prompts.
+   - Once installed, click the extension icon and follow the setup instructions to create or import a wallet.
 
 2. **Eternl Wallet**:
-   - Go to the [Eternl Wallet Chrome Extension page](https://chromewebstore.google.com/detail/eternl/kmhcihpebfmpgmihbkipmjlmmioameka)
-   - Click "Add to Chrome" and complete the installation process
-   - After installation, open the extension and follow the prompts to set up your wallet
+   - Go to the [Eternl Wallet Chrome Extension page](https://chromewebstore.google.com/detail/eternl/kmhcihpebfmpgmihbkipmjlmmioameka).
+   - Click "Add to Chrome" and complete the installation process.
+   - After installation, open the extension and follow the prompts to set up your wallet.
 
 After installation, ensure your wallet is set to the Cardano testnet network for this example application.
 
@@ -176,11 +174,11 @@ After installation, ensure your wallet is set to the Cardano testnet network for
 
 To interact with smart contracts and make transactions on the testnet, you'll need some test ADA. You can obtain this for free from the Cardano testnet faucet:
 
-1. Visit the [Cardano Testnet Faucet](https://docs.cardano.org/cardano-testnets/tools/faucet/)
-2. Select the appropriate testnet (e.g., "Preprod" or "Preview")
-3. Enter your wallet's testnet address
-4. Complete the CAPTCHA and submit the request
-5. You should receive the test ADA in your wallet within a few minutes
+1. Visit the [Cardano Testnet Faucet](https://docs.cardano.org/cardano-testnets/tools/faucet/).
+2. Select the appropriate testnet (e.g., "Preprod" or "Preview").
+3. Enter your wallet's testnet address.
+4. Complete the CAPTCHA and submit the request.
+5. You should receive the test ADA in your wallet within a few minutes.
 
 Remember, testnet ADA has no real-world value and is only for testing purposes.
 
@@ -200,99 +198,214 @@ Remember, testnet ADA has no real-world value and is only for testing purposes.
 │       ├── ci.yml
 │       └── cd.yml
 ├── Dockerfile
-├── docker-compose.yml
-├── .env
+├── .env.example
+├── .env.local (you need to create this)
 └── package.json
 ```
 
-## Usage
+## Website Usage
 
 1. Ensure your chosen wallet extension is installed and set to the testnet network.
 2. Open the web application at [http://localhost:3000](http://localhost:3000).
-3. Use the wallet connector to connect your preferred wallet.
+3. Use the wallet connector to connect your preferred wallet. If you don't have a compatible wallet installed, use the provided "Install" buttons to set one up.
 4. Once connected, you can view your ADA balance and other blockchain data.
 5. Interact with deployed Plutus smart contracts through the user interface.
 6. Create, sign, and submit transactions using your testnet ADA.
 
 ## Development
 
-- Customize the UI by modifying React components in `src/components/`
-- Add new pages in `src/pages/`
-- Use `src/utils/` for helper functions and API calls
-- When testing transactions, always use small amounts of testnet ADA
+- Customize the UI by modifying React components in `src/components/`.
+- Add new pages in `src/pages/`.
+- Use `src/utils/` for helper functions and API calls.
+- When testing transactions, always use small amounts of testnet ADA.
 
 ## CI/CD Pipeline
 
-This project uses GitHub Actions for Continuous Integration and Continuous Deployment (CI/CD).
+Note: The CI/CD pipeline is only functional when this template is used as a standalone project, not within the Cardano Developer Studio repository.
 
-1. CI Pipeline (`ci.yml`):
-   - Triggered on push or pull request to the main branch
-   - Runs tests and builds the project
-   - For the Developer Studio repo, only triggers on changes in the `cardano-web3-frontend-template` folder
+This project uses GitHub Actions for Continuous Integration and Continuous Deployment (CI/CD) when set up as a standalone repository.
 
-2. CD Pipeline (`cd.yml`):
-   - Triggered when a new release (tag) is created
-   - Builds and pushes a Docker image to Docker Hub
-   - For the Developer Studio repo, only builds the `cardano-web3-frontend-template` folder
+### Continuous Integration (CI)
 
-To set up CI/CD:
+The CI workflow (`ci.yml`) automates the testing and building process:
 
-1. Navigate to your repository on GitHub
-2. Go to "Settings" > "Secrets and variables" > "Actions"
-3. Add the following secrets:
-   - `DOCKERHUB_USERNAME`: Your Docker Hub username
-   - `DOCKERHUB_TOKEN`: Your Docker Hub access token
-   - `BLOCKFROST_PROJECT_ID`: Your Blockfrost project ID
+- Triggered on every push to the main branch and on pull requests.
+- Sets up the Node.js environment.
+- Installs project dependencies.
+- Runs automated tests.
+- Builds the project to verify successful compilation.
 
-4. If using the template as a standalone project, update the YAML files as described in the [Using the Template as a Standalone Project](#using-the-template-as-a-standalone-project) section
+Benefits of CI:
+- Early detection of integration issues.
+- Maintains a consistently deployable codebase.
+- Provides quick feedback to developers about their changes.
 
-## Docker Integration
+### Continuous Deployment (CD)
 
-1. Create a Docker Hub account if you haven't already: [https://hub.docker.com/](https://hub.docker.com/)
-2. Create a new repository on Docker Hub for your project
-3. Update the `cd.yml` file with your Docker Hub repository name
+The CD workflow (`cd.yml`) automates the deployment process:
 
-To build and push your Docker image manually:
+- Triggered when a new release is created (i.e., when a new tag is pushed).
+- Builds a Docker image of your application.
+- Pushes the Docker image to Docker Hub.
 
-1. Build the Docker image:
+Benefits of CD:
+- Automates the deployment process, reducing manual errors.
+- Ensures consistent deployment across different environments.
+- Enables rapid and frequent releases.
+
+## Detailed Usage Guide
+
+### Using the Template within Developer Studio
+
+1. Follow the [Quick Start](#quick-start) guide.
+2. The template is ready for development and testing within the Cardano Developer Studio environment.
+3. Note that the CI/CD workflows will not run automatically in this setup.
+
+### Using the Template as a Standalone Project
+
+To use this template with CI/CD capabilities:
+
+#### Step 1: Clone the Cardano Developer Studio Repository
+
+1. Go to the GitHub repository for Cardano Developer Studio: [https://github.com/protofire/Cardano-Developer-Studio](https://github.com/protofire/Cardano-Developer-Studio).
+2. Click on the green "Code" button and copy the repository URL.
+3. Clone the repository to your local machine:
    ```
-   docker build -t your-dockerhub-username/your-repo-name:latest .
+   git clone https://github.com/protofire/Cardano-Developer-Studio.git
    ```
-2. Push the image to Docker Hub:
+4. Change to the project directory:
    ```
-   docker push your-dockerhub-username/your-repo-name:latest
+   cd Cardano-Developer-Studio
    ```
 
-## Deploying Your Application
+#### Step 2: Copy the Template to a New Directory
 
-1. Ensure your CI/CD pipeline is set up correctly (see [CI/CD Pipeline](#cicd-pipeline) section)
-2. Make changes to your code and push to the `main` branch
-3. The CI pipeline will automatically run tests
-4. If tests pass and you're ready to deploy, create a new release:
+1. Navigate to the `cardano-web3-frontend-template` folder:
+   ```
+   cd cardano-web3-frontend-template
+   ```
+2. Create a new directory outside of the Cardano Developer Studio project:
+   ```
+   mkdir ../../my-frontend-project
+   cp -r ./* ../../my-frontend-project
+   cp -r ./.* ../../my-frontend-project
+   cd ../../my-frontend-project
+   ```
+
+#### Step 3: Initialize a New Git Repository
+
+1. Initialize a new Git repository:
+   ```
+   git init
+   ```
+2. Create a new repository on GitHub via the website.
+3. Add the remote origin to your new repository:
+   ```
+   git remote add origin https://github.com/your-username/your-new-repo.git
+   ```
+4. Commit and push your changes:
+   ```
+   git add .
+   git commit -m "Initial commit"
+   git push -u origin main
+   ```
+
+#### Step 4: Set Up Project
+
+Follow the [Quick Start](#quick-start) guide from step 2 to set up and run your project locally.
+
+### Set Up CI/CD for the Standalone Project
+
+#### Step 1: Verify Workflow Files
+
+Ensure that the `.github/workflows` directory is at the root of your new repository, containing your CI/CD workflow files (`ci.yml` and `cd.yml`).
+
+#### Step 2: Configure Docker Hub and GitHub Secrets
+
+1. Create a Docker Hub account if you haven't already. See [Account Setup](#account-setup)
+2. Create a new repository on Docker Hub for your project (e.g., `my-frontend-project`)
+3. Go to your GitHub repository settings > Secrets and variables > Actions.
+4. Add the following secrets:
+   - `DOCKERHUB_USERNAME`: Your Docker Hub username.
+   - `DOCKERHUB_TOKEN`: Your Docker Hub access token.
+   - `DOCKERHUB_REPO`: Your Docker Hub repository name.
+
+### Step 3: Triggering CI Workflow
+
+The Continuous Integration (CI) workflow is triggered automatically on:
+- Every push to the `main` branch
+- Every pull request targeting the `main` branch
+
+It performs the following tasks:
+1. Sets up the Node.js environment
+2. Installs project dependencies
+3. Runs tests
+4. Builds the project
+
+To view CI results:
+1. Go to your GitHub repository
+2. Click on the "Actions" tab
+3. You'll see a list of workflow runs. Click on a specific run to view details.
+
+### Step 4: Triggering CD Workflow
+
+To trigger the Continuous Deployment (CD) workflow:
+
+1. Create a new release:
    ```
    git tag v1.0.0
    git push origin v1.0.0
    ```
-5. The CD pipeline will build a new Docker image and push it to Docker Hub
-6. You can now pull this image on your deployment server:
+   Or use the GitHub website:
+   - Go to your repository > "Releases" > "Draft a new release"
+   - Create a new tag (e.g., `v1.0.0`)
+
+2. This action will trigger the CD pipeline, building and pushing the Docker image to Docker Hub.
+
+### Step 5: Manual Docker Image Creation (Optional)
+
+To manually create and push a Docker image:
+
+1. Log in to Docker Hub:
    ```
-   docker pull your-dockerhub-username/your-repo-name:latest
+   docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_TOKEN
    ```
-7. Run the container:
+   Replace `$DOCKERHUB_USERNAME` and `$DOCKERHUB_TOKEN` with your actual Docker Hub credentials.
+
+2. Build the Docker image:
    ```
-   docker run -p 3000:3000 your-dockerhub-username/your-repo-name:latest
+   docker build -t $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest .
    ```
-   
+   Replace `$DOCKERHUB_REPO` with your actual Docker Hub repository name.
+
+3. Push the image to Docker Hub:
+   ```
+   docker push $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest
+   ```
+
+Note: This manual process mimics the automated CD workflow but requires you to handle secrets manually.
+
+### Step 6: Using the Docker Image
+
+1. After the Docker image is pushed to Docker Hub (either via CD or manually), you can deploy it:
+
+   ```
+   docker pull $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest
+   docker run -p 3000:3000 $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest
+   ```
+
+   Replace `$DOCKERHUB_USERNAME` and `$DOCKERHUB_REPO` with your actual Docker Hub username and repository name.
+
+2. Follow [Website Usage](#website-usage)
+
 ## Troubleshooting
 
-- Ensure your Blockfrost API key is correctly set in the `.env.local` file
-- Verify that your chosen wallet extension is properly installed and set up
-- Check that your wallet is connected to the correct testnet network
-- Confirm you have sufficient testnet ADA in your wallet for transactions
-- Check the browser console for any error messages
-- For CI/CD issues, check the GitHub Actions logs for detailed error messages
-- Ensure all required secrets are properly set in your GitHub repository settings
-- Verify that your Docker Hub credentials are correct and you have permission to push to the specified repository
+- Ensure your Blockfrost API key is correctly set in the `.env.local` file.
+- Verify that your chosen wallet extension is properly installed and set up.
+- Check that your wallet is connected to the correct testnet network.
+- Confirm you have sufficient testnet ADA in your wallet for transactions.
+- Check the browser console for any error messages.
+- For CI/CD issues (in standalone setup), check the GitHub Actions logs for detailed error messages.
 
 ## Additional Resources
 
@@ -301,6 +414,7 @@ To build and push your Docker image manually:
 - [Lucid Library Documentation](https://lucid.spacebudz.io/)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [Docker Documentation](https://docs.docker.com/)
+- [Docker Hub](https://hub.docker.com/)
 - [Nami Wallet GitHub](https://github.com/berry-pool/nami)
 - [Nami Wallet Extension](https://chromewebstore.google.com/detail/nami/lpfcbjknijpeeillifnkikgncikgfhdo)
 - [Eternl Wallet Extension](https://chromewebstore.google.com/detail/eternl/kmhcihpebfmpgmihbkipmjlmmioameka)
@@ -308,10 +422,15 @@ To build and push your Docker image manually:
 
 ## Contributing
 
-Contributions to improve this example are welcome! Please feel free to submit issues, fork the repository and send pull requests.
+Contributions to improve this example are welcome! Please feel free to submit issues, fork the repository, and send pull requests.
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 For any questions or support, please open an issue in the GitHub repository.
+
+
+
+
+
