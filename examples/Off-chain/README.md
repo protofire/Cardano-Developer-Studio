@@ -91,13 +91,14 @@ To run the example application, follow these steps:
    ```
 
 3. **Configure the Blockfrost API key**:
+   - Copy `.env.example` located in the `examples/Off-chain/` directory to `.env.local`
 
-   - Open the `.env` file located in the `examples/Off-chain/` directory.
-   - Find the line that starts with `BLOCKFROST_PREVIEW=`.
+   ```bash
+   cp .env.example .env.local
+   ```
+   - Open the `.env.local` file 
+   - Find the line `BLOCKFROST_PREVIEW=YOUR_PREVIEW_KEY_HERE`.
    - Paste your Blockfrost API key after the equals sign, like so:
-     ```env
-     BLOCKFROST_PREVIEW=your_blockfrost_api_key_here
-     ```
 
 4. **Run the development server**:
 
@@ -177,6 +178,6 @@ Contributions to improve this example are welcome! Please feel free to submit is
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 For any questions or support, please open an issue in the GitHub repository.

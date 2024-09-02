@@ -53,7 +53,7 @@
   * [Choosing your Environment](./examples/README.md#choosing-your-environment)
   * [Step-by-Step Guides](./examples/README.md#step-by-step-guides)
   * [Frontend](./examples/README.md#frontend)
-* Aditional READMES
+* Additional READMEs
   * [Policy AlwaysFalse](./examples/Policies/AlwaysFalse/README.md)
   * [Policy AlwaysTrue](./examples/Policies/AlwaysTrue/README.md)
   * [Policy CheckDate](./examples/Policies/CheckDate/README.md)

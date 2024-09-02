@@ -17,6 +17,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import WalletSelectorModal, { Wallet } from '@/components/WalletSelectorModal';
 
 export const alwaysTrueScript: SpendingValidator = {
   type: "PlutusV2",
@@ -90,7 +91,6 @@ export type AppState = {
 const initialAppState: AppState = {
   contractType: "undefined",
   contractClass: "alwaysTrue",
-
 };
 
 export const AppStateContext = createContext<{
@@ -100,8 +100,9 @@ export const AppStateContext = createContext<{
 
 export default function App({ Component, pageProps }: AppProps) {
   const [appState, setAppState] = useState<AppState>(initialAppState);
+  const [showWalletModal, setShowWalletModal] = useState(false);
 
-  const connectLucidAndNami = async () => {
+  const connectLucid = async (wallet: any) => {
     const lucid = await Lucid.new(
       new Blockfrost(
         "https://cardano-preview.blockfrost.io/api/v0",
@@ -109,12 +110,8 @@ export default function App({ Component, pageProps }: AppProps) {
       ),
       "Preview",
     );
-    if (!window.cardano.nami) {
-      window.alert("Please install Nami Wallet");
-      return;
-    }
-    const nami = await window.cardano.nami.enable();
-    lucid.selectWallet(nami);
+    
+    lucid.selectWallet(wallet);
     setAppState({
       ...initialAppState,
       lucid: lucid,
@@ -128,13 +125,34 @@ export default function App({ Component, pageProps }: AppProps) {
     });
   };
 
+  const handleWalletSelect = async (wallet: Wallet) => {
+    try {
+      if (wallet.enable) {
+        const api = await wallet.enable();
+        await connectLucid(api);
+        setShowWalletModal(false);
+      }
+    } catch (error) {
+      console.error("Failed to connect wallet:", error);
+      // You might want to show an error message to the user here
+    }
+  };
+  
   useEffect(() => {
     if (appState.lucid) return;
-    connectLucidAndNami();
+    setShowWalletModal(true);
   }, [appState]);
+
   return (
     <AppStateContext.Provider value={{ appState, setAppState }}>
+      {showWalletModal && (
+        <WalletSelectorModal
+          onSelect={handleWalletSelect}
+          onClose={() => setShowWalletModal(false)}
+        />
+      )}
       <Component {...pageProps} />
     </AppStateContext.Provider>
   );
 }
+

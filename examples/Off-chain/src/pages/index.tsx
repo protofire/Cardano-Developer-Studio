@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AppStateContext, ContractClass, ContractType } from "./_app";
 import { ExplorerLink } from "@/components/ExplorerLinks";
 import AlwaysContract from "@/components/AlwaysContract";
@@ -8,9 +8,11 @@ import FTPolicy from "@/components/FTPolicy";
 import NFTPolicy from "@/components/NFTPolicy";
 import { HiUserCircle } from "react-icons/hi";
 import { IoReloadCircleSharp } from "react-icons/io5";
+import WalletSelectorModal, { Wallet } from '@/components/WalletSelectorModal';
 
 export default function Home() {
   const { appState, setAppState } = useContext(AppStateContext);
+  const [showWalletModal, setShowWalletModal] = useState(false);
   const {
     wAddr,
     contractType,
@@ -23,13 +25,25 @@ export default function Home() {
   } = appState;
 
   const refreshWallet = async () => {
-    if (!appState.lucid || !window.cardano.nami) return;
-    const nami = await window.cardano.nami.enable();
-    appState.lucid.selectWallet(nami);
-    setAppState({
-      ...appState,
-      wAddr: await appState.lucid.wallet.address(),
-    });
+    setShowWalletModal(true);
+  };
+
+  const handleWalletSelect = async (wallet: Wallet) => {
+    try {
+      if (wallet.enable) {
+        const api = await wallet.enable();
+        if (!appState.lucid) return;
+        appState.lucid.selectWallet(api);
+        setAppState({
+          ...appState,
+          wAddr: await appState.lucid.wallet.address(),
+        });
+        setShowWalletModal(false);
+      }
+    } catch (error) {
+      console.error("Failed to connect wallet:", error);
+      // You might want to show an error message to the user here
+    }
   };
 
   const handleClickContractType = (v: ContractType) => {
@@ -263,7 +277,7 @@ export default function Home() {
               <code className="bg-gray-200 p-1 rounded">
                 /examples/Off-chain/frontend
               </code>{" "}
-              directory. Inside this directory, you'll find a file named{" "}
+              directory. Inside this directory, you&apos;ll find a file named{" "}
               <code className="bg-gray-200 p-1 rounded">lucid</code>, which is
               crucial for managing interactions with the blockchain.
             </p>
@@ -287,6 +301,13 @@ export default function Home() {
             (contractClass == "FT" && <FTPolicy />) ||
             (contractClass == "NFT" && <NFTPolicy />))}
       </div>
+
+      {showWalletModal && (
+        <WalletSelectorModal
+          onSelect={handleWalletSelect}
+          onClose={() => setShowWalletModal(false)}
+        />
+      )}
     </main>
   );
 }
