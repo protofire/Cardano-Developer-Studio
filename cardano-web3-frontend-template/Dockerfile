@@ -14,6 +14,7 @@ RUN npm install
 COPY . .
 
 # Build the app using the environment variables provided
+# another option is to not build the site now and build it later when the container is run, so env variables can be passed at runtime
 ARG BLOCKFROST_PREVIEW
 ENV BLOCKFROST_PREVIEW=${BLOCKFROST_PREVIEW}
 

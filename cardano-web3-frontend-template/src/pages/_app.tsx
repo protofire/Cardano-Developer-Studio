@@ -102,9 +102,6 @@ export default function App({ Component, pageProps }: AppProps) {
   const [appState, setAppState] = useState<AppState>(initialAppState);
   const [showWalletModal, setShowWalletModal] = useState(false);
 
-  console.log("?");
-  console.log(process.env.BLOCKFROST_PREVIEW)
-
   const connectLucid = async (wallet: any) => {
     const lucid = await Lucid.new(
       new Blockfrost(
@@ -142,9 +139,6 @@ export default function App({ Component, pageProps }: AppProps) {
   };
   
   useEffect(() => {
-    alert("?");
-    alert(process.env.BLOCKFROST_PREVIEW)
-
     if (appState.lucid) return;
     setShowWalletModal(true);
   }, [appState]);
