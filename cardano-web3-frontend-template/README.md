@@ -34,13 +34,21 @@ The frontend is developed using React and communicates with the Cardano blockcha
       - [Step 2: Copy the Template to a New Directory](#step-2-copy-the-template-to-a-new-directory)
       - [Step 3: Initialize a New Git Repository](#step-3-initialize-a-new-git-repository)
       - [Step 4: Set Up Project](#step-4-set-up-project)
-    - [Set Up CI/CD for the Standalone Project](#set-up-cicd-for-the-standalone-project)
-      - [Step 1: Verify Workflow Files](#step-1-verify-workflow-files)
-      - [Step 2: Configure Docker Hub and GitHub Secrets](#step-2-configure-docker-hub-and-github-secrets)
-      - [Step 3: Triggering CI Workflow](#step-3-triggering-ci-workflow)
-      - [Step 4: Triggering CD Workflow](#step-4-triggering-cd-workflow)
-      - [Step 5: Manual Docker Image Creation (Optional)](#step-5-manual-docker-image-creation-optional)
-      - [Step 6: Using the Docker Image](#step-6-using-the-docker-image)
+  - [CI/CD Setup](#cicd-setup)
+    - [Step 1: Verify Workflow Files](#step-1-verify-workflow-files)
+    - [Step 2: Configure Docker Hub and GitHub Secrets](#step-2-configure-docker-hub-and-github-secrets)
+    - [Step 3: Understanding CI Workflow](#step-3-understanding-ci-workflow)
+    - [Step 4: Understanding CD Workflow](#step-4-understanding-cd-workflow)
+  - [Building and Pushing Docker Images](#building-and-pushing-docker-images)
+    - [Automated Building via CD](#automated-building-via-cd)
+    - [Manual Docker Image Creation](#manual-docker-image-creation)
+  - [Deploying Your Application](#deploying-your-application)
+    - [Local Deployment](#local-deployment)
+    - [Cloud Deployment](#cloud-deployment)
+      - [AWS Elastic Container Service (ECS)](#aws-elastic-container-service-ecs)
+      - [Google Cloud Run](#google-cloud-run)
+      - [Azure Container Instances](#azure-container-instances)
+    - [Demeter.run Deployment](#demeterrun-deployment)
   - [Troubleshooting](#troubleshooting)
   - [Additional Resources](#additional-resources)
   - [Contributing](#contributing)
@@ -287,7 +295,8 @@ Benefits of CD:
 
 1. Follow the [Quick Start](#quick-start) guide.
 2. The template is ready for development and testing within the Cardano Developer Studio environment.
-3. Note that the CI/CD workflows will not run automatically in this setup.
+
+Note that the CI/CD workflows will not run automatically in this setup.
 
 ### Using the Template as a Standalone Project
 
@@ -342,13 +351,13 @@ To use this template with CI/CD capabilities:
 
 Follow the [Quick Start](#quick-start) guide from step 2 to set up and run your project locally.
 
-### Set Up CI/CD for the Standalone Project
+## CI/CD Setup
 
-#### Step 1: Verify Workflow Files
+### Step 1: Verify Workflow Files
 
 Ensure that the `.github/workflows` directory is at the root of your new repository, containing your CI/CD workflow files (`ci.yml` and `cd.yml`).
 
-#### Step 2: Configure Docker Hub and GitHub Secrets
+### Step 2: Configure Docker Hub and GitHub Secrets
 
 1. Create a Docker Hub account if you haven't already. See [Account Setup](#account-setup)
 2. Create a new repository on Docker Hub for your project (e.g., `my-frontend-project`)
@@ -363,7 +372,7 @@ Ensure that the `.github/workflows` directory is at the root of your new reposit
    - `DOCKERHUB_REPO`: Your Docker Hub repository name.
    - `BLOCKFROST_PREVIEW`: Your Blockfrost Preview Key. See: [Generating a Blockfrost API Key](#generating-a-blockfrost-api-key)
 
-#### Step 3: Triggering CI Workflow
+### Step 3: Understanding CI Workflow
 
 The Continuous Integration (CI) workflow is triggered automatically on:
 - Every push to the `main` branch
@@ -380,9 +389,13 @@ To view CI results:
 2. Click on the "Actions" tab
 3. You'll see a list of workflow runs. Click on a specific run to view details.
 
-#### Step 4: Triggering CD Workflow
+### Step 4: Understanding CD Workflow
 
-To trigger the Continuous Deployment (CD) workflow:
+The Continuous Deployment (CD) workflow:
+
+- Is triggered when a new release is created on GitHub. This can be done either by creating a release using the GitHub website or through the GitHub CLI tool, which involves creating a release with an associated tag.
+- Builds a Docker image of your application using the specified Docker configuration.
+- Pushes the Docker image to Docker Hub, making it available for deployment.
 
 1. Create a new release using the GitHub website or GitHub CLI:
 
@@ -399,7 +412,29 @@ To trigger the Continuous Deployment (CD) workflow:
 
 2. This action will trigger the CD pipeline, building and pushing the Docker image to Docker Hub.
 
-#### Step 5: Manual Docker Image Creation (Optional)
+## Building and Pushing Docker Images
+
+### Automated Building via CD
+
+The CD workflow automatically builds and pushes the Docker image when a new release is created. You don't need to take any additional steps beyond creating the release.
+The resulting Docker image will be available on Docker Hub with the following URL structure:
+
+```
+docker.io/$DOCKERHUB_USERNAME/$DOCKERHUB_REPO:$TAG
+```
+
+Where:
+- `$DOCKERHUB_USERNAME` is your Docker Hub username
+- `$DOCKERHUB_REPO` is the name of your Docker Hub repository
+- `$TAG` is the tag of your release (e.g., "v1.0.0" or "latest")
+
+For example, if your Docker Hub username is "cardanodev", your repository is "web3-frontend", and you've just released version 1.0.0, your image URL would be:
+
+```
+docker.io/cardanodev/web3-frontend:v1.0.0
+```
+
+### Manual Docker Image Creation
 
 To manually create and push a Docker image:
 
@@ -421,21 +456,78 @@ To manually create and push a Docker image:
    docker push $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest
    ```
 
+The resulting Docker image will have the same URL structure as described in the automated build section.
+
 Note: This manual process mimics the automated CD workflow but requires you to handle secrets manually.
 
-#### Step 6: Using the Docker Image
+## Deploying Your Application
 
-1. After the Docker image is pushed to Docker Hub (either via CD or manually), you can deploy it. Make sure to include the necessary environment variables, such as the Blockfrost API key:
+After building your Docker image (either through the CD pipeline or manually), you have several options for deploying and running your Cardano Web3 Frontend. This section covers various deployment methods, from local testing to cloud platforms and specialized Cardano infrastructure.
 
+When deploying, you'll use the Docker image URL `docker.io/$DOCKERHUB_USERNAME/$DOCKERHUB_REPO:$TAG`.  
+Make sure to replace `$DOCKERHUB_USERNAME`, `$DOCKERHUB_REPO`, and `$TAG` with your actual values in the following deployment instructions.
+
+After deploying your application using any of these methods, you can access and interact with your Cardano Web3 Frontend as described in the [Website Usage](#website-usage) section.
+
+### Local Deployment
+
+For local testing or development purposes, you can run the Docker image on your machine. 
+Make sure to include the necessary environment variables, such as the Blockfrost API key:
+
+```
+docker pull $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest
+docker run -p 3000:3000 -e BLOCKFROST_PREVIEW=your_blockfrost_key $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest
+```
+
+Replace `$DOCKERHUB_USERNAME`, `$DOCKERHUB_REPO`, and `your_blockfrost_key` with your actual Docker Hub username, repository name, and Blockfrost API key, respectively.
+
+### Cloud Deployment
+
+For production or scalable deployments, consider using cloud platforms. In each case, you'll use your Docker image URL when configuring the deployment:
+
+#### AWS Elastic Container Service (ECS)
+
+1. Create an ECS cluster
+2. Create a task definition using your Docker image
+3. Run the task or create a service
+
+For detailed steps, refer to the [AWS ECS documentation](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html).
+
+#### Google Cloud Run
+
+1. Enable the Cloud Run API in your Google Cloud project
+2. Deploy your container using the following command:
    ```
-   docker pull $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest
-   docker run -p 3000:3000 -e BLOCKFROST_PREVIEW=your_blockfrost_key $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest
+   gcloud run deploy --image $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest --platform managed
    ```
 
-   Replace `$DOCKERHUB_USERNAME`, `$DOCKERHUB_REPO`, and `your_blockfrost_key` with your actual Docker Hub username, repository name, and Blockfrost API key, respectively.
+For more information, see the [Google Cloud Run documentation](https://cloud.google.com/run/docs).
 
+#### Azure Container Instances
 
-2. Follow [Website Usage](#website-usage)
+1. Create a container instance using Azure CLI or Azure Portal
+2. Specify your Docker image and required environment variables
+
+Refer to the [Azure Container Instances documentation](https://docs.microsoft.com/en-us/azure/container-instances/) for detailed instructions.
+
+### Demeter.run Deployment
+
+Demeter.run offers a specialized platform for Cardano projects with pre-configured tools and services. To deploy your Docker image on Demeter.run:
+
+1. Go to [demeter.run](https://demeter.run) and create an account if you haven't already.
+2. Create a new project in your Demeter dashboard.
+3. Add a new product to your project.
+4. Choose "Frontend By TxPipe" as your product type.
+5. In the configuration settings, provide the URL of your Docker image from Docker Hub. This will be in the format:
+   ```
+   docker.io/$DOCKERHUB_USERNAME/$DOCKERHUB_REPO:$TAG
+   ```
+6. Set any required environment variables, including your Blockfrost API key.
+7. Expose the port 3000.
+
+Demeter.run will handle the deployment process and provide you with a URL where your frontend is accessible.
+
+Remember to always follow best practices for managing sensitive information like API keys when deploying to any platform. Use environment variables or secure secret management services provided by your chosen platform.
 
 ## Troubleshooting
 
@@ -445,6 +537,11 @@ Note: This manual process mimics the automated CD workflow but requires you to h
 - Confirm you have sufficient testnet ADA in your wallet for transactions.
 - Check the browser console for any error messages.
 - For CI/CD issues (in standalone setup), check the GitHub Actions logs for detailed error messages.
+- If you encounter issues with Docker image deployment:
+  - Verify that all required environment variables are correctly set.
+  - Check the logs of your running container for any error messages.
+  - Ensure that the port mappings are correct and the application is accessible from outside the container.
+  - For cloud deployments, review the platform-specific logs and monitoring tools for any issues.
 
 ## Additional Resources
 
@@ -458,6 +555,10 @@ Note: This manual process mimics the automated CD workflow but requires you to h
 - [Nami Wallet Extension](https://chromewebstore.google.com/detail/nami/lpfcbjknijpeeillifnkikgncikgfhdo)
 - [Eternl Wallet Extension](https://chromewebstore.google.com/detail/eternl/kmhcihpebfmpgmihbkipmjlmmioameka)
 - [Cardano Testnet Faucet](https://docs.cardano.org/cardano-testnets/tools/faucet/)
+- [AWS ECS Documentation](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/Welcome.html)
+- [Google Cloud Run Documentation](https://cloud.google.com/run/docs)
+- [Azure Container Instances Documentation](https://docs.microsoft.com/en-us/azure/container-instances/)
+- [Demeter.run Documentation](https://docs.demeter.run)
 
 ## Contributing
 
