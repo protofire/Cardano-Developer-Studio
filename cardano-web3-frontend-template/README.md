@@ -26,6 +26,7 @@ The frontend is developed using React and communicates with the Cardano blockcha
   - [CI/CD Pipeline](#cicd-pipeline)
     - [Continuous Integration (CI)](#continuous-integration-ci)
     - [Continuous Deployment (CD)](#continuous-deployment-cd)
+    - [Important Notes on Environment Variables](#important-notes-on-environment-variables)
   - [Detailed Usage Guide](#detailed-usage-guide)
     - [Using the Template within Developer Studio](#using-the-template-within-developer-studio)
     - [Using the Template as a Standalone Project](#using-the-template-as-a-standalone-project)
@@ -256,6 +257,16 @@ Benefits of CD:
 - Ensures consistent deployment across different environments by using containerization.
 - Enables rapid and frequent releases, allowing new features and fixes to be delivered to users more quickly and efficiently.
 
+### Important Notes on Environment Variables
+
+- **Environment Variables Not Included in Docker Image**: The Docker image built during the CD process does not include environment variables, such as the Blockfrost API key stored in `.env.local`, since this file is listed in `.gitignore` and is not included in the repository or the Docker image.
+  
+- **Adding Environment Variables at Bulding image and at Runtime**: To ensure that the application functions correctly when building and running the Docker container, you must provide the necessary environment variables. Use the `-e` flag to pass environment variables when starting the container:
+
+    ```
+    docker run -p 3000:3000 -e BLOCKFROST_PREVIEW=your_blockfrost_key $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest
+    ```
+
 ## Detailed Usage Guide
 
 ### Using the Template within Developer Studio
@@ -336,6 +347,7 @@ Ensure that the `.github/workflows` directory is at the root of your new reposit
    - `DOCKERHUB_USERNAME`: Your Docker Hub username.
    - `DOCKERHUB_TOKEN`: Your Docker Hub access token.
    - `DOCKERHUB_REPO`: Your Docker Hub repository name.
+   - `BLOCKFROST_PREVIEW`: Your Blockfrost Preview Key. See: [Generating a Blockfrost API Key](#generating-a-blockfrost-api-key)
 
 ### Step 3: Triggering CI Workflow
 
@@ -385,7 +397,7 @@ To manually create and push a Docker image:
 
 2. Build the Docker image:
    ```
-   docker build -t $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest
+   docker build -t $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest --build-arg BLOCKFROST_PREVIEW=your_blockfrost_key
    ```
    Replace `$DOCKERHUB_REPO` with your actual Docker Hub repository name.
 
@@ -398,14 +410,15 @@ Note: This manual process mimics the automated CD workflow but requires you to h
 
 ### Step 6: Using the Docker Image
 
-1. After the Docker image is pushed to Docker Hub (either via CD or manually), you can deploy it:
+1. After the Docker image is pushed to Docker Hub (either via CD or manually), you can deploy it. Make sure to include the necessary environment variables, such as the Blockfrost API key:
 
    ```
    docker pull $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest
-   docker run -p 3000:3000 $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest
+   docker run -p 3000:3000 -e BLOCKFROST_PREVIEW=your_blockfrost_key $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest
    ```
-docker pull $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:
-   Replace `$DOCKERHUB_USERNAME` and `$DOCKERHUB_REPO` with your actual Docker Hub username and repository name.
+
+   Replace `$DOCKERHUB_USERNAME`, `$DOCKERHUB_REPO`, and `your_blockfrost_key` with your actual Docker Hub username, repository name, and Blockfrost API key, respectively.
+
 
 2. Follow [Website Usage](#website-usage)
 

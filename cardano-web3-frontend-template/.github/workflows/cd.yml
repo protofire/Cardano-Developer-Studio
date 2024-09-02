@@ -26,6 +26,8 @@ jobs:
         context: .
         push: true
         tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:${{ github.ref_name }}
-        
+        build-args: |
+          BLOCKFROST_PREVIEW=${{ secrets.BLOCKFROST_PREVIEW }}
+
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}

@@ -13,6 +13,10 @@ RUN npm install
 # Bundle app source inside the docker image
 COPY . .
 
+# Build the app using the environment variables provided
+ARG BLOCKFROST_PREVIEW
+ENV BLOCKFROST_PREVIEW=${BLOCKFROST_PREVIEW}
+
 # Build the app
 RUN npm run build
 
