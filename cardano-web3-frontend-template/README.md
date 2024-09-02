@@ -269,7 +269,7 @@ Benefits of CD:
    **For Building the Docker Image (Manual Build)**: 
    Use the `--build-arg` flag to pass the environment variable during the Docker image build process: 
    ```
-   docker build -t $DOCKERHUB_USERNAME/$DOCKERHUB_REPO --build-arg BLOCKFROST_PREVIEW=your_blockfrost_key
+   docker build -t $DOCKERHUB_USERNAME/$DOCKERHUB_REPO --build-arg BLOCKFROST_PREVIEW=your_blockfrost_key .
    ``` 
    This ensures the `BLOCKFROST_PREVIEW` environment variable is set during the image build process.
 
@@ -411,8 +411,9 @@ To manually create and push a Docker image:
 
 2. Build the Docker image:
    ```
-   docker build -t $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest --build-arg BLOCKFROST_PREVIEW=your_blockfrost_key
+   docker build -t $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest --build-arg BLOCKFROST_PREVIEW=your_blockfrost_key .
    ```
+   
    Replace `$DOCKERHUB_REPO` and `your_blockfrost_key` with your actual Docker Hub repository name and Blockfrost API key, respectively.
 
 3. Push the image to Docker Hub:
