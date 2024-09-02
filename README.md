@@ -15,12 +15,13 @@ efficiently on the Cardano platform.
   - [Table of Contents](#table-of-contents)
   - [Documentation](#documentation)
   - [Features](#features)
+  - [Features of Developer Studio](#features-of-developer-studio)
   - [Why Developers Need to Experiment with These Tools](#why-developers-need-to-experiment-with-these-tools)
   - [What is included](#what-is-included)
   - [Installation and Setup](#installation-and-setup)
   - [Docker Containers](#docker-containers)
   - [Development Container in VS Code](#development-container-in-vs-code)
-  - [Running the CLI Main Script](#running-the-cli-main-script)
+  - [Using the Toolbox CLI](#using-the-toolbox-cli)
   - [Using the Docker Containers](#using-the-docker-containers)
   - [Plutus Smart Contracts Examples and Helpers Library](#plutus-smart-contracts-examples-and-helpers-library)
   - [Cardano Web3 Frontend Template](#cardano-web3-frontend-template)
@@ -37,20 +38,16 @@ https://protofire-docs.gitbook.io/developer-studio/
 
 ## Features
 
-- **Docker Compose Configurations**: Simplify setup and integration of all necessary
-  tools.
-- **Script Tool with Menus**: Navigate, configure, and run various tools through an
-  intuitive menu system.
-- **Pre-built Smart Contract Examples**: Access a suite of example contracts that
-  demonstrate various functionalities in Plutus, helping you get started
-  quickly.
-- **Comprehensive Testing Tools**: Utilize testing tools for resource consumption,
-  transaction size analysis, and contract evaluation to ensure compliance with
-  Plutus constraints.
-- **Dockerized Tools Ready for Use**: All tools are dockerized, ensuring a
-  consistent and streamlined development environment across different setups.
-- **Continuous Integration and Deployment (CI/CD)**: Automated build, test, and deployment processes for smart contracts and frontend applications.
-- **Docker Integration**: Production-ready Docker images for easy deployment and scaling.
+## Features of Developer Studio
+
+- **Seamless Docker Compose Configurations**: Effortlessly set up and integrate all essential tools with Docker Compose, providing a consistent development environment across different platforms. Our configuration includes containers for the Cardano Node, DB Sync, Wallet Server, Kupo, Ogmios, and a specialized Cardano Development container equipped with Cabal and GHC, tailored to compile Haskell code for smart contracts.
+- **Intuitive Toolbox CLI**: Our easy-to-use Toolbox CLI offers a menu-driven interface to navigate, configure, and run a wide array of tools directly from the terminal, making development and deployment processes more efficient.
+- **Real-World Smart Contract Examples**: Dive into a collection of practical Plutus smart contract examples, tailored for real-world applications on the Cardano blockchain. These examples help you understand and implement various functionalities quickly and effectively.
+- **Robust Testing Tools**: Leverage our comprehensive testing suite designed for evaluating resource consumption, transaction sizes, and contract compliance with Plutus constraints, ensuring your smart contracts are optimized for performance and security.
+- **Integrated Web3 Frontend Template**: Quickly build and deploy dApps on the Cardano blockchain using our ready-to-go React-based frontend template. This integration ensures a smooth workflow from smart contract development to dApp deployment.
+- **Automated CI/CD Pipelines**: Streamline your development lifecycle with our fully automated CI/CD pipelines. These pipelines handle everything from testing and building to deploying smart contracts and frontend applications, ensuring rapid and reliable releases.
+- **Scalable Docker Integration**: Deploy your applications effortlessly using production-ready Docker images, enabling easy scaling and consistent deployment across different environments. Our Docker integration ensures that your dApps and smart contracts run reliably, no matter where they're deployed.
+- **End-to-End Blockchain Solutions**: Developer Studio bridges the gap between smart contract development and real-world dApp deployment, offering all the tools you need to build, test, and launch robust blockchain applications on the Cardano network.
 
 ## Why Developers Need to Experiment with These Tools
 
@@ -74,9 +71,9 @@ See [Docker Containers](./docs/README_DOCKER.md)
 
 See [Development Container in VS Code](./docs/README_VSCODE.md)
 
-## Running the CLI Main Script
+## Using the Toolbox CLI
 
-See [Running the CLI Main Script](./docs/README_SCRIPT.md)
+See [Using the Toolbox CLI](./docs/README_SCRIPT.md)
 
 ## Using the Docker Containers
 
@@ -111,15 +108,10 @@ page on [IdeaScale](https://cardano.ideascale.com/c/idea/110047).
 
 ## Ongoing Progress
 
-<!-- TODO: comentar que es el ultimo milestone -->
+Welcome to the culmination of our journey! You're now experiencing the final milestone and release of our Cardano Developer Studio. We've laid a strong foundation and built upon it with a comprehensive suite of tools, features, and integrations to make your Cardano development experience as seamless and powerful as possible.
 
+This release marks a significant achievement in our commitment to providing developers with everything they need to build, test, and deploy smart contracts and dApps on the Cardano blockchain. Our Toolbox CLI, extensive Docker integration, real-world smart contract examples, and automated CI/CD pipelines have all been crafted to support your development journey from start to finish.
 
-Welcome to the beginning of a journey! You're looking at the first milestone and
-release of our Cardano Developer Studio, where the foundations are set, but the
-building is far from over. As we continue to grow and evolve, expect to see an
-array of new menus, tools, and functionalities rolled out in future updates.
-Each release will be packed with features designed to make the Cardano
-development experience smoother, more intuitive, and increasingly powerful. Stay
-tuned, and grow with us, as we expand the possibilities and support you, the
-builders of tomorrow's Cardano ecosystem. Your feedback, ideas, and
-contributions will shape the road ahead, so let's forge this path together!
+While this marks the final milestone for the initial phase, the journey doesn't end here. The Cardano Developer Studio will continue to evolve, with future updates focusing on refining and expanding the tools and functionalities available. We are committed to listening to your feedback and supporting the community as we move forward together.
+
+Thank you for being part of this journey with us. Your ideas and contributions have been invaluable, and we look forward to seeing what you will create with the tools provided. Let's continue to build the future of the Cardano ecosystem together!

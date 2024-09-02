@@ -63,7 +63,7 @@ show_main_menu() {
     echo "4) Cardano DB Sync Tools"
     echo "5) Ogmios Tools"
     echo "6) Kupo Tools"
-    echo "7) Smart Contract Plutus Development Tools"
+    echo "7) Cardano Development Tools"
     echo "0) Exit"
     read -p "Enter your choice or 0 to exit: " main_choice
 }

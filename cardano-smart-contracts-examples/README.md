@@ -179,7 +179,7 @@ Follow this instructions to set-up:
 - [USE](../docs/README_SCRIPT.md#cardano-development-tools-menu))
 
 Once the container is created you can work from a **terminal** outside or within
-the container and run the main **CLI** script bash. See
+the container and run the **Toolbox CLI**. See
 [Running the Example CLI](#running-the-example-cli)
 
 But you also can perform commands in the terminal within the container:
@@ -207,7 +207,7 @@ To use the Dev Container:
      start the container.
    - Once inside the Dev Container, you can work with the examples directly from
      the **terminal** ([Using a Terminal](#using-a-terminal)), or use the
-     integrated **CLI** script bash to manage tasks like compiling, testing,
+     integrated **Toolbox CLI** to manage tasks like compiling, testing,
      deploying, and making transactions with the examples as described in the
      [Running the Example CLI](#running-the-example-cli) using the
      `7) Smart Contract Plutus Development` option.
@@ -359,26 +359,26 @@ sudo mv x86_64-linux-stylish-haskell /usr/bin/stylish-haskell
 
 ## Working with the Examples
 
-Once your environment is set up, you can work with the Smart Contract examples (build, deploy, and test) using Cabal commands or run the master **CLI** script. 
+Once your environment is set up, you can work with the Smart Contract examples (build, deploy, and test) using Cabal commands or run the **Toolbox CLI**. 
 The process is the same regardless of your chosen environment.
 
 ### Running the Example CLI
 
-Once you have a running **Plutus Development Container** or a local machine
-ready, follow this steps to run the master **CLI** script bash and follow the
+Once you have a running **Cardano Development container** or a local machine
+ready, follow this steps to run the **Toolbox CLI** and follow the
 menus on the terminal.
 
 #### Build and test the examples
 
 To build and test the examples, follow these steps:
 
-1. **Run the main script**:
+1. **Run the Toolbox CLI**:
 
    ```bash
    ./script/run.sh
    ```
 
-2. **Choose the "Plutus Development Tools" option**:
+2. **Choose the "Cardano Development Tools" option**:
 
    ```
    ----
@@ -390,12 +390,12 @@ To build and test the examples, follow these steps:
    4) Cardano DB Sync Tools
    5) Ogmios Tools
    6) Kupo Tools
-   7) Plutus Development Tools
+   7) Cardano Development Tools
    0) Exit
    Enter your choice or 0 to exit: 7
    ```
 
-3. **Choose the a Cardano Development Container or use the local execution**:
+3. **Choose the a Cardano Development container or use the local execution**:
 
    ```
    Fetching list of cardano-development containers (including stopped)...
@@ -438,13 +438,13 @@ To build and test the examples, follow these steps:
 
 To test the examples, follow these steps:
 
-1. **Run the main script**:
+1. **Run the Toolbox CLI**:
 
    ```bash
    ./script/run.sh
    ```
 
-2. **Choose the "Plutus Development Tools" option**:
+2. **Choose the "Cardano Development Tools" option**:
 
    ```
    ----
@@ -456,23 +456,23 @@ To test the examples, follow these steps:
    4) Cardano DB Sync Tools
    5) Ogmios Tools
    6) Kupo Tools
-   7) Plutus Development Tools
+   7) Cardano Development Tools
    0) Exit
    Enter your choice or 0 to exit: 7
    ```
 
-3. **Choose the a Cardano Development Container or use the local execution**:
+3. **Choose the a Cardano Development container or use the local execution**:
 
-```
-Fetching list of cardano-development containers (including stopped)...
+   ```
+   Fetching list of cardano-development containers (including stopped)...
 
-Available cardano-development Containers (0 to Return Main Menu)
-Default: Local machine
-1) cardano-development-cardano-development-1 - Up 17 seconds
-Select a container [0-1]:
-```
+   Available cardano-development Containers (0 to Return Main Menu)
+   Default: Local machine
+   1) cardano-development-cardano-development-1 - Up 17 seconds
+   Select a container [0-1]:
+   ```
 
-For this example, I select run it i my local machine.
+   For this example, I select run it i my local machine.
 
 4. **Choose the "Run Example Contract CLI" option**:
 
@@ -558,13 +558,13 @@ For this example, I select run it i my local machine.
 
 To test the examples, follow these steps:
 
-1. **Run the main script**:
+1. **Run the Toolbox CLI**:
 
    ```bash
    ./script/run.sh
    ```
 
-2. **Choose the "Plutus Development Tools" option**:
+2. **Choose the "Cardano Development Tools" option**:
 
    ```
    ----
@@ -576,12 +576,12 @@ To test the examples, follow these steps:
    4) Cardano DB Sync Tools
    5) Ogmios Tools
    6) Kupo Tools
-   7) Plutus Development Tools
+   7) Cardano Development Tools
    0) Exit
    Enter your choice or 0 to exit: 7
    ```
 
-3. **Choose the a Cardano Development Container or use the local execution**:
+3. **Choose the a Cardano Development container or use the local execution**:
 
    ```
    Fetching list of cardano-development containers (including stopped)...
@@ -736,7 +736,7 @@ Note: In policies case, the options 6) and 7) are changed for:
 ### Using a Terminal
 
 Once you have a local machine ready with all required dependences (or within a
-**Plutus Development Container**), follow these steps:
+**Cardano Development Container**), follow these steps:
 
 1. **Build the project**:
 

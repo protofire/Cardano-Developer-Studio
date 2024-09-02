@@ -3,62 +3,73 @@
 - [Cardano Node](#cardano-node)
 - [Cardano Wallet](#cardano-wallet)
 - [Cardano DB Sync](#cardano-db-sync)
-- [Helpers Library](#helpers-library)
-- [Example Suite](#example-suite)
+- [Smart Contracts Examples](#smart-contracts-examples)
+- [Haskell Helpers Library](#haskell-helpers-library)
 - [Testing Suite](#testing-suite)
-- [CLI Script with Menus and Tools](#cli-script-with-menus-and-tools)
+- [Toolbox CLI](#toolbox-cli)
 - [Dockerized Tools Ready for Use](#dockerized-tools-ready-for-use)
+- [Integrated Web3 Frontend Template](#integrated-web3-frontend-template)
+- [CI/CD Pipeline and Docker Integration](#cicd-pipeline-and-docker-integration)
 
 ### Cardano Node
 
-Knowing how to operate a Cardano Node is fundamental for developers because it serves as your gateway to the Cardano blockchain. With it, you can create and submit transactions, query the blockchain state, and participate in consensus. For dApp development, it provides the infrastructure needed to interact with the blockchain, ensuring your applications are well-integrated within the Cardano ecosystem. Additionally, understanding the node's workings is crucial for optimizing network participation, whether for personal projects or running a stake pool.
+Operating a Cardano Node is essential for developers as it serves as the entry point to the Cardano blockchain. It enables you to create and submit transactions, query blockchain state, and engage in consensus. For dApp development, the Cardano Node provides the foundational infrastructure necessary for blockchain interaction, ensuring that applications are seamlessly integrated into the Cardano ecosystem. Understanding node operations is also key for optimizing network participation, whether for personal use or stake pool management.
 
 See [Github](https://github.com/intersectmbo/cardano-node/)
 
 ### Cardano Wallet
 
-The wallet is more than just a way to store cryptocurrency; it's a critical component for any application needing to handle ADA transactions or manage staking operations. For developers, integrating wallet functionalities into your applications can significantly enhance user experience by providing secure and seamless transaction capabilities. Moreover, understanding wallet operations, such as key management and wallet restoration, is vital for building robust and secure applications on the Cardano platform.
+More than just a cryptocurrency storage, the Cardano Wallet is a critical tool for managing ADA transactions and staking operations. Integrating wallet functionalities into applications enhances user experience by offering secure and straightforward transaction capabilities. For developers, grasping wallet operations such as key management and wallet restoration is crucial for building secure and robust applications on Cardano.
 
 See [Github](https://github.com/cardano-foundation/cardano-wallet/releases)
 
 ### Cardano DB Sync
 
-Data is king in the modern world, and Cardano DB Sync allows developers to harness blockchain data efficiently. Whether you're building financial tools, exploring chain analytics, or creating user-friendly interfaces for interacting with the blockchain, DB Sync provides the data backbone for these applications. By enabling complex queries and easy access to historical data, it allows for deep insights into blockchain operations and user transactions. This can inform business decisions, provide analytics services, or enhance application functionalities with rich data features.
+Cardano DB Sync enables developers to access and utilize blockchain data effectively. This tool is crucial for applications requiring detailed blockchain analytics, financial tools, or interfaces that interact with blockchain data. DB Sync facilitates complex queries and provides access to historical data, offering deep insights into blockchain activities and user transactions. This capability supports better business decisions, comprehensive analytics services, and enriched application functionalities.
 
 See [Github](https://github.com/intersectmbo/cardano-db-sync/pkgs/container/cardano-db-sync)
 
-### Helpers Library
+### Smart Contracts Examples
 
-The **Helpers Library** is a set of utility functions designed to simplify and streamline the development of smart contracts in Plutus. These functions cover common tasks and operations needed throughout the lifecycle of a smart contract, from input validation to building complex transactions. The library is divided into modules focusing on different aspects of development:
+The **Smart Contracts Examples** feature a collection of practical Plutus smart contract examples that demonstrate various functionalities. Each example provides a detailed guide on implementing specific use cases, helping developers understand, deploy, and interact with smart contracts on the Cardano blockchain.
 
-- **On-Chain Helpers**: These include functions that run on-chain, assisting with validations and the logic of smart contracts.
-- **Off-Chain Helpers**: This module contains utilities that facilitate building transactions and communicating with the blockchain from an off-chain environment.
-- **Evaluation Helpers**: Provides tools for evaluating and simulating the execution of smart contracts, enabling thorough testing before deployment.
+- **Validator Examples**: Showcases contracts that always return true or false, perform date and signature validation, and more.
+- **Policy Examples**: Includes examples for minting policies, covering both fungible and non-fungible tokens.
 
-### Example Suite
+### Haskell Helpers Library
 
-The **Example Suite** contains a series of example smart contracts that demonstrate how to implement various functionalities in Plutus. Each example is designed to illustrate a specific use case, providing a practical guide for contract development. These examples not only help in understanding how to write contracts in Plutus but also show how to deploy them and interact with them on the blockchain.
+The **Haskell Helpers Library** provides a set of utility functions to streamline the development of smart contracts in Plutus. These utilities cover common tasks throughout the smart contract lifecycle, such as input validation and building complex transactions. The library is organized into modules that focus on different development aspects:
 
-- **Validators Examples**: Contracts that always return true or false, examples of date and signature validation, among others.
-- **Policies Examples**: Examples of minting policies, both for fungible and non-fungible tokens.
+- **On-Chain Helpers**: Functions that execute on-chain, supporting smart contract validation and logic.
+- **Off-Chain Helpers**: Tools for constructing transactions and managing blockchain interactions from off-chain environments.
+- **Evaluation Helpers**: Utilities for simulating and testing the execution of smart contracts, ensuring they function correctly before deployment.
 
 ### Testing Suite
 
-The **Testing Suite** includes a range of functions for testing resource usage and transaction sizes. These tests are essential to ensure that contracts comply with Plutus constraints, such as time and space limits, preventing unexpected failures when interacting with the blockchain.
+Our **Testing Suite** ensures that each smart contract example adheres to Plutus constraints, particularly in terms of resource usage and transaction sizes. This suite is essential for optimizing contracts and preventing issues during blockchain interactions. Each smart contract example comes with a set of tests implemented using the Tasty testing framework, providing comprehensive coverage to verify contract behavior.
 
-- **Resource Testing**: Evaluates the resource consumption of contracts, helping to optimize their execution and ensure they fit within the blockchain's limits.
-- **Transaction Size Testing**: Analyzes the size of generated transactions to ensure they do not exceed the allowed limits, preventing issues when submitting them to the network.
+- **Integrated Tasty Tests**: Each smart contract example includes Tasty-based tests, verifying its functionality against expected behaviors. These tests help detect issues early and confirm that contracts perform as intended.
+- **Resource Usage and Transaction Size**: The tests also focus on assessing the resource consumption and transaction sizes of contracts, ensuring compliance with Cardano's operational constraints. This preemptively addresses potential problems when deploying or interacting with contracts on the blockchain.
 
-<!-- TODO:
-- agregar sobre front end
-- y sobre ci cd y docker for containerized deployment. -->
-- **CI/CD Pipeline**: GitHub Actions workflows for automated testing, building, and deploying of smart contracts and frontend applications.
-- **Docker Support**: Dockerfiles and docker-compose configurations for containerized deployment.
+### Toolbox CLI
 
-### CLI Script with Menus and Tools
-
-To facilitate interaction with Cardano Node, Wallet, and DB Sync, we have provided scripts that include menus for easy navigation and tool execution. 
+The **Toolbox CLI** is an intuitive, menu-driven command-line interface designed to simplify the use of various development tools. It provides easy navigation and execution of tasks related to the Cardano Node, Wallet, DB Sync, and other utilities, all directly from the terminal.
 
 ### Dockerized Tools Ready for Use
 
-All these tools are fully dockerized and ready to be used, whether you choose to run them through Visual Studio Code or any other compatible IDE. This setup ensures a streamlined and consistent development environment, allowing you to focus on building and testing your applications with ease.
+All tools are fully dockerized for convenience and scalability. Whether using Visual Studio Code or another IDE, Docker provides a consistent and isolated development environment. Our Docker setup includes containers for:
+
+- **Cardano Node**: Interact directly with the Cardano blockchain.
+- **DB Sync**: Access and analyze blockchain data.
+- **Wallet Server**: Manage ADA transactions and staking.
+- **Kupo**: A lightweight Cardano chain indexer.
+- **Ogmios**: A WebSocket server for Cardano node integration.
+- **Cardano Development Container**: Pre-configured for compiling Haskell code with Cabal and GHC, ideal for smart contract development.
+
+### Integrated Web3 Frontend Template
+
+Included is a comprehensive dApp frontend template that integrates seamlessly with the Cardano blockchain, enabling developers to rapidly build and deploy decentralized applications.
+
+### CI/CD Pipeline and Docker Integration
+
+Utilize our GitHub Actions-based CI/CD pipelines for automated testing, building, and deployment of smart contracts and frontend applications. With Docker support, easily create production-ready images, enabling consistent and scalable deployment across environments.
