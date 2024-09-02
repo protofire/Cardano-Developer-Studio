@@ -23,7 +23,7 @@ The frontend is developed using React and communicates with the Cardano blockcha
   - [Project Structure](#project-structure)
   - [Website Usage](#website-usage)
   - [Development](#development)
-  - [CI|CD Pipeline](#cicd-pipeline)
+  - [CI and CD Pipeline](#ci-and-cd-pipeline)
     - [Continuous Integration (CI)](#continuous-integration-ci)
     - [Continuous Deployment (CD)](#continuous-deployment-cd)
     - [Important Notes on Environment Variables](#important-notes-on-environment-variables)
@@ -34,7 +34,7 @@ The frontend is developed using React and communicates with the Cardano blockcha
       - [Step 2: Copy the Template to a New Directory](#step-2-copy-the-template-to-a-new-directory)
       - [Step 3: Initialize a New Git Repository](#step-3-initialize-a-new-git-repository)
       - [Step 4: Set Up Project](#step-4-set-up-project)
-  - [CI|CD Setup](#cicd-setup)
+  - [CI and CD Setup](#ci-and-cd-setup)
     - [Step 1: Verify Workflow Files](#step-1-verify-workflow-files)
     - [Step 2: Configure Docker Hub and GitHub Secrets](#step-2-configure-docker-hub-and-github-secrets)
     - [Step 3: Understanding CI Workflow](#step-3-understanding-ci-workflow)
@@ -95,7 +95,7 @@ This quick start guide assumes you're using the template within the Cardano Deve
 
 6. See [Website Usage](#website-usage) 
 
-Note: The CI|CD pipeline is not active when using the template within the Cardano Developer Studio repository.
+Note: The CI/CD pipeline is not active when using the template within the Cardano Developer Studio repository.
 
 ## Prerequisites
 
@@ -106,12 +106,12 @@ Note: The CI|CD pipeline is not active when using the template within the Cardan
 - Testnet ADA for transactions
 - Docker (for containerized deployment when using as a standalone project)
 - Git (for version control)
-- GitHub account (for repository management and CI|CD when using as a standalone project)
+- GitHub account (for repository management and CI/CD when using as a standalone project)
 - Docker Hub account (for storing Docker images)
 
 ### Account Setup
 
-1. **GitHub Account**: Required for version control and CI|CD workflows. If you don't have one, create it [here](https://github.com/).
+1. **GitHub Account**: Required for version control and CI/CD workflows. If you don't have one, create it [here](https://github.com/).
 2. **Docker Hub Account**: Required for storing and managing Docker images. If you don't have one, create it [here](https://hub.docker.com/). You will need to create a [access token](https://app.docker.com/settings/personal-access-tokens).
     
 ## Key Features
@@ -121,7 +121,7 @@ Note: The CI|CD pipeline is not active when using the template within the Cardan
 - **Transaction Management**: Allows users to create, sign and submit transactions directly from the frontend.
 - **Lucid Library Integration**: Demonstrates how to interact with Plutus smart contracts using the Lucid library.
 - **Multi-Wallet Compatibility**: Works with multiple popular Cardano wallet extensions.
-- **CI|CD Integration**: Automated build, test, and deployment processes using GitHub Actions (when used as a standalone project).
+- **CI/CD Integration**: Automated build, test, and deployment processes using GitHub Actions (when used as a standalone project).
 - **Docker Support**: Production-ready Docker images for easy deployment and scaling (when used as a standalone project).
 
 ## What is Blockfrost?
@@ -229,13 +229,13 @@ Remember, testnet ADA has no real-world value and is only for testing purposes.
 - Use `src/utils/` for helper functions and API calls.
 - When testing transactions, always use small amounts of testnet ADA.
 
-## CI|CD Pipeline
+## CI and CD Pipeline
 
-Note: The CI|CD pipeline is only functional when this template is used as a standalone project, not within the Cardano Developer Studio repository.
+Note: The CI/CD pipeline is only functional when this template is used as a standalone project, not within the Cardano Developer Studio repository.
 
-This project uses GitHub Actions for Continuous Integration and Continuous Deployment (CI|CD) when set up as a standalone repository.
+This project uses GitHub Actions for Continuous Integration and Continuous Deployment (CI/CD) when set up as a standalone repository.
 
-Follow [Using the Template as a Standalone Project](#using-the-template-as-a-standalone-project) and then [CI|CD Setup](#cicd-setup).
+Follow [Using the Template as a Standalone Project](#using-the-template-as-a-standalone-project) and then [CI/CD Setup](#ci-and-cd-setup).
 
 ### Continuous Integration (CI)
 
@@ -296,11 +296,11 @@ Benefits of CD:
 1. Follow the [Quick Start](#quick-start) guide.
 2. The template is ready for development and testing within the Cardano Developer Studio environment.
 
-Note that the CI|CD workflows will not run automatically in this setup.
+Note that the CI/CD workflows will not run automatically in this setup.
 
 ### Using the Template as a Standalone Project
 
-To use this template with CI|CD capabilities:
+To use this template with CI/CD capabilities:
 
 #### Step 1: Clone the Cardano Developer Studio Repository
 
@@ -351,11 +351,11 @@ To use this template with CI|CD capabilities:
 
 Follow the [Quick Start](#quick-start) guide from step 2 to set up and run your project locally.
 
-## CI|CD Setup
+## CI and CD Setup
 
 ### Step 1: Verify Workflow Files
 
-Ensure that the `.github/workflows` directory is at the root of your new repository, containing your CI|CD workflow files (`ci.yml` and `cd.yml`).
+Ensure that the `.github/workflows` directory is at the root of your new repository, containing your CI/CD workflow files (`ci.yml` and `cd.yml`).
 
 ### Step 2: Configure Docker Hub and GitHub Secrets
 
@@ -537,7 +537,7 @@ Remember to always follow best practices for managing sensitive information like
 - Check that your wallet is connected to the correct testnet network.
 - Confirm you have sufficient testnet ADA in your wallet for transactions.
 - Check the browser console for any error messages.
-- For CI|CD issues (in standalone setup), check the GitHub Actions logs for detailed error messages.
+- For CI/CD issues (in standalone setup), check the GitHub Actions logs for detailed error messages.
 - If you encounter issues with Docker image deployment:
   - Verify that all required environment variables are correctly set.
   - Check the logs of your running container for any error messages.
