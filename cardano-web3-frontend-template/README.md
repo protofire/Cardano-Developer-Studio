@@ -229,13 +229,13 @@ Remember, testnet ADA has no real-world value and is only for testing purposes.
 - Use `src/utils/` for helper functions and API calls.
 - When testing transactions, always use small amounts of testnet ADA.
 
-## CI/CD Pipeline
+## CI\/CD Pipeline
 
 Note: The CI/CD pipeline is only functional when this template is used as a standalone project, not within the Cardano Developer Studio repository.
 
 This project uses GitHub Actions for Continuous Integration and Continuous Deployment (CI/CD) when set up as a standalone repository.
 
-Follow [Using the Template as a Standalone Project](#using-the-template-as-a-standalone-project) and then [Set Up CI/CD for the Standalone Project](#set-up-cicd-for-the-standalone-project).
+Follow [Using the Template as a Standalone Project](#using-the-template-as-a-standalone-project) and then [CI/CD Setup](#cicd-setup).
 
 ### Continuous Integration (CI)
 
@@ -351,7 +351,7 @@ To use this template with CI/CD capabilities:
 
 Follow the [Quick Start](#quick-start) guide from step 2 to set up and run your project locally.
 
-## CI/CD Setup
+## CI\/CD Setup
 
 ### Step 1: Verify Workflow Files
 
@@ -416,7 +416,8 @@ The Continuous Deployment (CD) workflow:
 
 ### Automated Building via CD
 
-The CD workflow automatically builds and pushes the Docker image when a new release is created. You don't need to take any additional steps beyond creating the release.
+The CD workflow automatically builds and pushes the Docker image when a new release is created. You don't need to take any additional steps beyond creating the release. 
+
 The resulting Docker image will be available on Docker Hub with the following URL structure:
 
 ```
