@@ -103,8 +103,8 @@ Note: The CI/CD pipeline is not active when using the template within the Cardan
 ### Account Setup
 
 1. **GitHub Account**: Required for version control and CI/CD workflows. If you don't have one, create it [here](https://github.com/).
-2. **Docker Hub Account**: Required for storing and managing Docker images. If you don't have one, create it [here](https://hub.docker.com/).
-
+2. **Docker Hub Account**: Required for storing and managing Docker images. If you don't have one, create it [here](https://hub.docker.com/). You will need to create a [access token](https://app.docker.com/settings/personal-access-tokens).
+    
 ## Key Features
 
 - **User-Friendly Interface**: Simplifies interaction with Plutus smart contracts.
@@ -205,12 +205,13 @@ Remember, testnet ADA has no real-world value and is only for testing purposes.
 
 ## Website Usage
 
-1. Ensure your chosen wallet extension is installed and set to the testnet network.
-2. Open the web application at [http://localhost:3000](http://localhost:3000).
-3. Use the wallet connector to connect your preferred wallet. If you don't have a compatible wallet installed, use the provided "Install" buttons to set one up.
-4. Once connected, you can view your ADA balance and other blockchain data.
-5. Interact with deployed Plutus smart contracts through the user interface.
-6. Create, sign, and submit transactions using your testnet ADA.
+1. Follow [Quick Start](#quick-start) to set up and run the website.
+2. Ensure your chosen wallet extension is installed and set to the testnet network. Follow [Installing a Compatible Wallet Extension](#installing-a-compatible-wallet-extension).
+3. Open the web application at [http://localhost:3000](http://localhost:3000).
+4. Use the wallet connector to connect your preferred wallet. If you don't have a compatible wallet installed, use the provided "Install" buttons to set one up.
+5. Once connected, you can view your ADA balance and other blockchain data.
+6. Interact with deployed Plutus smart contracts through the user interface.
+7. Create, sign, and submit transactions using your testnet ADA.
 
 ## Development
 
@@ -224,6 +225,8 @@ Remember, testnet ADA has no real-world value and is only for testing purposes.
 Note: The CI/CD pipeline is only functional when this template is used as a standalone project, not within the Cardano Developer Studio repository.
 
 This project uses GitHub Actions for Continuous Integration and Continuous Deployment (CI/CD) when set up as a standalone repository.
+
+Follow [Using the Template as a Standalone Project](#using-the-template-as-a-standalone-project) and then [Set Up CI/CD for the Standalone Project](#set-up-cicd-for-the-standalone-project).
 
 ### Continuous Integration (CI)
 
@@ -244,14 +247,14 @@ Benefits of CI:
 
 The CD workflow (`cd.yml`) automates the deployment process:
 
-- Triggered when a new release is created (i.e., when a new tag is pushed).
-- Builds a Docker image of your application.
-- Pushes the Docker image to Docker Hub.
+- Triggered when a new release is created on GitHub. This can be done either by creating a release using the GitHub website or through the GitHub CLI tool, which involves creating a release with an associated tag.
+- Builds a Docker image of your application using the specified Docker configuration.
+- Pushes the Docker image to Docker Hub, making it available for deployment.
 
 Benefits of CD:
-- Automates the deployment process, reducing manual errors.
-- Ensures consistent deployment across different environments.
-- Enables rapid and frequent releases.
+- Automates the deployment process, reducing manual errors and ensuring reliability.
+- Ensures consistent deployment across different environments by using containerization.
+- Enables rapid and frequent releases, allowing new features and fixes to be delivered to users more quickly and efficiently.
 
 ## Detailed Usage Guide
 
@@ -287,8 +290,7 @@ To use this template with CI/CD capabilities:
 2. Create a new directory outside of the Cardano Developer Studio project:
    ```
    mkdir ../../my-frontend-project
-   cp -r ./* ../../my-frontend-project
-   cp -r ./.* ../../my-frontend-project
+   cp -r . ../../my-frontend-project/
    cd ../../my-frontend-project
    ```
 
@@ -296,12 +298,13 @@ To use this template with CI/CD capabilities:
 
 1. Initialize a new Git repository:
    ```
-   git init
+   git init --initial-branch=main
    ```
 2. Create a new repository on GitHub via the website.
 3. Add the remote origin to your new repository:
    ```
    git remote add origin https://github.com/your-username/your-new-repo.git
+   
    ```
 4. Commit and push your changes:
    ```
@@ -324,8 +327,12 @@ Ensure that the `.github/workflows` directory is at the root of your new reposit
 
 1. Create a Docker Hub account if you haven't already. See [Account Setup](#account-setup)
 2. Create a new repository on Docker Hub for your project (e.g., `my-frontend-project`)
-3. Go to your GitHub repository settings > Secrets and variables > Actions.
-4. Add the following secrets:
+3. Go to your GitHub repository Settings: 
+   
+   https://github.com/your-username/your-new-repo/settings
+     
+   And then > Secrets and variables > Actions
+4. Add the following repository secrets:
    - `DOCKERHUB_USERNAME`: Your Docker Hub username.
    - `DOCKERHUB_TOKEN`: Your Docker Hub access token.
    - `DOCKERHUB_REPO`: Your Docker Hub repository name.
@@ -351,14 +358,18 @@ To view CI results:
 
 To trigger the Continuous Deployment (CD) workflow:
 
-1. Create a new release:
+1. Create a new release using the GitHub website or GitHub CLI:
+
+   - Using GitHub CLI:
+
    ```
-   git tag v1.0.0
-   git push origin v1.0.0
+   gh release create v1.0.0 --notes "Release notes here"
    ```
-   Or use the GitHub website:
-   - Go to your repository > "Releases" > "Draft a new release"
-   - Create a new tag (e.g., `v1.0.0`)
+
+   - Using GitHub website:
+
+   Go to your repository > "Releases" > "Draft a new release"
+   Create a new tag (e.g., v1.0.0), fill in the release notes, and publish the release.
 
 2. This action will trigger the CD pipeline, building and pushing the Docker image to Docker Hub.
 
@@ -374,7 +385,7 @@ To manually create and push a Docker image:
 
 2. Build the Docker image:
    ```
-   docker build -t $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest .
+   docker build -t $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest
    ```
    Replace `$DOCKERHUB_REPO` with your actual Docker Hub repository name.
 
@@ -393,7 +404,7 @@ Note: This manual process mimics the automated CD workflow but requires you to h
    docker pull $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest
    docker run -p 3000:3000 $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:latest
    ```
-
+docker pull $DOCKERHUB_USERNAME/$DOCKERHUB_REPO:
    Replace `$DOCKERHUB_USERNAME` and `$DOCKERHUB_REPO` with your actual Docker Hub username and repository name.
 
 2. Follow [Website Usage](#website-usage)
