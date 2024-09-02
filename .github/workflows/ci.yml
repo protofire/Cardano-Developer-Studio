@@ -3,8 +3,12 @@ name: Continuous Integration
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'cardano-web3-frontend-template/**'
   pull_request:
     branches: [ main ]
+    paths:
+      - 'cardano-web3-frontend-template/**'
 
 jobs:
   build:
@@ -20,9 +24,12 @@ jobs:
         
     - name: Install dependencies
       run: npm ci
+      working-directory: ./cardano-web3-frontend-template
       
     - name: Run tests
       run: npm test
+      working-directory: ./cardano-web3-frontend-template
       
     - name: Build
       run: npm run build
+      working-directory: ./cardano-web3-frontend-template
