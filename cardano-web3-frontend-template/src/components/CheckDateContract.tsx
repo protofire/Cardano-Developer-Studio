@@ -38,7 +38,7 @@ export default function Stablecoin() {
   const [tokenName, setTokenName] = useState("");
   const [deadline, setDeadline] = useState(Number);
   const [amount, setAmount] = useState(10n);
-  const [amountToLock, setValueToLock] = useState(15n);
+  const [amountToLock, setValueToSend] = useState(15n);
 
   type GetFinalPolicy = {
     policyScript: MintingPolicy;
@@ -89,12 +89,12 @@ export default function Stablecoin() {
     return { policyScript, unit };
   };
 
-  const getUTxOToUnlock = async () => {
+  const setUTxOToClaim = async () => {
     if (!lucid || !UnlockUTxORef) {
       return;
     }
     const UTxOToUnlock = await findUTxO(lucid, UnlockUTxORef);
-    console.log("Collateral to unlock UTxOs: ", UTxOToUnlock);
+    console.log("Set UTxO to claim: ", UTxOToUnlock);
     setAppState({
       ...appState,
       UTxOToClaim: UTxOToUnlock,
@@ -104,8 +104,8 @@ export default function Stablecoin() {
   ///////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////// MINT /////////////////////////////////////////////////////
 
-  const mintAfterContract = async () => {
-    console.log("mintSC -> appState: ", appState);
+  const mintAfterContractTx = async () => {
+    console.log("mintTx -> appState: ", appState);
     const {
       policyScript: tokenCheckDateAfterPolicy,
       unit: tokenCheckDateAfterAssetClassHex,
@@ -128,8 +128,8 @@ export default function Stablecoin() {
     await signAndSubmitTx(tx);
   };
 
-  const mintBeforeContract = async () => {
-    console.log("mintSC -> appState: ", appState);
+  const mintBeforeContractTx = async () => {
+    console.log("mintTx -> appState: ", appState);
     const {
       policyScript: tokenCheckDateBeforePolicy,
       unit: tokenCheckDateBeforeAssetClassHex,
@@ -155,8 +155,8 @@ export default function Stablecoin() {
   ///////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////// BURN /////////////////////////////////////////////////////
 
-  const burnAfterContract = async () => {
-    console.log("burnSC -> appState: ", appState);
+  const burnAfterContractTx = async () => {
+    console.log("burnTx -> appState: ", appState);
 
     const unit = tokenCheckDateAfterAssetClassHex;
     const policyScript = tokenCheckDateAfterPolicy;
@@ -180,8 +180,8 @@ export default function Stablecoin() {
     await signAndSubmitTx(tx);
   };
 
-  const burnBeforeContract = async () => {
-    console.log("burnSC -> appState: ", appState);
+  const burnBeforeContractTx = async () => {
+    console.log("burnTx -> appState: ", appState);
 
     const unit = tokenCheckDateBeforeAssetClassHex;
     const policyScript = tokenCheckDateBeforePolicy;
@@ -208,9 +208,9 @@ export default function Stablecoin() {
   ///////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////// DEPLOY////////////////////////////////////////////////////
 
-  const deployAfterContract = async () => {
+  const deployAfterContractTx = async () => {
     if (!lucid || !wAddr) {
-      alert("Please connect account and mint NFT!");
+      alert("Please connect Wallet");
       return;
     }
 
@@ -218,7 +218,7 @@ export default function Stablecoin() {
     const validator = checkDateAfterScript;
 
     if (!validator) {
-      alert("Validator class not defined!");
+      alert("Validator Script not defined!");
       return;
     }
 
@@ -237,9 +237,9 @@ export default function Stablecoin() {
     await signAndSubmitTx(tx);
   };
 
-  const deployBeforeContract = async () => {
+  const deployBeforeContractTx = async () => {
     if (!lucid || !wAddr) {
-      alert("Please connect account and mint NFT!");
+      alert("Please connect Wallet");
       return;
     }
 
@@ -247,7 +247,7 @@ export default function Stablecoin() {
     const validator = checkDateBeforeScript;
 
     if (!validator) {
-      alert("Validator class not defined!");
+      alert("Validator Script not defined!");
       return;
     }
 
@@ -269,9 +269,9 @@ export default function Stablecoin() {
   ///////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////// CLAIM ////////////////////////////////////////////////////
 
-  const claimAfterContract = async () => {
+  const claimAfterContractTx = async () => {
     if (!lucid || !wAddr || !UTxOToClaim) {
-      alert("Please connect account and mint NFT!");
+      alert("Please connect Wallet");
       return;
     }
 
@@ -279,7 +279,7 @@ export default function Stablecoin() {
     const validator = checkDateAfterScript;
 
     if (!validator) {
-      alert("Validator class not defined!");
+      alert("Validator Script not defined!");
       return;
     }
 
@@ -294,9 +294,9 @@ export default function Stablecoin() {
     await signAndSubmitTx(tx);
   };
 
-  const claimBeforeContract = async () => {
+  const claimBeforeContractTx = async () => {
     if (!lucid || !wAddr || !UTxOToClaim) {
-      alert("Please connect account and mint NFT!");
+      alert("Please connect Wallet");
       return;
     }
 
@@ -304,7 +304,7 @@ export default function Stablecoin() {
     const validator = checkDateBeforeScript;
 
     if (!validator) {
-      alert("Validator class not defined!");
+      alert("Validator Script not defined!");
       return;
     }
     console.log(Data.from(UTxOToClaim.datum!, Data.Integer()));
@@ -343,7 +343,7 @@ export default function Stablecoin() {
       {contractType == "validator" && (
         <div className="shadow-[0_4px_0px_0px_rgba(0,0,0,0.25)] w-[664px] bg-zinc-50 border border-zinc-600 rounded-xl p-9">
           <div className="w-full flex flex-row gap-4 mt-2">
-            <p>Amount to lock (in ADA):</p>
+            <p>Amount (in ADA):</p>
             <input
               className="w-16 py-1 px-2 ml-3 border border-zinc-700 rounded"
               type="number"
@@ -351,33 +351,33 @@ export default function Stablecoin() {
               onChange={(e) => {
                 const coll = safeStringToBigInt(e.target.value);
                 if (!coll) return;
-                setValueToLock(coll);
+                setValueToSend(coll);
               }}
             />
           </div>
 
           <div className="w-full flex flex-row justify-center gap-4 mt-2">
             <button
-              onClick={deployBeforeContract}
+              onClick={deployBeforeContractTx}
               disabled={!lucid || !wAddr || !amountToLock || !deadline}
               className="w-full rounded-lg p-3 text-zinc-50 bg-zinc-800 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)] disabled:active:translate-y-0 disabled:active:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:bg-zinc-200  disabled:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:text-zinc-600 font-quicksand font-bold active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)]"
             >
               {" "}
-              Deploy Before Contract
+              Send to Before Contract Tx
             </button>
             <button
-              onClick={deployAfterContract}
+              onClick={deployAfterContractTx}
               disabled={!lucid || !wAddr || !amountToLock || !deadline}
               className="w-full rounded-lg p-3 text-zinc-50 bg-zinc-800 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)] disabled:active:translate-y-0 disabled:active:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:bg-zinc-200  disabled:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:text-zinc-600 font-quicksand font-bold active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)]"
             >
               {" "}
-              Deploy After Contract
+              Send to After Contract Tx
             </button>
           </div>
           <div className="w-full flex flex-row gap-4 mt-2">
             <div className="flex flex-col mb-2">
               <div className="w-full flex flex-row gap-4 mt-2">
-                <p>UTxO Ref to unlock:</p>
+                <p>UTxO Ref to claim:</p>
                 <input
                   className="py-1 px-2 border border-zinc-700 rounded"
                   type="string"
@@ -391,30 +391,30 @@ export default function Stablecoin() {
                   }
                 />
                 <button
-                  onClick={getUTxOToUnlock}
+                  onClick={setUTxOToClaim}
                   disabled={!lucid || !wAddr || !UnlockUTxORef}
                   className="rounded-lg p-3 text-zinc-50 bg-zinc-800 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)] disabled:active:translate-y-0 disabled:active:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:bg-zinc-200  disabled:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:text-zinc-600 font-quicksand font-bold active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)]"
                 >
                   {" "}
-                  Get UTxO to unlock
+                  Set UTxO to claim
                 </button>
               </div>
               <div className="w-full flex flex-row gap-4 mt-2">
                 <button
-                  onClick={claimBeforeContract}
+                  onClick={claimBeforeContractTx}
                   disabled={!lucid || !wAddr || !UTxOToClaim}
                   className="w-full rounded-lg p-3 text-zinc-50 bg-zinc-800 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)] disabled:active:translate-y-0 disabled:active:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:bg-zinc-200  disabled:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:text-zinc-600 font-quicksand font-bold active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)]"
                 >
                   {" "}
-                  Claim Before Contract
+                  Claim from Before Contract Tx
                 </button>
                 <button
-                  onClick={claimAfterContract}
+                  onClick={claimAfterContractTx}
                   disabled={!lucid || !wAddr || !UTxOToClaim}
                   className="w-full rounded-lg p-3 text-zinc-50 bg-zinc-800 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)] disabled:active:translate-y-0 disabled:active:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:bg-zinc-200  disabled:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:text-zinc-600 font-quicksand font-bold active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)]"
                 >
                   {" "}
-                  Claim After Contract
+                  Claim from After Contract Tx
                 </button>
               </div>
             </div>
@@ -438,7 +438,7 @@ export default function Stablecoin() {
                 });
               }}
             />
-            <p>Tokens amount (units):</p>
+            <p>Token amount (units):</p>
             <input
               className="w-16 py-1 px-2 ml-2 border border-zinc-700 rounded"
               type="number"
@@ -452,15 +452,15 @@ export default function Stablecoin() {
           </div>
           <div className="w-full flex flex-row justify-center gap-4 mt-2">
             <button
-              onClick={mintBeforeContract}
+              onClick={mintBeforeContractTx}
               disabled={!lucid || !wAddr || !amount || !tokenCheckDateNameHex}
               className="w-full rounded-lg p-3 text-zinc-50 bg-zinc-800 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)] disabled:active:translate-y-0 disabled:active:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:bg-zinc-200  disabled:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:text-zinc-600 font-quicksand font-bold active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)]"
             >
               {" "}
-              Mint using before contract
+              Mint Tokens using Before Contract Tx
             </button>
             <button
-              onClick={burnBeforeContract}
+              onClick={burnBeforeContractTx}
               disabled={
                 !lucid ||
                 !wAddr ||
@@ -471,20 +471,20 @@ export default function Stablecoin() {
               className="w-full rounded-lg p-3 text-zinc-50 bg-zinc-800 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)] disabled:active:translate-y-0 disabled:active:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:bg-zinc-200  disabled:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:text-zinc-600 font-quicksand font-bold active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)]"
             >
               {" "}
-              Burn using before contract
+              Burn Tokens using Before Contract Tx
             </button>
           </div>
           <div className="w-full flex flex-row justify-center gap-4 mt-2">
             <button
-              onClick={mintAfterContract}
+              onClick={mintAfterContractTx}
               disabled={!lucid || !wAddr || !amount || !tokenCheckDateNameHex}
               className="w-full rounded-lg p-3 text-zinc-50 bg-zinc-800 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)] disabled:active:translate-y-0 disabled:active:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:bg-zinc-200  disabled:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:text-zinc-600 font-quicksand font-bold active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)]"
             >
               {" "}
-              Mint using after contract
+              Mint Tokens using After Contract Tx
             </button>
             <button
-              onClick={burnAfterContract}
+              onClick={burnAfterContractTx}
               disabled={
                 !lucid ||
                 !wAddr ||
@@ -495,7 +495,7 @@ export default function Stablecoin() {
               className="w-full rounded-lg p-3 text-zinc-50 bg-zinc-800 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)] disabled:active:translate-y-0 disabled:active:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:bg-zinc-200  disabled:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:text-zinc-600 font-quicksand font-bold active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)]"
             >
               {" "}
-              Burn using after contract
+              Burn Tokens using After Contract Tx
             </button>
           </div>
         </div>

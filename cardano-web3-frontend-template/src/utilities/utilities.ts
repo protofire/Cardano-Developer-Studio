@@ -38,5 +38,63 @@ export const findUTxO = async (lucid: Lucid, ref: string) => {
             outputIndex: Number(ix),
         },
     ]);
+    alert( toJson (utxos[0]))
     return utxos[0];
 };
+
+
+export function isEmptyObject(obj: any, swOnlyDefined: boolean = false) {
+    for (let key in obj) {
+        if (obj.hasOwnProperty(key) && ((swOnlyDefined && obj[key] !== undefined) || !swOnlyDefined)) {
+            return false;
+        }
+    }
+    return true;
+}
+export function isObject(object: any) {
+    return object !== null && typeof object === 'object' && object.hasOwnProperty !== undefined;
+}
+
+
+//for printing pretty any object
+export function toJson(data: any, space?: string | number): string {
+    const getCircularReplacer = () => {
+        const parents: any[] = []; // Track parent objects
+        const parentKeys: string[] = []; // Track corresponding keys
+
+        return function (this: any, key: string, value: any) {
+            if (isObject(value) && !isEmptyObject(value, false)) {
+                const index = parents.indexOf(this);
+                if (index !== -1) {
+                    parents.splice(index + 1);
+                    parentKeys.splice(index, Infinity, key);
+                } else {
+                    parents.push(this);
+                    parentKeys.push(key);
+                }
+
+                if (parents.includes(value)) {
+                    return 'Object Circular Reference';
+                }
+            }
+
+            if (typeof value === 'bigint') {
+                return value.toString();
+            }
+            return value;
+        };
+    };
+
+    if (data !== null && data !== undefined) {
+        let json = JSON.stringify(data, getCircularReplacer(), space);
+
+        if (json === '{}' && data.toString !== undefined && !isObject(data)) {
+            json = data.toString();
+        }
+
+        const jsonreplace = json.replace(/"(-?\d+)n"/g, (_, a) => a);
+        return jsonreplace;
+    } else {
+        return '{}';
+    }
+}

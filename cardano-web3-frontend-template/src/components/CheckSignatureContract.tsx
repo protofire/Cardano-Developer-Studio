@@ -32,7 +32,7 @@ export default function Stablecoin() {
   const [tokenName, setTokenName] = useState("");
   const [signature, setSignature] = useState("");
   const [amount, setAmount] = useState(10n);
-  const [amountToLock, setValueToLock] = useState(15n);
+  const [amountToLock, setValueToSend] = useState(15n);
 
   type GetFinalPolicy = {
     policyScript: MintingPolicy;
@@ -64,12 +64,12 @@ export default function Stablecoin() {
     return { policyScript, unit };
   };
 
-  const getUTxOToUnlock = async () => {
+  const setUTxOToClaim = async () => {
     if (!lucid || !UnlockUTxORef) {
       return;
     }
     const UTxOToUnlock = await findUTxO(lucid, UnlockUTxORef);
-    console.log("Collateral to unlock UTxOs: ", UTxOToUnlock);
+    console.log("Set UTxO to claim: ", UTxOToUnlock);
     setAppState({
       ...appState,
       UTxOToClaim: UTxOToUnlock,
@@ -79,8 +79,8 @@ export default function Stablecoin() {
   ///////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////// MINT /////////////////////////////////////////////////////
 
-  const mintSC = async () => {
-    console.log("mintSC -> appState: ", appState);
+  const mintTx = async () => {
+    console.log("mintTx -> appState: ", appState);
     const {
       policyScript: tokenSignaturePolicy,
       unit: tokenSignatureAssetClassHex,
@@ -105,8 +105,8 @@ export default function Stablecoin() {
   ///////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////// BURN /////////////////////////////////////////////////////
 
-  const burnSC = async () => {
-    console.log("burnSC -> appState: ", appState);
+  const burnTx = async () => {
+    console.log("burnTx -> appState: ", appState);
 
     const unit = tokenSignatureAssetClassHex;
     const policyScript = tokenSignaturePolicy;
@@ -132,9 +132,9 @@ export default function Stablecoin() {
   ///////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////// DEPLOY////////////////////////////////////////////////////
 
-  const deployContract = async () => {
+  const sentToContractTX = async () => {
     if (!lucid || !wAddr) {
-      alert("Please connect account and mint NFT!");
+      alert("Please connect Wallet");
       return;
     }
 
@@ -144,7 +144,7 @@ export default function Stablecoin() {
     const validator = checkSignatureScript;
 
     if (!validator) {
-      alert("Validator class not defined!");
+      alert("Validator Script not defined!");
       return;
     }
 
@@ -166,9 +166,9 @@ export default function Stablecoin() {
   ///////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////// CLAIM ////////////////////////////////////////////////////
 
-  const claimContract = async () => {
+  const claimContractTx = async () => {
     if (!lucid || !wAddr || !UTxOToClaim) {
-      alert("Please connect account and mint NFT!");
+      alert("Please connect Wallet");
       return;
     }
 
@@ -176,7 +176,7 @@ export default function Stablecoin() {
     const validator = checkSignatureScript;
 
     if (!validator) {
-      alert("Validator class not defined!");
+      alert("Validator Script not defined!");
       return;
     }
 
@@ -210,7 +210,7 @@ export default function Stablecoin() {
       {contractType == "validator" && (
         <div className="shadow-[0_4px_0px_0px_rgba(0,0,0,0.25)] w-[664px] bg-zinc-50 border border-zinc-600 rounded-xl p-9">
           <div className="w-full flex flex-row gap-4 mt-2">
-            <p>Amount to lock (in ADA):</p>
+            <p>Amount (in ADA):</p>
             <input
               className="w-16 py-1 px-2 ml-3 border border-zinc-700 rounded"
               type="number"
@@ -218,20 +218,20 @@ export default function Stablecoin() {
               onChange={(e) => {
                 const coll = safeStringToBigInt(e.target.value);
                 if (!coll) return;
-                setValueToLock(coll);
+                setValueToSend(coll);
               }}
             />
             <button
-              onClick={deployContract}
+              onClick={sentToContractTX}
               disabled={!lucid || !wAddr || !amountToLock || !signature}
               className="w-full rounded-lg p-3 text-zinc-50 bg-zinc-800 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)] disabled:active:translate-y-0 disabled:active:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:bg-zinc-200  disabled:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:text-zinc-600 font-quicksand font-bold active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)]"
             >
               {" "}
-              Deploy Contract
+              Send to Contract
             </button>
           </div>
           <div className="w-full flex flex-row gap-4 mt-2">
-            <p>UTxO Ref to unlock:</p>
+            <p>UTxO Ref to claim:</p>
 
             <div className="flex flex-col mb-2">
               <input
@@ -248,21 +248,21 @@ export default function Stablecoin() {
               />
               <div className="w-full flex flex-row gap-4 mt-2">
                 <button
-                  onClick={getUTxOToUnlock}
+                  onClick={setUTxOToClaim}
                   disabled={!lucid || !wAddr || !UnlockUTxORef}
                   className="w-full rounded-lg p-3 text-zinc-50 bg-zinc-800 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)] disabled:active:translate-y-0 disabled:active:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:bg-zinc-200  disabled:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:text-zinc-600 font-quicksand font-bold active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)]"
                 >
                   {" "}
-                  Get UTxO to unlock
+                  Set UTxO to claim
                 </button>
 
                 <button
-                  onClick={claimContract}
+                  onClick={claimContractTx}
                   disabled={!lucid || !wAddr || !UTxOToClaim}
                   className="w-full rounded-lg p-3 text-zinc-50 bg-zinc-800 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)] disabled:active:translate-y-0 disabled:active:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:bg-zinc-200  disabled:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:text-zinc-600 font-quicksand font-bold active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)]"
                 >
                   {" "}
-                  Claim Contract
+                  Claim from Contract Tx
                 </button>
               </div>
             </div>
@@ -286,7 +286,7 @@ export default function Stablecoin() {
                 });
               }}
             />
-            <p>Tokens amount (units):</p>
+            <p>Token amount (units):</p>
             <input
               className="w-16 py-1 px-2 ml-2 border border-zinc-700 rounded"
               type="number"
@@ -300,15 +300,15 @@ export default function Stablecoin() {
           </div>
           <div className="w-full flex flex-row justify-center gap-4 mt-2">
             <button
-              onClick={mintSC}
+              onClick={mintTx}
               disabled={!lucid || !wAddr || !amount || !tokenSignatureNameHex}
               className="w-full rounded-lg p-3 text-zinc-50 bg-zinc-800 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)] disabled:active:translate-y-0 disabled:active:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:bg-zinc-200  disabled:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:text-zinc-600 font-quicksand font-bold active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)]"
             >
               {" "}
-              Mint Tokens
+              Mint Tokens Tx
             </button>
             <button
-              onClick={burnSC}
+              onClick={burnTx}
               disabled={
                 !lucid ||
                 !wAddr ||
@@ -319,7 +319,7 @@ export default function Stablecoin() {
               className="w-full rounded-lg p-3 text-zinc-50 bg-zinc-800 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)] disabled:active:translate-y-0 disabled:active:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:bg-zinc-200  disabled:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:text-zinc-600 font-quicksand font-bold active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)]"
             >
               {" "}
-              Burn Tokens
+              Burn Tokens Tx
             </button>
           </div>
         </div>

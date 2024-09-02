@@ -30,8 +30,8 @@ export default function Stablecoin() {
   ///////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////// MINT /////////////////////////////////////////////////////
 
-  const mintSC = async () => {
-    console.log("mintSC -> appState: ", appState);
+  const mintTx = async () => {
+    console.log("mintTx -> appState: ", appState);
     const tn = fromText(tokenName);
 
     const policyScript: MintingPolicy = {
@@ -40,7 +40,7 @@ export default function Stablecoin() {
         "585858560100003222325335533355333573466e1d20040011122200315333573466e1d20020011122200215333573466e1d2000001112220011533573892103505431001611220010040041120011635573a6ea800844880081",
     };
     if (!policyScript) {
-      console.log("Policy not selected");
+      console.log("Policy Script not defined!");
       return;
     }
     const policyId: PolicyId = lucid!.utils.mintingPolicyToId(policyScript);
@@ -67,8 +67,8 @@ export default function Stablecoin() {
   ///////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////// BURN /////////////////////////////////////////////////////
 
-  const burnSC = async () => {
-    console.log("burnSC -> appState: ", appState);
+  const burnTx = async () => {
+    console.log("burnTx -> appState: ", appState);
     const tn = fromText(tokenName);
     const policyScript: MintingPolicy = {
       type: "PlutusV2",
@@ -76,7 +76,7 @@ export default function Stablecoin() {
         "585858560100003222325335533355333573466e1d20040011122200315333573466e1d20020011122200215333573466e1d2000001112220011533573892103505431001611220010040041120011635573a6ea800844880081",
     };
     if (!policyScript) {
-      console.log("Policy not selected");
+      console.log("Policy Script not defined!");
       return;
     }
 
@@ -102,8 +102,8 @@ export default function Stablecoin() {
   ///////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////// ESPECIAL CASE ////////////////////////////////////////////
 
-  const BadRedeemerSC = async () => {
-    console.log("burnSC -> appState: ", appState);
+  const BadRedeemerTx = async () => {
+    console.log("burnTx -> appState: ", appState);
     const tn = fromText(tokenName);
     const policyScript: MintingPolicy = {
       type: "PlutusV2",
@@ -111,7 +111,7 @@ export default function Stablecoin() {
         "585858560100003222325335533355333573466e1d20040011122200315333573466e1d20020011122200215333573466e1d2000001112220011533573892103505431001611220010040041120011635573a6ea800844880081",
     };
     if (!policyScript) {
-      console.log("Policy not selected");
+      console.log("Policy Script not defined!");
       return;
     }
 
@@ -152,7 +152,7 @@ export default function Stablecoin() {
                 setTokenName(am);
               }}
             />
-            <p>Tokens amount (units):</p>
+            <p>Token amount (units):</p>
             <input
               className="w-16 py-1 px-2 ml-2 border border-zinc-700 rounded"
               type="number"
@@ -166,30 +166,30 @@ export default function Stablecoin() {
           </div>
           <div className="w-full flex flex-row justify-center gap-4 mt-2">
             <button
-              onClick={mintSC}
+              onClick={mintTx}
               disabled={!lucid || !wAddr || !amount || !tokenName}
               className="w-full rounded-lg p-3 text-zinc-50 bg-zinc-800 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)] disabled:active:translate-y-0 disabled:active:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:bg-zinc-200  disabled:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:text-zinc-600 font-quicksand font-bold active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)]"
             >
               {" "}
-              Mint Tokens
+              Mint Tokens Tx
             </button>
             <button
-              onClick={burnSC}
+              onClick={burnTx}
               disabled={!lucid || !wAddr || !amount || !tokenName}
               className="w-full rounded-lg p-3 text-zinc-50 bg-zinc-800 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)] disabled:active:translate-y-0 disabled:active:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:bg-zinc-200  disabled:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:text-zinc-600 font-quicksand font-bold active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)]"
             >
               {" "}
-              Burn Tokens
+              Burn Tokens Tx
             </button>
           </div>
           <div className="w-full flex flex-row justify-center gap-4 mt-2">
             <button
-              onClick={BadRedeemerSC}
+              onClick={BadRedeemerTx}
               disabled={!lucid || !wAddr || !tokenName}
               className="w-full rounded-lg p-3 text-zinc-50 bg-zinc-800 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)] disabled:active:translate-y-0 disabled:active:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:bg-zinc-200  disabled:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:text-zinc-600 font-quicksand font-bold active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)]"
             >
               {" "}
-              Try use a bad redeemer
+              Try Mint wsing a bad Redeemer Tx
             </button>
           </div>
         </div>

@@ -71,8 +71,8 @@ export default function Stablecoin() {
   ///////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////// MINT /////////////////////////////////////////////////////
 
-  const mintSC = async () => {
-    console.log("mintSC -> appState: ", appState);
+  const mintTx = async () => {
+    console.log("mintTx -> appState: ", appState);
     const utxo = await getUtxo(wAddr!);
     const { policyScript: nftPolicy, unit: nftAssetClassHex } =
       await getFinalPolicy(utxo);
@@ -96,8 +96,8 @@ export default function Stablecoin() {
   ///////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////// BURN /////////////////////////////////////////////////////
 
-  const burnSC = async () => {
-    console.log("burnSC -> appState: ", appState);
+  const burnTx = async () => {
+    console.log("burnTx -> appState: ", appState);
 
     const unit = nftAssetClassHex;
     const policyScript = nftPolicy;
@@ -142,7 +142,7 @@ export default function Stablecoin() {
                 });
               }}
             />
-            <p>Tokens amount (units):</p>
+            <p>Token amount (units):</p>
             <input
               className="w-16 py-1 px-2 ml-2 border border-zinc-700 rounded"
               type="number"
@@ -156,20 +156,20 @@ export default function Stablecoin() {
           </div>
           <div className="w-full flex flex-row justify-center gap-4 mt-2">
             <button
-              onClick={mintSC}
+              onClick={mintTx}
               disabled={!lucid || !wAddr || !amount || !nftTokenNameHex}
               className="w-full rounded-lg p-3 text-zinc-50 bg-zinc-800 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)] disabled:active:translate-y-0 disabled:active:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:bg-zinc-200  disabled:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:text-zinc-600 font-quicksand font-bold active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)]"
             >
               {" "}
-              Mint Tokens
+              Mint Tokens Tx
             </button>
             <button
-              onClick={burnSC}
+              onClick={burnTx}
               disabled={!lucid || !wAddr || !amount || !nftTokenNameHex || !nftPolicy}
               className="w-full rounded-lg p-3 text-zinc-50 bg-zinc-800 shadow-[0_5px_0px_0px_rgba(0,0,0,0.6)] disabled:active:translate-y-0 disabled:active:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:bg-zinc-200  disabled:shadow-[0_5px_0px_0px_rgba(0,0,0,0.2)] disabled:text-zinc-600 font-quicksand font-bold active:translate-y-[2px] active:shadow-[0_4px_0px_0px_rgba(0,0,0,0.6)]"
             >
               {" "}
-              Burn Tokens
+              Burn Tokens Tx
             </button>
           </div>
         </div>
