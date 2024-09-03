@@ -39,4 +39,3 @@ plutonomyValidator =
     Plutonomy.mkValidatorScript 
         $$(PlutusTx.compile [|| mkAlwaysTrueValidator ||])
 --------------------------------------------------------------------------------
-

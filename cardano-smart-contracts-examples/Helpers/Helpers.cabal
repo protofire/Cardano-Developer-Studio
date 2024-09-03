@@ -1,93 +1,96 @@
-cabal-version:      3.4
-name:               cardano-helpers
-version:            0.1.0.0
-author:             Manuel Padilla
-maintainer:         manuelpad@gmail.com
-build-type:         Simple
-copyright:          © 2024 Manuel Padilla
-license:            Apache-2.0
+cabal-version: 3.4
+name:          cardano-helpers
+version:       0.1.0.0
+author:        Manuel Padilla
+maintainer:    manuelpad@gmail.com
+build-type:    Simple
+copyright:     © 2024 Manuel Padilla
+license:       Apache-2.0
 
 common common-all
-    build-depends:    base
-                    , aeson
-                    , bytestring
-                    , containers
-                    , cardano-api
-                    , data-default
-                    , plutus-ledger-api
-                    , plutus-tx-plugin
-                    , plutus-tx
-                    , tasty
-                    , tasty-hunit
-                    , QuickCheck
-                    , text
-                    , plutonomy
-                    , serialise
-                    , Cabal
-                    
+  build-depends:
+    , aeson
+    , base
+    , bytestring
+    , Cabal
+    , cardano-api
+    , containers
+    , data-default
+    , plutonomy
+    , plutus-ledger-api
+    , plutus-tx
+    , plutus-tx-plugin
+    , QuickCheck
+    , serialise
+    , tasty
+    , tasty-hunit
+    , text
 
-    default-language: Haskell2010
-    ghc-options: -Wall -fobject-code -fno-ignore-interface-pragmas
-                 -fno-omit-interface-pragmas -fno-strictness 
-                 -fno-spec-constr -fno-specialise -fexpose-all-unfoldings
-                 -fplugin-opt PlutusTx.Plugin:defer-errors
+  default-language: Haskell2010
+  ghc-options:
+    -Wall -fobject-code -fno-ignore-interface-pragmas
+    -fno-omit-interface-pragmas -fno-strictness -fno-spec-constr
+    -fno-specialise -fexpose-all-unfoldings -fplugin-opt
+    PlutusTx.Plugin:defer-errors
 
 common common-all-tests
-    import:           common-all
-    build-depends:    QuickCheck
-                    , tasty
-                    , plutus-simple-model
+  import:        common-all
+  build-depends:
+    , plutus-simple-model
+    , QuickCheck
+    , tasty
 
 library
-    import:             common-all
-    hs-source-dirs:     src
-    exposed-modules:    
-                    Helpers.CLI,
-                    Helpers.Constants,
-                    Helpers.Deploy,
-                    Helpers.Emulator,
-                    Helpers.OffChain,
-                    Helpers.OffChainEval,
-                    Helpers.OnChain,
-                    Helpers.Types
-    default-extensions:
-        NoImplicitPrelude
-        BangPatterns
-        NumericUnderscores
-        OverloadedStrings
-    build-depends:
-        base16-bytestring
-        , bech32
-        , directory
-        , filepath
-        -- , freer-extras
-        , flat
-        , hex-text
-        , lens
-        , prettyprinter
-        , time
-        , utf8-string
-        , base64-bytestring
-    build-depends:
-        -- plutus-ledger
-        -- , cardano-addresses
-        -- , cardano-binary
-        -- , cardano-crypto-class
-        -- , cardano-ledger-alonzo
-        -- , cardano-ledger-babbage
-        -- , cardano-ledger-core
-        -- , cardano-node-emulator
-        -- , playground-common
-        -- , plutus-chain-index-core
-        -- , plutus-contract
-        , plutus-core
-        -- , plutus-ledger-constraints
-        -- , plutus-script-utils
-        -- , plutus-tx-constraints
+  import:             common-all
+  hs-source-dirs:     src
+  exposed-modules:
+    Helpers.CLI
+    Helpers.Constants
+    Helpers.Deploy
+    Helpers.Emulator
+    Helpers.OffChain
+    Helpers.OffChainEval
+    Helpers.OnChain
+    Helpers.Types
+
+  default-extensions:
+    NoImplicitPrelude
+    BangPatterns
+    NumericUnderscores
+    OverloadedStrings
+
+  build-depends:
+    , base16-bytestring
+    , base64-bytestring
+    , bech32
+    , cardano-addresses
+    , cardano-binary
+    , cardano-crypto-class
+    , cardano-ledger-alonzo
+    , cardano-ledger-babbage
+    , cardano-ledger-core
+    , cardano-node-emulator
+    , directory
+    , filepath
+    , flat
+    , freer-extras
+    , hex-text
+    , lens
+    , playground-common
+    , plutus-chain-index-core
+    , plutus-contract
+    , plutus-core
+    , plutus-ledger
+    , plutus-ledger-constraints
+    , plutus-script-utils
+    , plutus-tx-constraints
+    , prettyprinter
+    , time
+    , utf8-string
 
 test-suite HelpersTest
-    import:             common-all-tests
-    type:               exitcode-stdio-1.0
-    main-is:            HelpersTest.hs
-    hs-source-dirs:     test
-    build-depends:      cardano-helpers
+  import:         common-all-tests
+  type:           exitcode-stdio-1.0
+  main-is:        HelpersTest.hs
+  hs-source-dirs: test
+  build-depends:  cardano-helpers

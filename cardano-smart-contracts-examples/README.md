@@ -187,7 +187,7 @@ But you also can perform commands in the terminal within the container:
 
 ### Dev Container
 
-The `devcontainer/` folder within the examples directory provides a ready-to-use
+The `devcontainer/` folder within the cardano-smart-contracts-examples directory provides a ready-to-use
 development environment. This folder contains all the necessary configurations
 for using Visual Studio Code's Remote - Containers extension. This setup offers
 a consistent and isolated development environment for your Plutus smart contract
@@ -198,7 +198,7 @@ To use the Dev Container:
 1. **Open the examples folder in Visual Studio Code:**
 
    ```
-   code ./examples
+   code ./cardano-smart-contracts-examples
    ```
 
 2. **Use the Dev Container:**

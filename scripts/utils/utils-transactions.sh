@@ -28,6 +28,7 @@ show_main_menu() {
 # Function to test the smart contract
 test_smart_contract() {
     echo "Running tests..."
+    pwd
     cabal test "${PROJECT_NAME}Test"
     read -p "Press Enter to continue..."
 }

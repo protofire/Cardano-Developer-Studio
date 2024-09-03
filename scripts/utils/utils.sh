@@ -460,7 +460,7 @@ monitor_logs() {
     read -p "Press Enter to continue..."
     
     # Run docker logs in the background
-    docker logs -f "$container_name" &
+    docker logs -f --tail 100 "$container_name" &
     local logs_pid=$!
     
     # Loop to wait for user to press 'q'

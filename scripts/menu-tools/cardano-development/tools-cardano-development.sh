@@ -39,7 +39,7 @@ cardano_dev_tools() {
             docker exec -it "$selected_container" cabal build all
           else
             if [[ -z $INSIDE_DEV_CONTAINER ]]; then
-              cd $WORKSPACE_ROOT_DIR_ABSOLUTE/examples
+              cd $WORKSPACE_ROOT_DIR_ABSOLUTE/cardano-smart-contracts-examples
             fi
             cabal build all
             if [[ -z $INSIDE_DEV_CONTAINER ]]; then
@@ -53,7 +53,7 @@ cardano_dev_tools() {
             docker exec -it "$selected_container" cabal test all
           else
             if [[ -z $INSIDE_DEV_CONTAINER ]]; then
-              cd $WORKSPACE_ROOT_DIR_ABSOLUTE/examples
+              cd $WORKSPACE_ROOT_DIR_ABSOLUTE/cardano-smart-contracts-examples
             fi
             cabal test all
             if [[ -z $INSIDE_DEV_CONTAINER  ]]; then

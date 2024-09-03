@@ -10,7 +10,7 @@ services:
         USER: plutus
         DOCKER_GID: ${DOCKER_GID}
     volumes:
-      - ${HOST_PROJECT_PATH}/examples:/home/plutus/workspace
+      - ${HOST_PROJECT_PATH}/cardano-smart-contracts-examples:/home/plutus/workspace
       - ${HOST_PROJECT_PATH}/scripts:/home/plutus/workspace/scripts
       - ${HOST_PROJECT_PATH}/.priv:/home/plutus/workspace/.priv
       - ${HOST_PROJECT_PATH}/configs:/home/plutus/workspace/configs

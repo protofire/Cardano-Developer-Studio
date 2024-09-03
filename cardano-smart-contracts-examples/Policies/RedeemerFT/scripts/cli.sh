@@ -90,7 +90,7 @@ main() {
         case $main_choice in
             1)
               if [[ -z $INSIDE_DEV_CONTAINER  ]]; then
-                cd $WORKSPACE_ROOT_DIR_ABSOLUTE/examples
+                cd $WORKSPACE_ROOT_DIR_ABSOLUTE/cardano-smart-contracts-examples
               fi
                 test_smart_contract
               if [[ -z $INSIDE_DEV_CONTAINER  ]]; then
@@ -99,7 +99,7 @@ main() {
             ;;
             2)
                 if [[ -z $INSIDE_DEV_CONTAINER  ]]; then
-                    cd $WORKSPACE_ROOT_DIR_ABSOLUTE/examples
+                    cd $WORKSPACE_ROOT_DIR_ABSOLUTE/cardano-smart-contracts-examples
                 fi
 
                 deploy_smart_contract
