@@ -28,7 +28,6 @@ show_main_menu() {
 # Function to test the smart contract
 test_smart_contract() {
     echo "Running tests..."
-    pwd
     cabal test "${PROJECT_NAME}Test"
     read -p "Press Enter to continue..."
 }
@@ -350,22 +349,18 @@ build_and_submit_transaction() {
     # echo  $tx_in_list $tx_out_list $mint_params
 
     ## PROTOCOL PARAMETERS FILE
-    mkdir -p "$WORKSPACE_ROOT_DIR_ABSOLUTE/configs/cardano-node/$CARDANO_NETWORK"
-    ppFile="$WORKSPACE_ROOT_DIR_ABSOLUTE/configs/cardano-node/$CARDANO_NETWORK/protocol-parameters.json"
-    if [[ -f "$ppFile" ]]
-    then
-        # echo "Protocol File: $ppFile"
-        docker cp -q "$ppFile" "$container:/tmp/protocol-parameters.json" 
-        # echo "Existe... desea actualizarlo (y/n)?"
-        # read -n 1 -s opcion
-        # if [[ $opcion = "y" ]]; then 
-        #     cardano-cli query protocol-parameters --out-file $ppFile --$CARDANO_NETWORK_WITH_MAGIC 
-        # fi
-    else
-        # echo "Getting Protocol File: $ppFile..."
-        docker exec -i "$container" cardano-cli query protocol-parameters --socket-path /ipc/node.socket --$CARDANO_NETWORK_WITH_MAGIC --out-file "/tmp/protocol-parameters.json"
-        docker cp -q "$container:/tmp/protocol-parameters.json" "$ppFile"
-    fi
+    # This is deprecarted, cardano cli does not support it anymore
+    # mkdir -p "$WORKSPACE_ROOT_DIR_ABSOLUTE/configs/cardano-node/$CARDANO_NETWORK"
+    # ppFile="$WORKSPACE_ROOT_DIR_ABSOLUTE/configs/cardano-node/$CARDANO_NETWORK/protocol-parameters.json"
+    # if [[ -f "$ppFile" ]]
+    # then
+    #     # echo "Protocol File: $ppFile"
+    #     docker cp -q "$ppFile" "$container:/tmp/protocol-parameters.json" 
+    # else
+    #     # echo "Getting Protocol File: $ppFile..."
+    #     docker exec -i "$container" cardano-cli query protocol-parameters --socket-path /ipc/node.socket --$CARDANO_NETWORK_WITH_MAGIC --out-file "/tmp/protocol-parameters.json"
+    #     docker cp -q "$container:/tmp/protocol-parameters.json" "$ppFile"
+    # fi
 
     ## SLOT TIP
     tipSlot=$(docker exec -i "$container" cardano-cli query tip --socket-path /ipc/node.socket --$CARDANO_NETWORK_WITH_MAGIC | jq -r .slot)
@@ -383,11 +378,35 @@ build_and_submit_transaction() {
 
     ## BUILD TRANSACTION
 
+    # optional ways to set signer
     # --required-signer-hash $wallet_pkh \
     # --required-signer="/tmp/wallet.skey" \
-    # --protocol-params-file \"$ppFile\" \
 
-    cmd="docker exec -i \"$container\" cardano-cli transaction build \
+    #NOTE: the era flag was moved to the front of the command
+
+    # Get the version of cardano-cli
+    cardano_cli_version=$(docker exec -i "$container" cardano-cli --version | grep -oP 'cardano-cli \K[0-9]+\.[0-9]+\.[0-9]+')
+
+    # Function to compare versions
+    version_ge() {
+        # Compare the first parameter (version) with the second parameter (target version)
+        [ "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1" ]
+    }
+
+    # Build the command based on the version
+    if version_ge "$cardano_cli_version" "9.0.0"; then
+        # For cardano-cli 9.0.0 or newer
+        cmd="docker exec -i \"$container\" cardano-cli conway transaction build \
+            --socket-path /ipc/node.socket \
+            --$CARDANO_NETWORK_WITH_MAGIC \
+            $tx_in_list $tx_out_list $mint_params \
+            --change-address \"$change_address\" \
+            --required-signer-hash $wallet_pkh \
+            --invalid-before ${tipSlot} \
+            --out-file \"/tmp/tx.body\""
+    else
+        # For cardano-cli versions older than 9.0.0
+        cmd="docker exec -i \"$container\" cardano-cli transaction build \
             --babbage-era \
             --socket-path /ipc/node.socket \
             --$CARDANO_NETWORK_WITH_MAGIC \
@@ -396,20 +415,7 @@ build_and_submit_transaction() {
             --required-signer-hash $wallet_pkh \
             --invalid-before ${tipSlot} \
             --out-file \"/tmp/tx.body\""
-
-
-# cardano-cli transaction build  \
-#     --babbage-era  \
-#     --testnet-magic 1  \
-#     --tx-in 4f909998b77f71d4a75eaa8ed5f800d1a97a419ecee70ed2179b1589ba409fc8#0   \
-#     --tx-in-script-file CheckDateValidator/2024-08-08-02-21/paramCheckAfterDeadlineValidator.plutus  \
-#     --tx-in-inline-datum-present  \
-#     --tx-in-redeemer-file redeemer.json  \
-#     --tx-in-collateral 1df0a401b4821cc9e4481ef697ec111e6ba7a54cc0509ce87afd14d1506c0af8#3  \
-#     --required-signer-hash 336f16c12c359e9188d0006e4a914b0b011449dc376286360d0edecc  \
-#     --change-address addr_test1qqek79kp9s6eayvg6qqxuj53fv9sz9zfmsmk9p3kp58danpj089g4nmyect2j4x4tatv08qsg09pkj84n0aj5lq6pkvs2cnthz
-#     --invalid-before 1  \
-#     --out-file tx.body
+    fi
 
     # Initialize sw_debug with a default value, 1 ==  false
     sw_debug=${sw_debug:-1}
@@ -423,8 +429,10 @@ build_and_submit_transaction() {
         return 0  # Indicate failure
     fi
 
-    # docker cp -q "$container:/tmp/tx.body" "/tmp/tx.body" 
-    # cat /tmp/tx.body
+    if [ "$sw_debug" -eq 0 ]; then
+        docker cp -q "$container:/tmp/tx.body" "/tmp/tx.body" 
+        cat /tmp/tx.body
+    fi
 
     ## SIGN TRANSACTION
 
@@ -439,10 +447,14 @@ build_and_submit_transaction() {
         docker exec -i "$container" rm /tmp/wallet.skey  # Clean up
         return 0
     fi
-    # docker exec -i "$container" rm /tmp/wallet.skey
+    
+    # delete wallet key
+    docker exec -i "$container" rm /tmp/wallet.skey
 
-    # docker cp -q "$container:/tmp/tx.signed" "/tmp/tx.signed" 
-    # cat /tmp/tx.signed
+    if [ "$sw_debug" -eq 0 ]; then
+        docker cp -q "$container:/tmp/tx.signed" "/tmp/tx.signed" 
+        cat /tmp/tx.signed
+    fi
 
     ## SUBMIT TRANSACTION
 

@@ -13,8 +13,8 @@ set_node_env_variables() {
     echo "----"
     echo "Setting up Cardano Node environment..."
     echo "----"
-    read -p "Enter CARDANO_NODE_VERSION [default: 8.9.0]: " CARDANO_NODE_VERSION
-    CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION:-"8.9.0"}
+    read -p "Enter CARDANO_NODE_VERSION [default: 9.1.1]: " CARDANO_NODE_VERSION
+    CARDANO_NODE_VERSION=${CARDANO_NODE_VERSION:-"9.1.1"}
     export CARDANO_NODE_VERSION
     
     while :; do

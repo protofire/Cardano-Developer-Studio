@@ -2,6 +2,8 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE TemplateHaskell     #-}
+{-# LANGUAGE OverloadedStrings    #-}
+
 --------------------------------------------------------------------------------2
 {- HLINT ignore "Use camelCase"          -}
 {- HLINT ignore "Reduce duplication"          -}
