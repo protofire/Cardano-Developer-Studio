@@ -176,7 +176,7 @@ You must have the **Cardano Development Container** created and running.
 Follow this instructions to set-up:
 
 - [COMPOSE](../docs/README_SCRIPT.md#docker-compose-menu)
-- [USE](../docs/README_SCRIPT.md#cardano-development-tools-menu))
+- [USE](../docs/README_SCRIPT.md#cardano-development-tools-menu)
 
 Once the container is created you can work from a **terminal** outside or within
 the container and run the **Toolbox CLI**. See
