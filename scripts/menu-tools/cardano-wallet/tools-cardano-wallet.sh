@@ -50,8 +50,9 @@ generate_and_create_wallet() {
     echo "$mnemonic_json_array"
     echo ""
     
+    # TODO: add inputs checks, password length, etc.
     read -p "Enter Wallet Name: " wallet_name
-    read -sp "Enter Wallet Passphrase: " wallet_passphrase
+    read -sp "Enter Wallet Passphrase (min 10 characters): " wallet_passphrase 
     echo ""
     
     if [ -f /.dockerenv ]; then
@@ -103,8 +104,9 @@ generate_create_and_save_wallet() {
     echo "$mnemonic_json_array"
     echo ""
     
+    # TODO: add inputs checks, password length, etc.
     read -p "Enter Wallet Name: " wallet_name
-    read -sp "Enter Wallet Passphrase: " wallet_passphrase
+    read -sp "Enter Wallet Passphrase (min 10 characters): " wallet_passphrase 
     echo ""
     
     if [ -f /.dockerenv ]; then
