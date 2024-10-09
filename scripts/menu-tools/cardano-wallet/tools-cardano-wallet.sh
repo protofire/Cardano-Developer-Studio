@@ -324,6 +324,7 @@ fetch_network_information() {
     local container=$1
     echo "Fetching network information..."
     CARDANO_WALLET_PORT=$(docker exec -it "$container" printenv CARDANO_WALLET_PORT | tr -d '\r')
+    echo "Fetching network information... 1"
     if [ -f /.dockerenv ]; then
         # echo "Running inside a Docker container."
         BASE_URL="http://host.docker.internal:${CARDANO_WALLET_PORT}"
@@ -331,6 +332,7 @@ fetch_network_information() {
         # echo "Running on the host."
         BASE_URL="http://localhost:${CARDANO_WALLET_PORT}"
     fi
+    echo "${BASE_URL}/v2/network/information"
     response=$(curl -s "${BASE_URL}/v2/network/information")
     echo "Network Information: $response"
 
