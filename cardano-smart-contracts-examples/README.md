@@ -176,7 +176,7 @@ You must have the **Cardano Development Container** created and running.
 Follow this instructions to set-up:
 
 - [COMPOSE](../docs/README_SCRIPT.md#docker-compose-menu)
-- [USE](../docs/README_SCRIPT.md#cardano-development-tools-menu))
+- [USE](../docs/README_SCRIPT.md#cardano-development-tools-menu)
 
 Once the container is created you can work from a **terminal** outside or within
 the container and run the **Toolbox CLI**. See
@@ -684,7 +684,7 @@ To test the examples, follow these steps:
    Enter your choice or 0 to return: 2
    Selecting smart contract files...
    ----
-   Folders in '/home/francio/Documentos/Protofire/Cardano-Developer-Studio/export/AlwaysTrueValidator':
+   Folders in '(DEVELOPER_STUDIO_ROOT)/export/AlwaysTrueValidator':
    ----
    1) 2024-08-09-20-11
    2) 2024-08-09-20-46
@@ -698,7 +698,7 @@ To test the examples, follow these steps:
    Enter your choice or 0 to return: 3
    Selecting wallet files...
    ----
-   Folders in '/home/francio/Documentos/Protofire/Cardano-Developer-Studio/.priv/wallets':
+   Folders in '(DEVELOPER_STUDIO_ROOT)/.priv/wallets':
    ----
    1) test1
    2) test2

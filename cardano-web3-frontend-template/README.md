@@ -112,8 +112,8 @@ Note: The CI/CD pipeline is not active when using the template within the Cardan
 ### Account Setup
 
 1. **GitHub Account**: Required for version control and CI/CD workflows. If you don't have one, create it [here](https://github.com/).
-2. **Docker Hub Account**: Required for storing and managing Docker images. If you don't have one, create it [here](https://hub.docker.com/). You will need to create a [access token](https://app.docker.com/settings/personal-access-tokens).
-    
+2. **Docker Hub Account**: Required for storing and managing Docker images. If you don't have one, create it [here](https://hub.docker.com/). You will need to create a [personal access token](https://app.docker.com/settings/personal-access-tokens) and ensure it has both read and write permissions.
+
 ## Key Features
 
 - **User-Friendly Interface**: Simplifies interaction with Plutus smart contracts.
