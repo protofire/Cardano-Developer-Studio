@@ -2,6 +2,7 @@
 dist
 dist-*
 cabal-dev
+tags
 #**/*OLD/
 #**/src/**/*OLD/
 #**/*old/
