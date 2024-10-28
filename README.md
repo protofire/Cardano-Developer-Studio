@@ -39,7 +39,7 @@
     <a href="https://protofire-docs.gitbook.io/developer-studio"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/protofire/Cardano-Developer-Studio">View Demo</a>
+    <a href="https://youtu.be/C9Ge6xyf6-o">View Demo</a>
     ·
     <a href="https://github.com/protofire/Cardano-Developer-Studio/issues">Report Bug</a>
     ·
