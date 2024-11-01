@@ -51,6 +51,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked,id=var.cache.apt \
     libssl-dev \
     libsystemd-dev \
     libtinfo-dev \
+    libexpat1-dev \
+    libbz2-dev \
     libtool \
     make \
     pkg-config \
