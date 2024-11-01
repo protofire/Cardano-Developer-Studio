@@ -1,4 +1,51 @@
-# Cardano Developer Studio
+<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
+<a name="readme-top"></a>
+<!--
+*** Thanks for checking out the Best-README-Template. If you have a suggestion
+*** that would make this better, please fork the repo and create a pull request
+*** or simply open an issue with the tag "enhancement".
+*** Don't forget to give the project a star!
+*** Thanks again! Now go create something AMAZING! :D
+-->
+
+
+
+<!-- PROJECT SHIELDS -->
+<!--
+*** I'm using markdown "reference style" links for readability.
+*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
+*** See the bottom of this document for the declaration of the reference variables
+*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
+*** https://www.markdownguide.org/basic-syntax/#reference-style-links
+-->
+[![Contributors][contributors-shield]][contributors-url]
+[![Forks][forks-shield]][forks-url]
+[![Stargazers][stars-shield]][stars-url]
+[![Issues][issues-shield]][issues-url]
+[![MIT License][license-shield]][license-url]
+[![LinkedIn][linkedin-shield]][linkedin-url]
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://github.com/protofire/Cardano-Developer-Studio">
+    <img src="images/logo.png" alt="Logo" width="250" height="250">
+  </a>
+
+<h3 align="center">Cardano Developer Studio</h3>
+
+  <p align="center">
+    The best toolkit for the cardano developer.
+    <br />
+    <a href="https://protofire-docs.gitbook.io/developer-studio"><strong>Explore the docs »</strong></a>
+    <br />
+    <br />
+    <a href="https://youtu.be/C9Ge6xyf6-o">View Demo</a>
+    ·
+    <a href="https://github.com/protofire/Cardano-Developer-Studio/issues">Report Bug</a>
+    ·
+    <a href="https://github.com/protofire/Cardano-Developer-Studio/issues">Request Feature</a>
+  </p>
+</div>
 
 ## Overview
 
@@ -87,6 +134,17 @@ See [Smart Contracts Examples and Helpers Library](./cardano-smart-contracts-exa
 
 See [Cardano Web3 Frontend Template](./cardano-web3-frontend-template/README.md)
 
+## Cardano Catalyst Reports
+Here are the links to the Catalyst Milestone reports for the Cardano Developer Studio project. Each report provides an update on the project's progress, achievements, and next steps for each milestone.
+
+- [**Milestone 1 Report**](https://docs.google.com/document/d/1WDoeLv-KwiReC_Gs7kBkQXkcr9XdoUUuDn8BNQfd5zg/edit?usp=drive_link)
+- [**Milestone 2 Report**](https://docs.google.com/document/d/1KfpU4fbQrKDNGLq23_lkPMn7CqAZzAivJufQtCljS0A/edit?usp=drive_link)
+- [**Milestone 3 Report**](https://docs.google.com/document/d/1Wb0sM5Oh5G6gRw3HZADO0N0zUo3RdFlW7x3KeZKMEW4/edit?usp=drive_link)
+- [**Milestone 4 Report**](https://docs.google.com/document/d/1-m2ScmbRiqkNaDPqRhmSpb8Bj4hQkjIrMYPFNHaCq3M/edit?usp=drive_link)
+- [**Milestone 5 Report**](https://docs.google.com/document/d/1oQXbGM99qbZIrJI7LsaYCqH262u46Ebc0KscozZJrRA/edit?usp=drive_link)
+
+For more details on our progress and achievements, please refer to each report.
+
 ## Contribution
 
 Contributions to the Cardano Developer Studio are welcome. Whether you're
@@ -115,3 +173,21 @@ This release marks a significant achievement in our commitment to providing deve
 While this marks the final milestone for the initial phase, the journey doesn't end here. The Cardano Developer Studio will continue to evolve, with future updates focusing on refining and expanding the tools and functionalities available. We are committed to listening to your feedback and supporting the community as we move forward together.
 
 Thank you for being part of this journey with us. Your ideas and contributions have been invaluable, and we look forward to seeing what you will create with the tools provided. Let's continue to build the future of the Cardano ecosystem together!
+
+
+<!-- MARKDOWN LINKS & IMAGES -->
+<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+[contributors-shield]: https://img.shields.io/github/contributors/protofire/Cardano-Developer-Studio.svg?style=for-the-badge
+[contributors-url]: https://github.com/protofire/Cardano-Developer-Studio/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/protofire/Cardano-Developer-Studio.svg?style=for-the-badge
+[forks-url]: https://github.com/protofire/Cardano-Developer-Studio/network/members
+[stars-shield]: https://img.shields.io/github/stars/protofire/Cardano-Developer-Studio.svg?style=for-the-badge
+[stars-url]: https://github.com/protofire/Cardano-Developer-Studio/stargazers
+[issues-shield]: https://img.shields.io/github/issues/protofire/Cardano-Developer-Studio.svg?style=for-the-badge
+[issues-url]: https://github.com/protofire/Cardano-Developer-Studio/issues
+[license-shield]: https://img.shields.io/github/license/protofire/Cardano-Developer-Studio.svg?style=for-the-badge
+[license-url]: https://github.com/protofire/Cardano-Developer-Studio/blob/master/LICENSE
+[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
+[linkedin-url]: https://www.linkedin.com/company/protofire-io/posts/?feedView=all
+[product-screenshot]: images/screenshot.png
+[usage-example]: images/example.png

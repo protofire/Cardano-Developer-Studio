@@ -1,4 +1,3 @@
-
 # Function to get the project name from the .cabal file
 get_project_name() {
     local cabal_file
@@ -11,7 +10,6 @@ get_project_name() {
         exit 1
     fi
 }
-
 
 # Function to show the main menu
 show_main_menu() {
@@ -45,7 +43,7 @@ select_node_container() {
     echo "Selecting container with node..."
     if ! select_container 'cardano-node-container' 0; then
         if [ $? -eq 2 ]; then
-            return 0  # Return 0 in any case
+            return 0 # Return 0 in any case
         else
             return 0
         fi
@@ -64,14 +62,14 @@ select_node_container() {
 
 select_smart_contract_files() {
     echo "Selecting smart contract files..."
-    parent_folder="$WORKSPACE_ROOT_DIR_ABSOLUTE/export/$PROJECT_NAME"  # Replace with your actual parent folder path
+    parent_folder="$WORKSPACE_ROOT_DIR_ABSOLUTE/export/$PROJECT_NAME" # Replace with your actual parent folder path
     if ! select_folder "$parent_folder"; then
         if [ $? -eq 2 ]; then
             # echo "User chose to exit without selecting a folder."
-            return 0 
+            return 0
         else
             # echo "Failed to select a folder."
-            return 0 
+            return 0
         fi
     else
         # echo "Selected folder: $selected_folder"
@@ -83,16 +81,21 @@ select_smart_contract_files() {
 
 select_wallet_files() {
     echo "Selecting wallet files..."
-    parent_folder="$WORKSPACE_ROOT_DIR_ABSOLUTE/.priv/wallets"  # Replace with your actual parent folder path
+    parent_folder="$WORKSPACE_ROOT_DIR_ABSOLUTE/.priv/wallets" # Replace with your actual parent folder path
+
     if ! select_folder "$parent_folder"; then
         if [ $? -eq 2 ]; then
             # echo "User chose to exit without selecting a folder."
-            return 0 
+            return 0
         else
             # echo "Failed to select a folder."
-            return 0 
+            return 0
         fi
     else
+        # Change permissions to the Cardano node DB directory
+        sudo chmod -R 755 "$parent_folder"
+        sudo chown -R $(whoami) "$parent_folder"
+
         # echo "Selected folder: $selected_folder"
         # Perform actions with $selected_folder
         selected_wallet=$selected_folder
@@ -108,7 +111,7 @@ utxos_in_wallet() {
 }
 
 utxos_in_address() {
-    local address=$1 
+    local address=$1
     echo "Listing UTXOs for address: $address"
     utxos=$(docker exec -i "$selected_node_container" cardano-cli query utxo --socket-path /ipc/node.socket --address "$address" --$CARDANO_NETWORK_WITH_MAGIC)
     echo "UTXOs:"
@@ -152,7 +155,7 @@ get_posix_time() {
 # Function to prompt user for public key hash and validate it
 get_pkh() {
     while true; do
-        read -p "Enter public key hash: " pkh 
+        read -p "Enter public key hash: " pkh
         if [[ "$pkh" =~ ^[0-9a-fA-F]{56}$ ]]; then
             echo $pkh
             return
@@ -166,7 +169,7 @@ select_utxos() {
     local container=$1
     local address=$2
     local amount_ada=${3:-0}
-    
+
     local utxos
 
     echo "Querying UTXOs for address $address in container $container" >&2
@@ -184,10 +187,10 @@ select_utxos() {
     while IFS= read -r line; do
         if [ $count -gt 2 ]; then
             utxo_list+=("$line")
-            echo "$((count-2))) $line" >&2
+            echo "$((count - 2))) $line" >&2
         fi
-        count=$((count+1))
-    done <<< "$utxos"
+        count=$((count + 1))
+    done <<<"$utxos"
 
     while true; do
         read -p "Enter UTXO number (0 to finish): " utxo_number
@@ -199,13 +202,13 @@ select_utxos() {
             fi
         fi
         if [[ $utxo_number -gt 0 && $utxo_number -le ${#utxo_list[@]} ]]; then
-            local utxo="${utxo_list[$((utxo_number-1))]}"
+            local utxo="${utxo_list[$((utxo_number - 1))]}"
             local tx_hash=$(echo "$utxo" | awk '{print $1}')
             local tx_ix=$(echo "$utxo" | awk '{print $2}')
             local tx_amount=$(echo "$utxo" | awk '{print $3}')
 
             local utxo_id="$tx_hash#$tx_ix"
-            
+
             # Check if the UTXO is already selected
             if [[ " ${selected_utxos[*]} " == *"$utxo_id"* ]]; then
                 echo "UTXO $utxo_id is already selected. Please choose a different UTXO." >&2
@@ -232,7 +235,7 @@ select_utxos() {
 select_single_utxo() {
     local container=$1
     local address=$2
-    
+
     local utxos
 
     echo "Querying UTXOs for address $address in container $container" >&2
@@ -249,10 +252,10 @@ select_single_utxo() {
     while IFS= read -r line; do
         if [ $count -gt 2 ]; then
             utxo_list+=("$line")
-            echo "$((count-2))) $line" >&2
+            echo "$((count - 2))) $line" >&2
         fi
-        count=$((count+1))
-    done <<< "$utxos"
+        count=$((count + 1))
+    done <<<"$utxos"
 
     # Check if there are no UTXOs available
     if [ ${#utxo_list[@]} -eq 0 ]; then
@@ -263,11 +266,11 @@ select_single_utxo() {
     while true; do
         read -p "Enter UTXO number: " utxo_number
         if [[ $utxo_number -gt 0 && $utxo_number -le ${#utxo_list[@]} ]]; then
-            local utxo="${utxo_list[$((utxo_number-1))]}"
+            local utxo="${utxo_list[$((utxo_number - 1))]}"
             local tx_hash=$(echo "$utxo" | awk '{print $1}')
             local tx_ix=$(echo "$utxo" | awk '{print $2}')
             local utxo_id="$tx_hash#$tx_ix"
-            
+
             tx_in_list="$utxo_id"
             selected_utxo="$utxo_id"
             echo "Selected UTXO: $utxo_id" >&2
@@ -302,24 +305,24 @@ select_collateral_utxo() {
         if [ $count -gt 2 ]; then
             utxo_list+=("$line")
         fi
-        count=$((count+1))
-    done <<< "$utxos"
+        count=$((count + 1))
+    done <<<"$utxos"
 
     # Find a suitable UTXO for collateral
     for utxo in "${utxo_list[@]}"; do
         local tx_hash=$(echo "$utxo" | awk '{print $1}')
         local tx_ix=$(echo "$utxo" | awk '{print $2}')
-        local tx_amount=$(echo "$utxo" | awk '{print $3}')  # Get tx_amount directly
+        local tx_amount=$(echo "$utxo" | awk '{print $3}') # Get tx_amount directly
         local rest=$(echo "$utxo" | awk '{for (i=4; i<=NF; i++) printf $i " "; print ""}')
 
         # echo "tx_hash: $tx_hash" >&2
         # echo "tx_ix: $tx_ix" >&2
         # echo "tx_amount: $tx_amount" >&2
         # echo "rest: $rest" >&2
-        
-        if [[ $tx_amount -gt 4999999 ]]; then  # Check amount first
+
+        if [[ $tx_amount -gt 4999999 ]]; then # Check amount first
             # Improved token check
-            if [[ ! "$rest" =~ [0-9]+\ [0-9a-fA-F]+\.[0-9a-zA-Z]+ ]]; then 
+            if [[ ! "$rest" =~ [0-9]+\ [0-9a-fA-F]+\.[0-9a-zA-Z]+ ]]; then
                 local utxo_id="$tx_hash#$tx_ix"
                 collateral_utxo="$utxo_id"
                 echo "Selected UTXO for collateral: $utxo_id with $tx_amount lovelace" >&2
@@ -335,7 +338,6 @@ select_collateral_utxo() {
 
     echo "$collateral_utxo"
 }
-
 
 build_and_submit_transaction() {
     local container=$1
@@ -355,7 +357,7 @@ build_and_submit_transaction() {
     # if [[ -f "$ppFile" ]]
     # then
     #     # echo "Protocol File: $ppFile"
-    #     docker cp -q "$ppFile" "$container:/tmp/protocol-parameters.json" 
+    #     docker cp -q "$ppFile" "$container:/tmp/protocol-parameters.json"
     # else
     #     # echo "Getting Protocol File: $ppFile..."
     #     docker exec -i "$container" cardano-cli query protocol-parameters --socket-path /ipc/node.socket --$CARDANO_NETWORK_WITH_MAGIC --out-file "/tmp/protocol-parameters.json"
@@ -380,9 +382,9 @@ build_and_submit_transaction() {
 
     # optional ways to set signer
     # --required-signer-hash $wallet_pkh \
-    # --required-signer="/tmp/wallet.skey" \
+        # --required-signer="/tmp/wallet.skey" \
 
-    #NOTE: the era flag was moved to the front of the command
+        #NOTE: the era flag was moved to the front of the command
 
     # Get the version of cardano-cli
     cardano_cli_version=$(docker exec -i "$container" cardano-cli --version | grep -oP 'cardano-cli \K[0-9]+\.[0-9]+\.[0-9]+')
@@ -419,40 +421,40 @@ build_and_submit_transaction() {
 
     # Initialize sw_debug with a default value, 1 ==  false
     sw_debug=${sw_debug:-1}
-    
+
     if [ "$sw_debug" -eq 0 ]; then
         echo "Command: $cmd"
     fi
 
     if ! eval $cmd; then
         echo "Error: Failed to build the transaction. Check the input parameters and script." >&2
-        return 0  # Indicate failure
+        return 0 # Indicate failure
     fi
 
     if [ "$sw_debug" -eq 0 ]; then
-        docker cp -q "$container:/tmp/tx.body" "/tmp/tx.body" 
+        docker cp -q "$container:/tmp/tx.body" "/tmp/tx.body"
         cat /tmp/tx.body
     fi
 
     ## SIGN TRANSACTION
 
     echo "Signing the transaction..."
-   
+
     if ! docker exec -i "$container" cardano-cli transaction sign \
-            --tx-body-file "/tmp/tx.body" \
-            --signing-key-file "/tmp/wallet.skey" \
-            --$CARDANO_NETWORK_WITH_MAGIC \
-            --out-file "/tmp/tx.signed"; then
+        --tx-body-file "/tmp/tx.body" \
+        --signing-key-file "/tmp/wallet.skey" \
+        --$CARDANO_NETWORK_WITH_MAGIC \
+        --out-file "/tmp/tx.signed"; then
         echo "Error: Failed to sign the transaction. Check wallet and key permissions." >&2
-        docker exec -i "$container" rm /tmp/wallet.skey  # Clean up
+        docker exec -i "$container" rm /tmp/wallet.skey # Clean up
         return 0
     fi
-    
+
     # delete wallet key
     docker exec -i "$container" rm /tmp/wallet.skey
 
     if [ "$sw_debug" -eq 0 ]; then
-        docker cp -q "$container:/tmp/tx.signed" "/tmp/tx.signed" 
+        docker cp -q "$container:/tmp/tx.signed" "/tmp/tx.signed"
         cat /tmp/tx.signed
     fi
 
@@ -460,9 +462,9 @@ build_and_submit_transaction() {
 
     echo "Submitting the transaction..."
     if ! docker exec -i "$container" cardano-cli transaction submit \
-            --$CARDANO_NETWORK_WITH_MAGIC \
-            --socket-path /ipc/node.socket \
-            --tx-file "/tmp/tx.signed"; then
+        --$CARDANO_NETWORK_WITH_MAGIC \
+        --socket-path /ipc/node.socket \
+        --tx-file "/tmp/tx.signed"; then
         echo "Error: Failed to submit the transaction. Check network connection and transaction details." >&2
         return 0
     fi
@@ -470,25 +472,24 @@ build_and_submit_transaction() {
     echo "Transaction submitted successfully!"
 }
 
-
 create_collateral_tx() {
     echo "Creating collateral transaction..."
 
     wallet_address=$(cat "$selected_wallet/$(basename $selected_wallet).addr")
     echo "Choosing UTXOs from wallet to use as inputs..."
     select_utxos_output=$(select_utxos "$selected_node_container" "$wallet_address" 1)
-    IFS='|' read -r wallet_tx_in_list total_lovelace_in_list <<< "$select_utxos_output"
+    IFS='|' read -r wallet_tx_in_list total_lovelace_in_list <<<"$select_utxos_output"
 
     tx_in_list=""
     if [[ -n "$wallet_tx_in_list" ]]; then
-        IFS=' ' read -ra wallet_tx_ins <<< "$wallet_tx_in_list"
+        IFS=' ' read -ra wallet_tx_ins <<<"$wallet_tx_in_list"
         for wallet_tx_in in "${wallet_tx_ins[@]}"; do
             tx_in_list+=" --tx-in $wallet_tx_in"
         done
     fi
-    tx_out_list=" --tx-out $wallet_address+5000000 --tx-out $wallet_address+5000000 --tx-out $wallet_address+5000000 --tx-out $wallet_address+5000000" 
+    tx_out_list=" --tx-out $wallet_address+5000000 --tx-out $wallet_address+5000000 --tx-out $wallet_address+5000000 --tx-out $wallet_address+5000000"
 
-    build_and_submit_transaction "$selected_node_container" "$selected_wallet" "$tx_in_list" "$tx_out_list" "$wallet_address" 
+    build_and_submit_transaction "$selected_node_container" "$selected_wallet" "$tx_in_list" "$tx_out_list" "$wallet_address"
 
     read -p "Press Enter to continue..."
 
@@ -516,16 +517,16 @@ create_generic_minting_tx() {
     wallet_address=$(cat "$selected_wallet/$(basename $selected_wallet).addr")
     echo "Choosing UTXOs from wallet to use as inputs..."
     select_utxos_output=$(select_utxos "$selected_node_container" "$wallet_address" 1)
-    IFS='|' read -r wallet_tx_in_list total_lovelace_in_list <<< "$select_utxos_output"
+    IFS='|' read -r wallet_tx_in_list total_lovelace_in_list <<<"$select_utxos_output"
 
     tx_in_list=""
     if [[ -n "$wallet_tx_in_list" ]]; then
-        IFS=' ' read -ra wallet_tx_ins <<< "$wallet_tx_in_list"
+        IFS=' ' read -ra wallet_tx_ins <<<"$wallet_tx_in_list"
         for wallet_tx_in in "${wallet_tx_ins[@]}"; do
             tx_in_list+=" --tx-in $wallet_tx_in"
         done
     fi
-    
+
     collateral_utxo=$(select_collateral_utxo "$selected_node_container" "$wallet_address")
     if [[ $? -ne 0 || -z "$collateral_utxo" ]]; then
         echo "No suitable collateral UTXO selected."
@@ -534,7 +535,7 @@ create_generic_minting_tx() {
     else
         tx_in_collateral=" --tx-in-collateral $collateral_utxo"
     fi
-    
+
     tx_in_list+="$tx_in_collateral"
 
     # Prompt for token names and amounts
@@ -566,7 +567,7 @@ create_generic_minting_tx() {
             else
                 # Set amount to negative for burning
                 if [[ "$action" == "burn" ]]; then
-                    token_amount=$(( -token_amount ))
+                    token_amount=$((-token_amount))
                 fi
                 break
             fi
@@ -578,7 +579,7 @@ create_generic_minting_tx() {
 
     # Handle redeemer if provided
     redeemer_json_file="/tmp/redeemer.json"
-    if (declare -f sw_use_redeemer > /dev/null && sw_use_redeemer) || [[ -n "$redeemer" ]]; then
+    if (declare -f sw_use_redeemer >/dev/null && sw_use_redeemer) || [[ -n "$redeemer" ]]; then
         generate_redeemer_json "$redeemer" "$redeemer_json_file"
         docker cp -q "$redeemer_json_file" "$selected_node_container:$redeemer_json_file"
         # echo "Redeemer - $redeemer - JSON: $(cat $redeemer_json_file)"
@@ -595,7 +596,7 @@ create_generic_minting_tx() {
         token_amount="${amounts[$i]}"
         mint_value="$token_amount $pid.$token_name_hex"
         mint_values+=" + $mint_value"
-        if (declare -f sw_use_redeemer > /dev/null && sw_use_redeemer) || [[ -n "$redeemer" ]]; then
+        if (declare -f sw_use_redeemer >/dev/null && sw_use_redeemer) || [[ -n "$redeemer" ]]; then
             mint_params+=" --mint \"$mint_value\" --mint-script-file /tmp/policy.plutus --mint-redeemer-file /tmp/redeemer.json"
         else
             mint_params+=" --mint \"$mint_value\" --mint-script-file /tmp/policy.plutus --mint-redeemer-value {}"
@@ -605,10 +606,9 @@ create_generic_minting_tx() {
     if [[ "$action" == "mint" ]]; then
         tx_out_list=" --tx-out \"$wallet_address + 2000000 lovelace $mint_values\""
     fi
-    
+
     build_and_submit_transaction "$selected_node_container" "$selected_wallet" "$tx_in_list" "$tx_out_list" "$wallet_address" "$mint_params"
 }
-
 
 create_vesting_tx() {
     local datum="$1"
@@ -618,7 +618,7 @@ create_vesting_tx() {
 
     # Handle datum if provided
     datum_json_file="/tmp/datum.json"
-    if (declare -f sw_use_datum > /dev/null && sw_use_datum) || [[ -n "$datum" ]]; then
+    if (declare -f sw_use_datum >/dev/null && sw_use_datum) || [[ -n "$datum" ]]; then
         generate_datum_json "$datum" "$datum_json_file"
         docker cp -q "$datum_json_file" "$selected_node_container:$datum_json_file"
         # echo "Datum - $datum - JSON: $(cat $datum_json_file)"
@@ -629,17 +629,17 @@ create_vesting_tx() {
     wallet_address=$(cat "$selected_wallet/$(basename $selected_wallet).addr")
     echo "Choosing UTXOs from wallet to use as inputs..."
     select_utxos_output=$(select_utxos "$selected_node_container" "$wallet_address" $amount_ada)
-    IFS='|' read -r wallet_tx_in_list total_lovelace_in_list <<< "$select_utxos_output"
+    IFS='|' read -r wallet_tx_in_list total_lovelace_in_list <<<"$select_utxos_output"
 
     tx_in_list=""
     if [[ -n "$wallet_tx_in_list" ]]; then
-        IFS=' ' read -ra wallet_tx_ins <<< "$wallet_tx_in_list"
+        IFS=' ' read -ra wallet_tx_ins <<<"$wallet_tx_in_list"
         for wallet_tx_in in "${wallet_tx_ins[@]}"; do
             tx_in_list+=" --tx-in $wallet_tx_in"
         done
     fi
-    
-    if (declare -f sw_use_datum > /dev/null && sw_use_datum) || [[ -n "$datum" ]]; then
+
+    if (declare -f sw_use_datum >/dev/null && sw_use_datum) || [[ -n "$datum" ]]; then
         tx_out_list="--tx-out $script_address+$amount_ada --tx-out-inline-datum-file /tmp/datum.json"
     else
         tx_out_list="--tx-out $script_address+$amount_ada --tx-out-inline-datum-value {}"
@@ -658,18 +658,18 @@ create_claiming_tx() {
     wallet_address=$(cat "$selected_wallet/$(basename $selected_wallet).addr")
     echo "Choosing UTXOs from wallet to use as inputs..."
     select_utxos_output=$(select_utxos "$selected_node_container" "$wallet_address" 1)
-    IFS='|' read -r wallet_tx_in_list total_lovelace_in_list <<< "$select_utxos_output"
+    IFS='|' read -r wallet_tx_in_list total_lovelace_in_list <<<"$select_utxos_output"
 
     echo "Choosing UTXOs from script address to consume..."
     select_utxos_output=$(select_utxos "$selected_node_container" "$script_address" 1)
-    IFS='|' read -r script_tx_in_list total_lovelace_in_script <<< "$select_utxos_output"
-    
+    IFS='|' read -r script_tx_in_list total_lovelace_in_script <<<"$select_utxos_output"
+
     tx_in_script_file="$selected_scripts/$selected_validator.plutus"
     docker cp -q "$tx_in_script_file" "$selected_node_container:/tmp/validator.plutus"
 
     tx_in_list=""
     if [[ -n "$wallet_tx_in_list" ]]; then
-        IFS=' ' read -ra wallet_tx_ins <<< "$wallet_tx_in_list"
+        IFS=' ' read -ra wallet_tx_ins <<<"$wallet_tx_in_list"
         for wallet_tx_in in "${wallet_tx_ins[@]}"; do
             tx_in_list+=" --tx-in $wallet_tx_in"
         done
@@ -683,12 +683,12 @@ create_claiming_tx() {
     else
         tx_in_collateral=" --tx-in-collateral $collateral_utxo"
     fi
-    
+
     tx_in_list+="$tx_in_collateral"
 
     # Handle redeemer if provided
     redeemer_json_file="/tmp/redeemer.json"
-    if (declare -f sw_use_redeemer > /dev/null && sw_use_redeemer) || [[ -n "$redeemer" ]]; then
+    if (declare -f sw_use_redeemer >/dev/null && sw_use_redeemer) || [[ -n "$redeemer" ]]; then
         generate_redeemer_json "$redeemer" "$redeemer_json_file"
         docker cp -q "$redeemer_json_file" "$selected_node_container:$redeemer_json_file"
         # echo "Redeemer - $redeemer - JSON: $(cat $redeemer_json_file)"
@@ -696,9 +696,9 @@ create_claiming_tx() {
 
     # Handle script tx-in list
     if [[ -n "$script_tx_in_list" ]]; then
-        IFS=' ' read -ra script_tx_ins <<< "$script_tx_in_list"
+        IFS=' ' read -ra script_tx_ins <<<"$script_tx_in_list"
         for script_tx_in in "${script_tx_ins[@]}"; do
-            if (declare -f sw_use_redeemer > /dev/null && sw_use_redeemer) || [[ -n "$redeemer" ]]; then
+            if (declare -f sw_use_redeemer >/dev/null && sw_use_redeemer) || [[ -n "$redeemer" ]]; then
                 tx_in_list+=" --tx-in $script_tx_in --tx-in-script-file /tmp/validator.plutus --tx-in-inline-datum-present --tx-in-redeemer-file /tmp/redeemer.json $tx_in_collateral"
             else
                 tx_in_list+=" --tx-in $script_tx_in --tx-in-script-file /tmp/validator.plutus --tx-in-inline-datum-present --tx-in-redeemer-value {} $tx_in_collateral"
@@ -706,11 +706,11 @@ create_claiming_tx() {
         done
 
         tx_out_list=" --tx-out \"$wallet_address + $total_lovelace_in_script\""
-    
+
     fi
-    
+
     build_and_submit_transaction "$selected_node_container" "$selected_wallet" "$tx_in_list" "$tx_out_list" "$wallet_address"
-    
+
     read -p "Press Enter to continue..."
 
 }

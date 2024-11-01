@@ -163,23 +163,33 @@ install_package() {
         if command -v apt-get &> /dev/null; then
             echo "Using apt-get to install $package_name..."
             sudo apt-get update && sudo apt-get install -y "$package_name"
-            elif command -v dnf &> /dev/null; then
+        elif command -v dnf &> /dev/null; then
             echo "Using dnf to install $package_name..."
             sudo dnf install -y "$package_name"
-            elif command -v brew &> /dev/null; then
-            echo "Using brew to install $package_name..."
-            brew install "$package_name"
-            elif command -v pacman &> /dev/null; then
+        elif command -v zypper &> /dev/null; then
+            echo "Using zypper to install $package_name..."
+            sudo zypper install -y "$package_name"
+        elif command -v pacman &> /dev/null; then
             echo "Using pacman to install $package_name..."
             sudo pacman -Syu "$package_name" --noconfirm
+        elif command -v emerge &> /dev/null; then
+            echo "Using emerge to install $package_name..."
+            sudo emerge "$package_name"
+        elif command -v brew &> /dev/null; then
+            echo "Using brew to install $package_name..."
+            brew install "$package_name"
+        elif command -v apk &> /dev/null; then
+            echo "Using apk to install $package_name (Alpine Linux)..."
+            sudo apk add "$package_name"
         else
-            echo "Package manager not detected. Please install $package_name manually."
+            echo "Package manager not detected. Please install $package_name manually or specify a package manager."
             return 1 # Return failure
         fi
     else
         echo "$package_name is already installed."
     fi
 }
+
 
 verify_snapshot_integrity() {
     local snapshot_path="$1"
