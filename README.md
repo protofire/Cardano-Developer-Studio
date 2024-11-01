@@ -134,6 +134,17 @@ See [Smart Contracts Examples and Helpers Library](./cardano-smart-contracts-exa
 
 See [Cardano Web3 Frontend Template](./cardano-web3-frontend-template/README.md)
 
+## Cardano Catalyst Reports
+Here are the links to the Catalyst Milestone reports for the Cardano Developer Studio project. Each report provides an update on the project's progress, achievements, and next steps for each milestone.
+
+- [**Milestone 1 Report**](https://docs.google.com/document/d/1WDoeLv-KwiReC_Gs7kBkQXkcr9XdoUUuDn8BNQfd5zg/edit?usp=drive_link)
+- [**Milestone 2 Report**](https://docs.google.com/document/d/1KfpU4fbQrKDNGLq23_lkPMn7CqAZzAivJufQtCljS0A/edit?usp=drive_link)
+- [**Milestone 3 Report**](https://docs.google.com/document/d/1Wb0sM5Oh5G6gRw3HZADO0N0zUo3RdFlW7x3KeZKMEW4/edit?usp=drive_link)
+- [**Milestone 4 Report**](https://docs.google.com/document/d/1-m2ScmbRiqkNaDPqRhmSpb8Bj4hQkjIrMYPFNHaCq3M/edit?usp=drive_link)
+- [**Milestone 5 Report**](https://docs.google.com/document/d/1oQXbGM99qbZIrJI7LsaYCqH262u46Ebc0KscozZJrRA/edit?usp=drive_link)
+
+For more details on our progress and achievements, please refer to each report.
+
 ## Contribution
 
 Contributions to the Cardano Developer Studio are welcome. Whether you're
